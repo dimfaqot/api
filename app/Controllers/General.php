@@ -22,36 +22,43 @@ class General extends BaseController
             gagal("Format tanggal tidak valid. minimal harus ada tahun");
             return;
         }
-
+        $total = 0;
         // Ambil data dari database
         $db = db($tabel, $dbs);
         $db->select('*');
 
         // jika 4 dan tgl y maka tgl == tgl berarti yang kie-4 adalah lokasi
 
+        if ($tabel == "barang") {
+            $db;
+            if ($customer_id !== "") {
+                $db->where('lokasi', str_replace("%", " ", $customer_id));
+            }
+            $data = $db->orderBy('barang', 'ASC')->get()->getResultArray();
+        } else {
+            // Filter waktu
+            $db->where("YEAR(FROM_UNIXTIME(tgl))", $tahun);
 
-        // Filter waktu
-        $db->where("YEAR(FROM_UNIXTIME(tgl))", $tahun);
+            // validasi bulan jika count $exp > 1
+            if ($bulan !== '') {
+                $db->where("MONTH(FROM_UNIXTIME(tgl))", $bulan);
+            }
+            // validasi tanggal jika $order == y dan $tgl !== ""
+            if ($tgl !== '') {
+                $db->where("DAY(FROM_UNIXTIME(tgl))", $tgl);
+            }
+            // validasi customer_id jika $order == n dan $tgl !== ""
+            if ($customer_id !== '') {
+                $db->where(($dbs == "grosir" ? "customer_id" : "user_id"), $customer_id);
+            }
+            if ($lokasi !== '') {
+                $db->where("lokasi", str_replace("%", " ",  $lokasi));
+            }
 
-        // validasi bulan jika count $exp > 1
-        if ($bulan !== '') {
-            $db->where("MONTH(FROM_UNIXTIME(tgl))", $bulan);
+            // Ambil dan hitung
+            $data = $db->get()->getResultArray();
+            $total = array_sum(array_column($data, 'biaya'));
         }
-        // validasi tanggal jika $order == y dan $tgl !== ""
-        if ($tgl !== '') {
-            $db->where("DAY(FROM_UNIXTIME(tgl))", $tgl);
-        }
-        // validasi customer_id jika $order == n dan $tgl !== ""
-        if ($customer_id !== '') {
-            $db->where(($dbs == "grosir" ? "customer_id" : "user_id"), $customer_id);
-        }
-        if ($lokasi !== '') {
-            $db->where("lokasi", str_replace("%", " ",  $lokasi));
-        }
-
-        // Ambil dan hitung
-        $data = $db->get()->getResultArray();
-        $total = array_sum(array_column($data, 'biaya'));
 
         sukses("Sukses", $data, $total);
     }
