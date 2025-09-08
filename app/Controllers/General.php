@@ -31,8 +31,8 @@ class General extends BaseController
 
         if ($tabel == "barang") {
             $db;
-            if ($customer_id !== "") {
-                $db->where('lokasi', str_replace("%", " ", $customer_id));
+            if ($tanggal !== "") {
+                $db->where('lokasi', str_replace("%", " ", $tanggal));
             }
             $data = $db->orderBy('barang', 'ASC')->get()->getResultArray();
         } else {
