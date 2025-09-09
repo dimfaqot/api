@@ -65,6 +65,10 @@ class General extends BaseController
 
     public function profile($dbs)
     {
+        // CORS Headers
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
         $db = db('profile', $dbs);
         $profile = $db->get()->getRowArray();
 
