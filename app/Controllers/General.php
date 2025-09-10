@@ -5,23 +5,14 @@ namespace App\Controllers;
 class General extends BaseController
 {
 
-    public function data($dbs, $tabel, $tanggal, $customer_id = "", $lokasi = "")
+    public function data($dbs, $tabel, $tanggal = "", $customer_id = "", $lokasi = "")
     {
-
         // CORS Headers
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET, OPTIONS");
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-        // Parse tanggal: format YYYY-MM-DD[-customer_id]
-        $exp = explode("-", $tanggal);
-        [$tahun, $bulan, $tgl] = array_pad($exp, 3, '');
 
-        // Validasi minimal
-        if ($tahun == "") {
-            gagal("Format tanggal tidak valid. minimal harus ada tahun");
-            return;
-        }
         $total = 0;
         // Ambil data dari database
         $db = db($tabel, $dbs);
@@ -36,6 +27,15 @@ class General extends BaseController
             }
             $data = $db->orderBy('barang', 'ASC')->get()->getResultArray();
         } else {
+            // Parse tanggal: format YYYY-MM-DD[-customer_id]
+            $exp = explode("-", $tanggal);
+            [$tahun, $bulan, $tgl] = array_pad($exp, 3, '');
+
+            // Validasi minimal
+            if ($tahun == "") {
+                gagal("Format tanggal tidak valid. minimal harus ada tahun");
+                return;
+            }
             // Filter waktu
             $db->where("YEAR(FROM_UNIXTIME(tgl))", $tahun);
 
