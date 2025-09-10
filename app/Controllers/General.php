@@ -5,7 +5,7 @@ namespace App\Controllers;
 class General extends BaseController
 {
 
-    public function data($dbs, $tabel, $tanggal = "", $customer_id = "", $lokasi = "")
+    public function data($dbs, $tabel, $tanggal = "", $lokasi = "", $customer_id = "")
     {
         // CORS Headers
         header("Access-Control-Allow-Origin: *");
