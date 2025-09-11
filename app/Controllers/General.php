@@ -62,6 +62,17 @@ class General extends BaseController
 
         sukses("Sukses", $data, $total);
     }
+    public function rangkuman($dbs, $tahun, $lokasi = '')
+    {
+        // CORS Headers
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+        $data = rekapTahunan($dbs, $tahun, $lokasi);
+
+        sukses("Sukses", $data);
+    }
 
     public function profile($dbs)
     {

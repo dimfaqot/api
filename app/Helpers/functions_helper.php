@@ -68,3 +68,44 @@ function bulans($req = null)
     }
     return $res;
 }
+
+function rekapTahunan($dbs, $tahun, $lokasi)
+{
+
+    $data = [];
+
+    for ($bulan = 1; $bulan <= 12; $bulan++) {
+        // Pemasukan
+        $db = db('transaksi', $dbs);
+        $db->select('*');
+        if ($lokasi !== '') {
+            $db->where('lokasi', $lokasi);
+        }
+        $masuk = $db->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
+            ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+            ->get()->getResultArray();
+
+        $totalMasuk = array_sum(array_column($masuk, 'biaya'));
+
+        // Pengeluaran
+        $db = db('pengeluaran', $dbs);
+        $db->select('*');
+        if ($lokasi !== '') {
+            $db->where('lokasi', $lokasi);
+        }
+        $keluar = $db->whereNotIn('jenis', ["Inv", "Modal"])
+            ->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
+            ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+            ->get()->getResultArray();
+
+        $totalKeluar = array_sum(array_column($keluar, 'biaya'));
+
+        $data[] = [
+            "bulan"  => bulans($bulan)['bulan'],
+            "masuk"  => $totalMasuk,
+            "keluar" => $totalKeluar
+        ];
+    }
+
+    return $data;
+}
