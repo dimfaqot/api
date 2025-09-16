@@ -132,6 +132,27 @@ class Database extends Config
         'numberNative' => false,
     ];
 
+    public array $bkw = [
+        'DSN'          => '',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'bkw',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => true,
+        'charset'      => 'utf8',
+        'DBCollat'     => 'utf8_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
+
 
     //    /**
     //     * Sample database connection for SQLite3.
@@ -302,6 +323,10 @@ class Database extends Config
             $this->playbox['database'] = getenv('db_name_playbox');
             $this->playbox['username'] = getenv('db_username_playbox');
             $this->playbox['password'] = getenv('db_pass_playbox');
+
+            $this->bkw['database'] = getenv('db_name_bkw');
+            $this->bkw['username'] = getenv('db_username_bkw');
+            $this->bkw['password'] = getenv('db_pass_bkw');
         }
     }
 }
