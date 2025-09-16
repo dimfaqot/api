@@ -119,7 +119,6 @@ class General extends BaseController
 
             $data[] = $i;
         }
-        dd($data);
         sukses('Sukses', $data);
     }
 }
