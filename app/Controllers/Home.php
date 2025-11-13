@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Controllers;
+
+class Home extends BaseController
+{
+
+    public function menu($db, $tabel, $lokasi = '')
+    {
+        // CORS Headers
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+
+        sukses("Ok", tahuns($db, $tabel, $lokasi), bulans());
+    }
+    public function data($dbs, $order, $tahun, $bulan, $jenis, $lokasi = '')
+    {
+        // CORS Headers
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+        $data = get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi);
+        sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
+    }
+
+    public function unlock($dbs, $id, $keep)
+    {
+        // CORS Headers
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+        $keep = ($keep == 0 ? 1 : 0);
+
+        $q = db('backup', $dbs)->where('id', $id)->get()->getRowArray();
+
+        if (!$q) {
+            gagal("Id not found");
+        }
+
+        $q['keep'] = $keep;
+
+        if (db('backup', $dbs)->where('id', $q['id'])->update($q)) {
+            $backup = db('backup', $dbs)->select('*')->orderBy('tahun', 'ASC')
+                ->get()
+                ->getResultArray();
+            $tot = array_sum(array_column($backup, 'saldo'));
+
+            sukses("Ok", $backup, $tot);
+        } else {
+            gagal("Unlock gagal");
+        }
+    }
+}
