@@ -344,9 +344,9 @@ class Database extends Config
             $this->playbox['username'] = getenv('db_username_playbox');
             $this->playbox['password'] = getenv('db_pass_playbox');
 
-            $this->bkw['database'] = getenv('db_name_bkw');
-            $this->bkw['username'] = getenv('db_username_bkw');
-            $this->bkw['password'] = getenv('db_pass_bkw');
+            // $this->bkw['database'] = getenv('db_name_bkw');
+            // $this->bkw['username'] = getenv('db_username_bkw');
+            // $this->bkw['password'] = getenv('db_pass_bkw');
 
             $this->cafe['database'] = getenv('db_name_cafe');
             $this->cafe['username'] = getenv('db_username_cafe');
