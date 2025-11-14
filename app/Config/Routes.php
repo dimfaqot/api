@@ -28,3 +28,5 @@ $routes->get('/home/unlock/(:any)/(:num)/(:num)', 'Home::unlock/$1/$2/$3');
 
 $routes->get('/cetak/laporan/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)', 'Cetak::laporan/$1/$2/$3/$4/$5/$6');
 $routes->get('/cetak/laporan/(:any)/(:any)/(:any)/(:any)/(:any)', 'Cetak::laporan/$1/$2/$3/$4/$5');
+
+$routes->get('/settings/add/(:any)', 'Settings::add/$1');

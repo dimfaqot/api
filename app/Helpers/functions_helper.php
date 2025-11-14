@@ -1,4 +1,8 @@
 <?php
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 function db($tabel, $db = null)
 {
     if ($db == null || $db == 'playground') {
@@ -337,4 +341,82 @@ function profile($dbs)
 function angka($uang)
 {
     return number_format($uang, 0, ",", ".");
+}
+
+function encode_jwt($data)
+{
+
+    $jwt = JWT::encode($data, getenv("KEY_JWT"), 'HS256');
+
+    return $jwt;
+}
+
+function decode_jwt($encode_jwt)
+{
+    try {
+
+        $decoded = JWT::decode($encode_jwt, new Key(getenv("KEY_JWT"), 'HS256'));
+        $arr = (array)$decoded;
+
+        return $arr;
+    } catch (\Exception $e) { // Also tried JwtException
+        $data = [
+            'status' => '400',
+            'message' => $e->getMessage()
+        ];
+
+        echo json_encode($data);
+        die;
+    }
+}
+
+function random_str($length = 14)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+
+function next_invoice($order = null)
+{
+
+    $db = db('nota');
+
+    $year  = date('Y');
+    $month = date('m');
+    $prefix = "$year/$month/";
+
+    // Cari no_nota terakhir berdasarkan bulan ini
+    $lastNota = $db->select('no_nota')
+        ->orderBy('tgl', 'DESC')
+        ->get()
+        ->getRowArray();
+
+    if ($order == "inv") {
+        $lastNota = $db->select('inv')
+            ->orderBy('tgl', 'DESC')
+            ->get()
+            ->getRowArray();
+    }
+
+
+    $nextNumber = 1;
+    if ($lastNota) {
+        $parts = explode('/', $lastNota['no_nota']);
+        $lastNumber = end($parts);
+        $nextNumber = (int)$lastNumber + 1;
+    }
+
+    $nota = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+    if ($order == "hutang") {
+        $nota = $prefix . random_str(6);
+    }
+
+    return $nota;
 }
