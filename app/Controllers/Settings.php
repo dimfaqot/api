@@ -17,59 +17,51 @@ class Settings extends BaseController
         if (!$decode['login']) {
             gagal("Login first");
         }
-        $input = [
-            'nama'       => strtolower(clear($this->request->getVar('nama'))),
-            'value'       => clear($this->request->getVar('value'))
-        ];
+
+        if ($decode['order'] == "Add") {
+            $input = [
+                'nama'       => strtolower(clear($decode['nama'])),
+                'value'       => clear($decode['value'])
+            ];
 
 
-        // Cek duplikat
-        if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
-            gagal('Setting existed');
+            // Cek duplikat
+            if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
+                gagal('Setting existed');
+            }
+
+
+            // Simpan data  
+            db($decode['tabel'], $decode['db'])->insert($input)
+                ? sukses('Sukses')
+                : gagal('Gagal');
         }
+        if ($decode['order'] == "Edit") {
 
 
-        // Simpan data  
-        db($decode['tabel'], $decode['db'])->insert($input)
-            ? sukses('Sukses')
-            : gagal('Gagal');
+            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$q) {
+                gagal("Id not found");
+            }
+
+            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
+                gagal("Setting existed");
+            }
+
+            $q = [
+                'nama'       => strtolower(clear($decode['nama'])),
+                'value'       => clear($decode['value'])
+            ];
+
+
+            // Simpan data
+            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+                ? sukses('Sukses')
+                : gagal('Gagal');
+        }
     }
 
-    public function edit($jwt)
-    {
-        // CORS Headers
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: GET, OPTIONS");
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-        $decode = decode_jwt($jwt);
-
-        if (!$decode['login']) {
-            gagal("Login first");
-        }
-
-        $id = clear($this->request->getVar('id'));
-
-        $q = db($decode['tabel'], $decode['db'])->where('id', $id)->get()->getRowArray();
-
-        if (!$q) {
-            gagal("Id not found");
-        }
-
-        $q = [
-            'nama'       => strtolower(clear($this->request->getVar('nama'))),
-            'value'       => clear($this->request->getVar('value'))
-        ];
-
-        if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$id]))->where("nama", $q['nama'])->get()->getRowArray()) {
-            gagal("Setting existed");
-        }
-
-        // Simpan data
-        db($decode['tabel'], $decode['db'])->where('id', $id)->update($q)
-            ? sukses('Sukses')
-            : gagal('Gagal');
-    }
 
     public function copy_table($jwt)
     {
