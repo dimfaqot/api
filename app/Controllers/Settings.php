@@ -5,7 +5,7 @@ namespace App\Controllers;
 class Settings extends BaseController
 {
 
-    public function add($jwt)
+    public function general($jwt)
     {
         // CORS Headers
         header("Access-Control-Allow-Origin: *");
