@@ -14,14 +14,14 @@ class Settings extends BaseController
 
         $decode = decode_jwt($jwt);
 
-        if (!$decode['login']) {
+        if (!$decode['login'] || $decode['login'] == "" || $decode['login'] == "null") {
             gagal("Login first");
         }
 
         if ($decode['order'] == "Add") {
             $input = [
                 'nama'       => strtolower(clear($decode['nama'])),
-                'value'       => clear($decode['value'])
+                'value'       => upper_first(clear($decode['value']))
             ];
 
 
@@ -49,10 +49,8 @@ class Settings extends BaseController
                 gagal("Setting existed");
             }
 
-            $q = [
-                'nama'       => strtolower(clear($decode['nama'])),
-                'value'       => clear($decode['value'])
-            ];
+            $q['nama'] = strtolower(clear($decode['nama']));
+            $q['value'] = upper_first(clear($decode['value']));
 
 
             // Simpan data
