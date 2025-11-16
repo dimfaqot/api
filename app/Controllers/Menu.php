@@ -100,6 +100,7 @@ class Menu extends BaseController
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
+
         if ($decode['order'] == "Delete") {
 
             $q = db('menu', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
