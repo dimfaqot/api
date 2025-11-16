@@ -420,3 +420,15 @@ function next_invoice($order = null)
 
     return $nota;
 }
+
+
+function check($decode)
+{
+    if (!$decode['login'] || $decode['login'] == "" || $decode['login'] == "null") {
+        gagal("Login first");
+    }
+
+    if ($decode['admin'] !== "Root") {
+        gagal("Role disallowed");
+    }
+}
