@@ -77,6 +77,28 @@ class Menu extends BaseController
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
+        if ($decode['order'] == "Copy") {
+
+            $q = db('menu', $decode['db'])->where('id', $decode['menu_id'])->get()->getRowArray();
+
+            if (!$q) {
+                gagal("Menu id not found");
+            }
+
+            if (db('menu', $decode['db'])->where('role', $decode['role'])->where("menu", $q['menu'])->get()->getRowArray()) {
+                gagal("Menu in role existed");
+            }
+            unset($q['id']);
+
+            // Dapatkan urutan terakhir
+            $last = db('menu', $decode['db'])->select('urutan')->where('menu', $q['menu'])->orderBy('urutan', 'DESC')->get()->getRowArray();
+            $q['urutan'] = isset($last['urutan']) ? $last['urutan'] + 1 : 1;
+
+            // Simpan data
+            db('menu', $decode['db'])->insert($q)
+                ? sukses('Sukses')
+                : gagal('Gagal');
+        }
         if ($decode['order'] == "Delete") {
 
             $q = db('menu', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
@@ -90,89 +112,5 @@ class Menu extends BaseController
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
-    }
-
-
-    public function copy_table($jwt)
-    {
-        // CORS Headers
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: GET, OPTIONS");
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-        $tabel = clear($this->request->getVar('tabel'));
-
-        $db_old = db(($tabel == "transaksi" || $tabel == "hutang" ? "penjualan" : $tabel), getenv('OLD_DB'));
-        $old = $db_old->orderBy('id', 'ASC')->get()->getResultArray();
-        $insert = [];
-        $db = db_connect();
-        $db->transStart();
-        foreach ($old as $k => $i) {
-            if ($tabel == "pengeluaran") {
-                $data = [
-                    'tgl' => $i['tgl'],
-                    'jenis' => $i['kategori'],
-                    'barang' => $i['barang'],
-                    'barang_id' => 0,
-                    'harga' => $i['harga'],
-                    'qty' => $i['qty'],
-                    'total' => $i['qty'] * $i['harga'],
-                    'diskon' => $i['diskon'],
-                    'biaya' => $i['total'],
-                    'pj' => $i['petugas'],
-                    'petugas' => $i['petugas'],
-                    'updated_at' => $i['tgl']
-                ];
-                $insert[] = $data;
-            } elseif ($tabel == "transaksi" && $i['ket'] !== "Hutang") {
-
-                $data = [
-                    'tgl' => $i['tgl'],
-                    'jenis' => '',
-                    'barang' => $i['barang'],
-                    'barang_id' => 0,
-                    'harga' => $i['harga'],
-                    'qty' => $i['qty'],
-                    'total' => $i['qty'] * $i['harga'],
-                    'diskon' => $i['diskon'],
-                    'biaya' => $i['total'],
-                    'petugas' => $i['petugas']
-                ];
-                $insert[] = $data;
-            } elseif ($tabel == "hutang" && $i['ket'] == 'Hutang') {
-                $no_nota = next_invoice('hutang');
-                $data = [
-                    'no_nota' => $no_nota,
-                    'tgl' => $i['tgl'],
-                    'jenis' => '',
-                    'barang' => $i['barang'],
-                    'barang_id' => 0,
-                    'harga' => $i['harga'],
-                    'qty' => $i['qty'],
-                    'total' => $i['qty'] * $i['harga'],
-                    'diskon' => $i['diskon'],
-                    'biaya' => $i['total'],
-                    'petugas' => $i['petugas'],
-                    'nama' => $i['pembeli'],
-                    'user_id' => $i['user_id'],
-                    'tipe' => ''
-                ];
-                $insert[] = $data;
-                // db($tabel, 'cafe')->insert($i);
-            }
-        }
-        // dd(count($insert));
-        // $last = array_slice($insert, 6000, 500, true);
-        // foreach ($insert as $i) {
-
-        //     db($tabel, 'cafe')->insert($i);
-        // }
-        $db->transComplete();
-
-        if (!$db->transStatus()) {
-            gagal('Copy gagal');
-        }
-
-        sukses('Copy sukses');
     }
 }
