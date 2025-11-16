@@ -56,14 +56,13 @@ class Menu extends BaseController
                 gagal("Id not found");
             }
 
-
-            $q['role'] = clear($this->request->getVar('role'));
-            $q['urutan'] = clear($this->request->getVar('urutan'));
-            $q['menu'] = upper_first(clear($this->request->getVar('menu')));
-            $q['tabel'] = strtolower(clear($this->request->getVar('tabel')));
-            $q['controller'] = clear($this->request->getVar('controller'));
-            $q['icon'] = strtolower(clear($this->request->getVar('icon')));
-            $q['grup'] = upper_first(clear($this->request->getVar('grup')));
+            $q['role'] = clear($decode['role']);
+            $q['urutan'] = clear($decode['urutan']);
+            $q['menu'] = upper_first(clear($decode['menu']));
+            $q['tabel'] = strtolower(clear($decode['tabel']));
+            $q['controller'] = clear($decode['controller']);
+            $q['icon'] = strtolower(clear($decode['icon']));
+            $q['grup'] = upper_first(clear($decode['grup']));
 
             if (db('menu', $decode['db'])->whereNotIn('id', [$q['id']])->where("menu", $q['menu'])->get()->getRowArray()) {
                 gagal("Menu existed");
