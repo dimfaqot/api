@@ -73,7 +73,6 @@ class Menu extends BaseController
                 gagal("Urutan existed");
             }
 
-
             // Simpan data
             db('menu', $decode['db'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
