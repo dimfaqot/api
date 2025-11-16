@@ -93,6 +93,7 @@ class Menu extends BaseController
             // Dapatkan urutan terakhir
             $last = db('menu', $decode['db'])->select('urutan')->where('menu', $q['menu'])->orderBy('urutan', 'DESC')->get()->getRowArray();
             $q['urutan'] = isset($last['urutan']) ? $last['urutan'] + 1 : 1;
+            $q['role'] = $decode['role'];
 
             // Simpan data
             db('menu', $decode['db'])->insert($q)
