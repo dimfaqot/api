@@ -18,7 +18,7 @@ class User extends BaseController
 
         if ($decode['order'] == "Add") {
             $input = [
-                'role '       => upper_first(clear($decode['value'])),
+                'role '       => upper_first(clear($decode['role'])),
                 'nama'       => upper_first(clear($decode['nama'])),
                 'username'       => ($decode['username'] == '' ? strtolower(random_str(6)) : $decode['username']),
                 'wa'       => clear($decode['wa']),
