@@ -22,7 +22,7 @@ class Menu extends BaseController
                 'role'       => clear($decode['role']),
                 'menu'       => upper_first(clear($decode['menu'])),
                 'tabel'      => strtolower(clear($decode['tabel'])),
-                'controller' => clear($decode['controller']),
+                'controller' => strtolower(clear($decode['controller'])),
                 'icon'       => strtolower(clear($decode['icon'])),
                 'grup'       => upper_first(clear($decode['grup']))
             ];
@@ -60,7 +60,7 @@ class Menu extends BaseController
             $q['urutan'] = clear($decode['urutan']);
             $q['menu'] = upper_first(clear($decode['menu']));
             $q['tabel'] = strtolower(clear($decode['tabel']));
-            $q['controller'] = clear($decode['controller']);
+            $q['controller'] = strtolower(clear($decode['controller']));
             $q['icon'] = strtolower(clear($decode['icon']));
             $q['grup'] = upper_first(clear($decode['grup']));
 
@@ -93,7 +93,7 @@ class Menu extends BaseController
             // Dapatkan urutan terakhir
             $last = db('menu', $decode['db'])->select('urutan')->where('menu', $q['menu'])->orderBy('urutan', 'DESC')->get()->getRowArray();
             $q['urutan'] = isset($last['urutan']) ? $last['urutan'] + 1 : 1;
-            $q['role'] = $decode['role'];
+            $q['role'] = upper_first(clear($decode['role']));
 
             // Simpan data
             db('menu', $decode['db'])->insert($q)

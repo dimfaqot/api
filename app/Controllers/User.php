@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Settings extends BaseController
+class User extends BaseController
 {
 
     public function general($jwt)
@@ -18,14 +18,29 @@ class Settings extends BaseController
 
         if ($decode['order'] == "Add") {
             $input = [
+                'role '       => upper_first(clear($decode['value'])),
                 'nama'       => upper_first(clear($decode['nama'])),
-                'value'       => upper_first(clear($decode['value']))
+                'username'       => ($decode['username'] == '' ? strtolower(random_str(6)) : $decode['username']),
+                'wa'       => clear($decode['wa']),
+                'password'       => password_hash(settings($decode['db'], 'password'), PASSWORD_DEFAULT)
             ];
+
+            if (preg_match('/[ +\-]/', $input['wa'])) {
+                gagal("Format wa salah");
+            }
 
 
             // Cek duplikat
             if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
-                gagal('Setting existed');
+                gagal('Nama existed');
+            }
+            // Cek duplikat
+            if (db($decode['tabel'], $decode['db'])->where('username', $input['username'])->countAllResults() > 0) {
+                gagal('Username existed');
+            }
+            // Cek duplikat
+            if (db($decode['tabel'], $decode['db'])->where('wa', $input['wa'])->countAllResults() > 0) {
+                gagal('No. wa existed');
             }
 
 
@@ -43,12 +58,32 @@ class Settings extends BaseController
                 gagal("Id not found");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
-                gagal("Setting existed");
+            if (preg_match('/[ +\-]/', $decode['wa'])) {
+                gagal("Format wa salah");
             }
 
+            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
+                gagal("Nama existed");
+            }
+
+            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("username", $q['username'])->get()->getRowArray()) {
+                gagal("Username existed");
+            }
+
+            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("wa", $q['wa'])->get()->getRowArray()) {
+                gagal("No. wa existed");
+            }
+
+            if ($decode['password'] !== "") {
+                if (!password_verify($decode['password'], $q['password'])) {
+                    $q['password'] = password_hash($decode['password'], PASSWORD_DEFAULT);
+                }
+            }
+
+            $q['role'] = upper_first(clear($decode['role']));
             $q['nama'] = upper_first(clear($decode['nama']));
-            $q['value'] = upper_first(clear($decode['value']));
+            $q['username'] = clear($decode['username']);
+            $q['wa'] = clear($decode['wa']);
 
 
             // Simpan data

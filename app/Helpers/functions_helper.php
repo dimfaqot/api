@@ -432,3 +432,11 @@ function check($decode)
         gagal("Role disallowed");
     }
 }
+function settings($db, $nama = null)
+{
+    if ($nama == null) {
+        return db('settings', $db)->orderBy('nama', 'ASC')->get()->getResultArray();
+    } else {
+        return db('settings', $db)->where('nama', $nama)->get()->getRowArray()['value'];
+    }
+}
