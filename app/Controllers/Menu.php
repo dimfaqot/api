@@ -56,9 +56,6 @@ class Menu extends BaseController
                 gagal("Id not found");
             }
 
-            if ((db('menu', $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
-                gagal("Setting existed");
-            }
 
             $q['role'] = clear($this->request->getVar('role'));
             $q['urutan'] = clear($this->request->getVar('urutan'));
