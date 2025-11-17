@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Settings extends BaseController
+class Options extends BaseController
 {
 
     public function general($jwt)
@@ -18,14 +18,14 @@ class Settings extends BaseController
 
         if ($decode['order'] == "Add") {
             $input = [
-                'nama'       => strtolower(clear($decode['nama'])),
+                'kategori'       => upper_first(clear($decode['kategori'])),
                 'value'       => upper_first(clear($decode['value']))
             ];
 
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
-                gagal('Setting existed');
+            if (db($decode['tabel'], $decode['db'])->where('kategori', $input['kategori'])->where('value', $input['value'])->countAllResults() > 0) {
+                gagal('Option existed');
             }
 
 
@@ -43,11 +43,11 @@ class Settings extends BaseController
                 gagal("Id not found");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
-                gagal("Setting existed");
+            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("kategori", $q['kategori'])->where('value', $decode['value'])->get()->getRowArray()) {
+                gagal("Option existed");
             }
 
-            $q['nama'] = strtolower(clear($decode['nama']));
+            $q['kategori'] = upper_first(clear($decode['kategori']));
             $q['value'] = upper_first(clear($decode['value']));
 
 

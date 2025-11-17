@@ -431,6 +431,10 @@ function check($decode)
     if ($decode['admin'] !== "Root") {
         gagal("Role disallowed");
     }
+
+    if ((int)$decode['time'] + 60 > time()) {
+        gagal("Token expired");
+    }
 }
 function settings($db, $nama = null)
 {

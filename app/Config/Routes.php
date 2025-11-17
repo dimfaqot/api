@@ -32,3 +32,4 @@ $routes->get('/cetak/laporan/(:any)/(:any)/(:any)/(:any)/(:any)', 'Cetak::lapora
 $routes->get('/settings/(:any)', 'Settings::general/$1');
 $routes->get('/menu/(:any)', 'Menu::general/$1');
 $routes->get('/user/(:any)', 'User::general/$1');
+$routes->get('/options/(:any)', 'Options::general/$1');
