@@ -444,3 +444,15 @@ function settings($db, $nama = null)
         return db('settings', $db)->where('nama', $nama)->get()->getRowArray()['value'];
     }
 }
+
+function uang_modal($db)
+{
+
+    $data = db('pengeluaran', $db)->select('*')->where('jenis', "Modal")->orderBy('tgl', 'DESC')->orderBy('tgl', 'DESC')->get()->getResultArray();
+
+    $total = array_sum(array_column($data, 'biaya'));
+
+    $res = ['total' => $total['biaya'], 'data' => $data];
+
+    return $res;
+}
