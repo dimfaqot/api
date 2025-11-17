@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Options extends BaseController
+class Profile extends BaseController
 {
 
     public function general($jwt)
