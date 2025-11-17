@@ -452,7 +452,7 @@ function uang_modal($db)
 
     $total = array_sum(array_column($data, 'biaya'));
 
-    $res = ['total' => $total['biaya'], 'data' => $data];
+    $res = ['total' => $total, 'data' => $data];
 
     return $res;
 }
