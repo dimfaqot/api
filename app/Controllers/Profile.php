@@ -27,10 +27,10 @@ class Profile extends BaseController
 
             $q['nama'] = upper_first(clear($decode['nama']));
             $q['pendiri'] = upper_first(clear($decode['pendiri']));
-            $q['tgl_berdiri'] = strtotime(clear('tgl_berdiri'));
-            $q['sub_unit'] = upper_first(clear('sub_unit'));
-            $q['manager'] = upper_first(clear('manager'));
-            $q['modal_asal'] = upper_first(clear('modal_asal'));
+            $q['tgl_berdiri'] = strtotime(clear($decode['tgl_berdiri']));
+            $q['sub_unit'] = upper_first(clear($decode('sub_unit')));
+            $q['manager'] = upper_first(clear($decode['manager']));
+            $q['modal_asal'] = upper_first(clear($decode['modal_asal']));
 
             // Simpan data
             db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
