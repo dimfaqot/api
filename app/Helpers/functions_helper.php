@@ -432,7 +432,7 @@ function check($decode)
         gagal("Role disallowed");
     }
 
-    if ((int)$decode['time'] + 60 > time()) {
+    if (time() > ((int)$decode['time'] + 60)) {
         gagal("Token expired");
     }
 }
