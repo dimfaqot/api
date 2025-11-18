@@ -29,7 +29,7 @@ class Barang extends BaseController
                 'jenis'      => angka_to_int(clear($decode['jenis'])),
                 'barang'       => upper_first(clear($decode['barang'])),
                 'petugas'       => upper_first(clear($decode['petugas'])),
-                'links'       => clear($decode['links']),
+                'link'       => clear($decode['link']),
                 'qty'       => 0,
                 'tipe' => $tipe,
                 'harga'      => angka_to_int(clear($decode['harga']))
