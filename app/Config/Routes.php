@@ -34,3 +34,4 @@ $routes->get('/menu/(:any)', 'Menu::general/$1');
 $routes->get('/user/(:any)', 'User::general/$1');
 $routes->get('/options/(:any)', 'Options::general/$1');
 $routes->get('/profile/(:any)', 'Profile::general/$1');
+$routes->get('/barang/(:any)', 'Barang::general/$1');

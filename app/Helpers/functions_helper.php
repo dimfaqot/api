@@ -425,14 +425,20 @@ function next_invoice($order = null)
 }
 
 
-function check($decode)
+function check($decode, $role = "Root", $roles = [])
 {
     if (!$decode['login'] || $decode['login'] == "" || $decode['login'] == "null") {
         gagal("Login first");
     }
 
-    if ($decode['admin'] !== "Root") {
-        gagal("Role disallowed");
+    if (count($roles) === 0) {
+        if ($decode['admin'] !== "Root") {
+            gagal("Role disallowed");
+        }
+    } else {
+        if (!in_array($role, $roles)) {
+            gagal("Role disallowed");
+        }
     }
 
     if (time() > ((int)$decode['time'] + 60)) {
@@ -458,4 +464,11 @@ function uang_modal($db)
     $res = ['total' => $total, 'data' => $data];
 
     return $res;
+}
+
+function angka_to_int($uang)
+{
+    $uang = str_replace("Rp. ", "", $uang);
+    $uang = str_replace(".", "", $uang);
+    return $uang;
 }
