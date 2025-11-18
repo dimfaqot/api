@@ -145,6 +145,9 @@ function options($db, $kategori)
 
 function upper_first($text)
 {
+    if ($text == "") {
+        return "";
+    }
     $text = clear($text);
     $exp = explode(" ", $text);
 
