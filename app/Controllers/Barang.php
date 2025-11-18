@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class Profile extends BaseController
+class Barang extends BaseController
 {
 
     public function general($jwt)
