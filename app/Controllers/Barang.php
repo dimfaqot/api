@@ -59,11 +59,13 @@ class Barang extends BaseController
                 gagal("Id not found");
             }
 
+            $tipe = (clear($decode['tipe']) == "on" ? "Mix" : "Count");
+
             $q['jenis'] = angka_to_int(clear($decode['jenis']));
             $q['link'] = clear($decode['link']);
             $q['barang'] = upper_first(clear($decode['barang']));
             $q['petugas'] = upper_first(clear($decode['petugas']));
-            $q['tipe'] = $decode['tipe'];
+            $q['tipe'] = $tipe;
             $q['harga'] = angka_to_int(clear($decode['harga']));
 
             $qty = angka_to_int(clear($decode['qty']));
