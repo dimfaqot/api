@@ -17,30 +17,8 @@ class Barang extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $val = db($decode['tabel'], $decode['db'])->orderBy("barang", "ASC")->get()->getResultArray();
-            $data = [];
 
-            foreach ($val as $i) {
-                if ($i['link'] == "") {
-                    $i['barangs'] = "";
-                } else {
-
-                    $temp_barangs = [];
-                    $ids = explode(",", $i['link']);
-
-                    foreach ($ids as $t) {
-                        foreach ($val as $x) {
-                            if ($t == $x['id']) {
-                                $temp_barangs[] = $x['barang'];
-                            }
-                        }
-                    }
-                    $i['barangs'] = implode(",", $temp_barangs);
-                }
-                $data[] = $i;
-            }
-
-            sukses('Ok', $data);
+            sukses('Ok', $this->data($decode));
         }
 
         if ($decode['order'] == "Add") {
@@ -51,7 +29,7 @@ class Barang extends BaseController
                 'jenis'      => angka_to_int(clear($decode['jenis'])),
                 'barang'       => upper_first(clear($decode['barang'])),
                 'petugas'       => upper_first(clear($decode['petugas'])),
-                'link'       => clear($decode['link']),
+                'links'       => clear($decode['links']),
                 'qty'       => 0,
                 'tipe' => $tipe,
                 'harga'      => angka_to_int(clear($decode['harga']))
@@ -69,7 +47,7 @@ class Barang extends BaseController
 
             // Simpan data  
             db($decode['tabel'], $decode['db'])->insert($input)
-                ? sukses('Sukses')
+                ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
@@ -99,7 +77,7 @@ class Barang extends BaseController
 
             // Simpan data
             db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
-                ? sukses('Sukses')
+                ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Delete") {
@@ -116,8 +94,36 @@ class Barang extends BaseController
 
             // Simpan data
             db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
-                ? sukses('Sukses')
+                ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
+    }
+
+    function data($decode)
+    {
+        $val = db($decode['tabel'], $decode['db'])->orderBy("barang", "ASC")->get()->getResultArray();
+        $data = [];
+
+        foreach ($val as $i) {
+            if ($i['link'] == "") {
+                $i['barangs'] = "";
+            } else {
+
+                $temp_barangs = [];
+                $ids = explode(",", $i['link']);
+
+                foreach ($ids as $t) {
+                    foreach ($val as $x) {
+                        if ($t == $x['id']) {
+                            $temp_barangs[] = $x['barang'];
+                        }
+                    }
+                }
+                $i['barangs'] = implode(",", $temp_barangs);
+            }
+            $data[] = $i;
+        }
+
+        return $data;
     }
 }
