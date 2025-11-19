@@ -116,7 +116,7 @@ function rekapTahunan($dbs, $tahun, $lokasi)
 
 function tahuns($decode)
 {
-    $db = db($$decode['tabel'], $decode['db']);
+    $db = db($decode['tabel'], $decode['db']);
     if (array_key_exists('lokasi', $decode)) {
         $db->where('lokasi', $decode['lokasi']);
     }
