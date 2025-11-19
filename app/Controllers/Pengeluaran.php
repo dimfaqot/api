@@ -129,6 +129,9 @@ class Pengeluaran extends BaseController
         if ($decode['order'] == "Delete") {
             delete($decode, ['Root']);
         }
+        if ($decode['order'] == "Cari Barang") {
+            cari_barang($decode);
+        }
     }
 
     function data($decode)
