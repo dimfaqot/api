@@ -17,8 +17,7 @@ class Pengeluaran extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-
-            sukses('Ok', $this->data($decode));
+            $this->data($decode);
         }
 
 
@@ -151,8 +150,6 @@ class Pengeluaran extends BaseController
             ->where("YEAR(FROM_UNIXTIME(tgl))", date('Y'))
             ->orderBy("tgl", "DESC")->get()->getResultArray();
         $total = array_sum(array_column($data, 'biaya'));
-
-        $res = ['data' => $data, 'total' => $total];
-        return $res;
+        sukses("Ok", $data, $total);
     }
 }
