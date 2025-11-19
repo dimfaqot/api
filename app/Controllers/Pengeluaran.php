@@ -136,7 +136,7 @@ class Pengeluaran extends BaseController
     {
 
         $filters = [];
-        foreach (options($decode['db'], ($decode['db'] == "nineclean" ? "Layanan" : "Kantin")) as $i) {
+        foreach (options($decode['db'], "Kantin") as $i) {
             $filters[] = $i['value'];
         }
 
