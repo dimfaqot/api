@@ -92,17 +92,7 @@ class User extends BaseController
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Delete") {
-
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
-
-            if (!$q) {
-                gagal("Id not found");
-            }
-
-            // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
-                ? sukses('Sukses')
-                : gagal('Gagal');
+            delete($decode);
         }
     }
 }

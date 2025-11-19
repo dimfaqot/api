@@ -472,3 +472,70 @@ function angka_to_int($uang)
     $uang = str_replace(".", "", $uang);
     return $uang;
 }
+
+function delete($decode, $roles = [])
+{
+    if (count($roles) > 0) {
+
+        if (!in_array($decode['admin'], $roles)) {
+            gagal("Role not allowed");
+        }
+    }
+    $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+    if (!$q) {
+        gagal("Id not found");
+    }
+
+    // Simpan data
+    db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
+        ? sukses('Sukses')
+        : gagal('Gagal');
+}
+
+function lists($decode)
+{
+    $tahun = clear($decode['tahun']);
+    $bulan = clear($decode['bulan']);
+    $jenis = clear($decode['jenis']);
+
+    $filters = $decode['filters'];
+
+    $db = db($decode['tabel'], $decode['db']);
+    $db->select('*');
+    if ($jenis == "All") {
+        $db->whereIn('jenis', $filters);
+    } else {
+        $db->where('jenis', $jenis);
+    }
+
+    if (array_key_exists('lokasi', $decode)) {
+        $db->where('lokasi', $decode['lokasi']);
+    }
+
+    $data = $db->orderBy('updated_at', 'DESC')
+        ->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
+        ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+        ->get()
+        ->getResultArray();
+    $total = array_sum(array_column($data, 'biaya'));
+
+
+    sukses("Ok", $data, $total);
+}
+
+function cari_barang($decode)
+{
+    $text = clear($decode['text']);
+    $filters = $decode['filters'];
+    $db = db('barang', $decode['db']);
+
+    if (array_key_exists('lokasi', $decode)) {
+        $db->where('lokasi', $decode['lokasi']);
+    }
+
+    $data = $db->whereIn('jenis', $filters)->like("barang", $text, "both")->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
+
+
+    sukses("Ok", $data);
+}

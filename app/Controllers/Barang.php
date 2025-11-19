@@ -26,7 +26,7 @@ class Barang extends BaseController
             $tipe = (clear($decode['tipe']) == "on" ? "Mix" : "Count");
 
             $input = [
-                'jenis'      => angka_to_int(clear($decode['jenis'])),
+                'jenis'      => upper_first(clear($decode['jenis'])),
                 'barang'       => upper_first(clear($decode['barang'])),
                 'petugas'       => upper_first(clear($decode['petugas'])),
                 'link'       => clear($decode['link']),
@@ -34,6 +34,10 @@ class Barang extends BaseController
                 'tipe' => $tipe,
                 'harga'      => angka_to_int(clear($decode['harga']))
             ];
+
+            if (array_key_exists('lokasi', $decode)) {
+                $input['lokasi'] = $decode['lokasi'];
+            }
 
             $qty = angka_to_int(clear($decode['qty']));
             if ($qty !== "") {
@@ -61,16 +65,16 @@ class Barang extends BaseController
 
             $tipe = (clear($decode['tipe']) == "on" ? "Mix" : "Count");
 
-            $q['jenis'] = angka_to_int(clear($decode['jenis']));
+            $q['jenis'] = upper_first(clear($decode['jenis']));
             $q['link'] = clear($decode['link']);
             $q['barang'] = upper_first(clear($decode['barang']));
             $q['petugas'] = upper_first(clear($decode['petugas']));
             $q['tipe'] = $tipe;
             $q['harga'] = angka_to_int(clear($decode['harga']));
 
-            $qty = angka_to_int(clear($decode['qty']));
-            if ($qty !== "") {
-                $q['qty'] = $qty;
+            if (array_key_exists('qty', $decode)) {
+                $q['qty'] = $decode['qty'];
+                $qty = angka_to_int(clear($decode['qty']));
             }
 
             if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$q['id']]))->where("barang", $q['barang'])->get()->getRowArray()) {
@@ -82,28 +86,20 @@ class Barang extends BaseController
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
+
         if ($decode['order'] == "Delete") {
-
-            if ($decode['admin'] !== "Root") {
-                gagal("Role not allowed");
-            }
-
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
-
-            if (!$q) {
-                gagal("Id not found");
-            }
-
-            // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
-                ? sukses('Sukses', $this->data($decode))
-                : gagal('Gagal');
+            delete($decode, ['Root']);
         }
     }
 
     function data($decode)
     {
-        $val = db($decode['tabel'], $decode['db'])->orderBy("barang", "ASC")->get()->getResultArray();
+        $db = db($decode['tabel'], $decode['db']);
+        if (array_key_exists('lokasi', $decode)) {
+            $db->where('lokasi', $decode['lokasi']);
+        }
+
+        $val = $db->orderBy("barang", "ASC")->get()->getResultArray();
         $data = [];
 
         foreach ($val as $i) {

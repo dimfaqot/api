@@ -58,16 +58,9 @@ class Settings extends BaseController
         }
         if ($decode['order'] == "Delete") {
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
-
-            if (!$q) {
-                gagal("Id not found");
+            if ($decode['order'] == "Delete") {
+                delete($decode);
             }
-
-            // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
-                ? sukses('Sukses')
-                : gagal('Gagal');
         }
     }
 }

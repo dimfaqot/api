@@ -102,17 +102,7 @@ class Menu extends BaseController
         }
 
         if ($decode['order'] == "Delete") {
-
-            $q = db('menu', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
-
-            if (!$q) {
-                gagal("Id not found");
-            }
-
-            // Simpan data
-            db('menu', $decode['db'])->where('id', $q['id'])->delete()
-                ? sukses('Sukses')
-                : gagal('Gagal');
+            delete($decode);
         }
     }
 }
