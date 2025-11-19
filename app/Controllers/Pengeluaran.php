@@ -132,6 +132,9 @@ class Pengeluaran extends BaseController
         if ($decode['order'] == "Cari Barang") {
             cari_barang($decode);
         }
+        if ($decode['order'] == "Lists") {
+            lists($decode);
+        }
     }
 
     function data($decode)
