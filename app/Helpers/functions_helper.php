@@ -114,11 +114,11 @@ function rekapTahunan($dbs, $tahun, $lokasi)
     return $data;
 }
 
-function tahuns($db, $tabel, $lokasi)
+function tahuns($decode)
 {
-    $db = db($tabel, $db);
-    if ($lokasi !== '') {
-        $db->where('lokasi', $lokasi);
+    $db = db($$decode['tabel'], $decode['db']);
+    if (array_key_exists('lokasi', $decode)) {
+        $db->where('lokasi', $decode['lokasi']);
     }
     $db->select("YEAR(FROM_UNIXTIME(tgl)) AS tahun");
     $db->groupBy("tahun");

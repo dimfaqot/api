@@ -153,6 +153,6 @@ class Pengeluaran extends BaseController
             ->where("YEAR(FROM_UNIXTIME(tgl))", date('Y'))
             ->orderBy("tgl", "DESC")->get()->getResultArray();
         $total = array_sum(array_column($data, 'biaya'));
-        sukses("Ok", $data, $total);
+        sukses("Ok", $data, $total, tahuns($decode), bulans());
     }
 }
