@@ -454,10 +454,10 @@ function settings($db, $nama = null)
     }
 }
 
-function uang_modal($db)
+function uang_modal($decode)
 {
 
-    $data = db('pengeluaran', $db)->select('*')->where('jenis', "Modal")->orderBy('tgl', 'DESC')->orderBy('tgl', 'DESC')->get()->getResultArray();
+    $data = db('pengeluaran', $decode['db'])->select('*')->where('jenis', "Modal")->orderBy('tgl', 'DESC')->orderBy('tgl', 'DESC')->get()->getResultArray();
 
     $total = array_sum(array_column($data, 'biaya'));
 
