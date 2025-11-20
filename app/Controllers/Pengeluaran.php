@@ -196,7 +196,7 @@ class Pengeluaran extends BaseController
         $data = $db->orderBy('tgl', 'DESC')
             ->where("MONTH(FROM_UNIXTIME(tgl))", date('n'))
             ->where("YEAR(FROM_UNIXTIME(tgl))", date('Y'))
-            ->orderBy("tgl", "DESC")->get()->getResultArray();
+            ->orderBy("updated_at", "DESC")->get()->getResultArray();
         $total = array_sum(array_column($data, 'biaya'));
         sukses("Ok", $data, $total, tahuns($decode), bulans());
     }
