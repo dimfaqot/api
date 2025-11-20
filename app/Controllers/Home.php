@@ -12,8 +12,11 @@ class Home extends BaseController
         header("Access-Control-Allow-Methods: GET, OPTIONS");
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-
-        sukses("Ok", tahuns($db, $tabel, $lokasi), bulans());
+        $decode = ['db' => $db, 'tabel' => $tabel];
+        if ($lokasi !== "") {
+            $decode['lokasi'] = $lokasi;
+        }
+        sukses("Ok", tahuns($decode), bulans());
     }
     public function data($dbs, $order, $tahun, $bulan, $jenis, $lokasi = '')
     {
