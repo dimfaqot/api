@@ -75,7 +75,7 @@ class Pengeluaran extends BaseController
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses('Sukses')
+                ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {

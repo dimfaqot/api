@@ -72,7 +72,6 @@ class Barang extends BaseController
 
             if (array_key_exists('qty', $decode)) {
                 $q['qty'] = $decode['qty'];
-                $qty = angka_to_int(clear($decode['qty']));
             }
 
             if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$q['id']]))->where("barang", $q['barang'])->get()->getRowArray()) {
