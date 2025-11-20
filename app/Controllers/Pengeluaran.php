@@ -152,7 +152,7 @@ class Pengeluaran extends BaseController
 
             // Update stok jika qty berubah
             if ($barang['tipe'] == "Count") {
-                $barang['qty'] +=  $q['qty'];
+                $barang['qty'] -=  $q['qty'];
                 if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                     return gagal("Update qty gagal");
                 }
