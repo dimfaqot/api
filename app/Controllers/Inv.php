@@ -107,30 +107,7 @@ class Inv extends BaseController
         }
 
         if ($decode['order'] == "Delete") {
-
-            $roles = ['Admin', 'Root'];
-
-            if (!in_array($decode['admin'], $roles)) {
-                gagal("Role not allowed");
-            }
-
-            $db = \Config\Database::connect();
-            $db->transStart();
-
-            // Ambil data lama
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
-
-            if (!$q) return gagal("Id not found");
-
-            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()) {
-                gagal("Delete gagal");
-            }
-
-            $db->transComplete();
-
-            return $db->transStatus()
-                ? sukses("Sukses", $this->data($decode))
-                : gagal("Gagal");
+            delete($decode);
         }
 
         if ($decode['order'] == "Lists") {
