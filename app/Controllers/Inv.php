@@ -22,8 +22,6 @@ class Inv extends BaseController
 
 
         if ($decode['order'] == "Add") {
-
-            $barang_id = clear($decode['barang_id']);
             $harga = angka_to_int(clear($decode['harga']));
             $qty = angka_to_int(clear($decode['qty']));
             $diskon = angka_to_int(clear($decode['diskon']));
@@ -32,20 +30,15 @@ class Inv extends BaseController
             $db = \Config\Database::connect();
             $db->transStart();
 
-            $barang = db('barang', $decode['db'])->where('id', $barang_id)->get()->getRowArray();
-
             if ($diskon > ($harga * $qty)) {
                 gagal("Diskon over");
-            }
-            if (!$barang) {
-                gagal("Barang not found");
             }
 
             $input = [
 
                 'tgl' => time(),
-                'jenis' => upper_first(clear($barang['jenis'])),
-                'barang' => upper_first(clear($barang['barang'])),
+                'jenis' => upper_first(clear($decode['jenis'])),
+                'barang' => upper_first(clear($decode['barang'])),
                 'barang_id' => 0,
                 'harga'       => $harga,
                 'qty'       => $qty,
