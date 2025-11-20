@@ -44,9 +44,9 @@ class Inv extends BaseController
             $input = [
 
                 'tgl' => time(),
-                'jenis' => $barang['jenis'],
-                'barang' => $barang['barang'],
-                'barang_id' => $barang['id'],
+                'jenis' => upper_first(clear($barang['jenis'])),
+                'barang' => upper_first(clear($barang['barang'])),
+                'barang_id' => 0,
                 'harga'       => $harga,
                 'qty'       => $qty,
                 'total'       => $harga * $qty,
@@ -60,13 +60,6 @@ class Inv extends BaseController
 
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
-            }
-
-            if ($barang['tipe'] == "Count") {
-                $barang['qty'] += (int)$input['qty'];
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
-                    gagal("Update qty gagal");
-                }
             }
 
             // Simpan data  
@@ -95,22 +88,9 @@ class Inv extends BaseController
             if (!$q) return gagal("Id not found");
             if ($diskon > $total) return gagal("Diskon over");
 
-            $barang    = db('barang', $decode['db'])->where('id', $q['barang_id'])->get()->getRowArray();
-            if (!$barang)    return gagal("Barang not found");
-
-            // Update stok jika qty berubah
-            if ($barang['tipe'] == "Count") {
-                if ($q['qty'] != $qty) {
-                    $barang['qty'] -= $qty;
-                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
-                        return gagal("Update qty gagal");
-                    }
-                }
-            }
-
-            $q['jenis'] = $barang['jenis'];
-            $q['barang'] = $barang['barang'];
-            $q['barang_id'] = $barang['id'];
+            $q['jenis'] = upper_first(clear($decode['jenis']));
+            $q['barang'] = upper_first(clear($decode['barang']));
+            $q['barang_id'] = 0;
             $q['harga'] = $harga;
             $q['qty'] = $qty;
             $q['total'] = $total;
@@ -149,17 +129,6 @@ class Inv extends BaseController
 
             if (!$q) return gagal("Id not found");
 
-            $barang    = db('barang', $decode['db'])->where('id', $q['barang_id'])->get()->getRowArray();
-            if (!$barang)    return gagal("Barang not found");
-
-            // Update stok jika qty berubah
-            if ($barang['tipe'] == "Count") {
-                $barang['qty'] -=  $q['qty'];
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
-                    return gagal("Update qty gagal");
-                }
-            }
-
             if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()) {
                 gagal("Delete gagal");
             }
@@ -171,9 +140,6 @@ class Inv extends BaseController
                 : gagal("Gagal");
         }
 
-        if ($decode['order'] == "Cari Barang") {
-            cari_barang($decode);
-        }
         if ($decode['order'] == "Lists") {
             lists($decode);
         }
