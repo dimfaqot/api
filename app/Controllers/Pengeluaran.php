@@ -193,8 +193,7 @@ class Pengeluaran extends BaseController
             $db->where('lokasi', $decode['lokasi']);
         }
         $db->whereIn('jenis', $filters);
-        $data = $db->orderBy('tgl', 'DESC')
-            ->where("MONTH(FROM_UNIXTIME(tgl))", date('n'))
+        $data = $db->where("MONTH(FROM_UNIXTIME(tgl))", date('n'))
             ->where("YEAR(FROM_UNIXTIME(tgl))", date('Y'))
             ->orderBy("updated_at", "DESC")->get()->getResultArray();
         $total = array_sum(array_column($data, 'biaya'));
