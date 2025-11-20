@@ -183,7 +183,7 @@ class Inv extends BaseController
     {
 
         $filters = [];
-        foreach (options($decode['db'], "Kantin") as $i) {
+        foreach (options($decode['db'], "Inv") as $i) {
             $filters[] = $i['value'];
         }
 
