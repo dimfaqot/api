@@ -38,10 +38,8 @@ class Barang extends BaseController
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
-
-            $qty = angka_to_int(clear($decode['qty']));
-            if ($qty !== "") {
-                $input['qty'] = $qty;
+            if (array_key_exists('qty', $decode)) {
+                $input['qty'] = $decode['qty'];
             }
 
             // Cek duplikat
