@@ -86,7 +86,7 @@ class Pengeluaran extends BaseController
             $diskon = angka_to_int($decode['diskon']);
             $biaya = $total - $diskon;
 
-            $db = db_connect();
+            $db = \Config\Database::connect();
             $db->transStart();
 
             // Ambil data lama
@@ -121,14 +121,54 @@ class Pengeluaran extends BaseController
 
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
-                ? sukses('Sukses', $this->data($decode))
-                : gagal('Gagal');
+            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
+                gagal("Update gagal");
+            }
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", $this->data($decode))
+                : gagal("Gagal");
         }
 
         if ($decode['order'] == "Delete") {
-            delete($decode, ['Root']);
+
+            $roles = ['Admin', 'Root'];
+
+            if (!in_array($decode['admin'], $roles)) {
+                gagal("Role not allowed");
+            }
+
+            $db = \Config\Database::connect();
+            $db->transStart();
+
+            // Ambil data lama
+            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $barang    = db('barang', $decode['db'])->where('id', $decode['barang_id'])->get()->getRowArray();
+
+            if (!$q) return gagal("Id not found");
+            if (!$barang)    return gagal("Barang not found");
+
+            // Update stok jika qty berubah
+            if ($barang['tipe'] == "Count") {
+                $barang['qty'] +=  $q['qty'];
+                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                    return gagal("Update qty gagal");
+                }
+            }
+
+            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()) {
+                gagal("Delete gagal");
+            }
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", $this->data($decode))
+                : gagal("Gagal");
         }
+
         if ($decode['order'] == "Cari Barang") {
             cari_barang($decode);
         }
