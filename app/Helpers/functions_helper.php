@@ -336,9 +336,9 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
     return $res;
 }
 
-function profile($dbs)
+function profile($decode)
 {
-    return db('profile', $dbs)->get()->getRowArray();
+    return db('profile', $decode['db'])->get()->getRowArray();
 }
 
 function angka($uang)
