@@ -346,14 +346,6 @@ function angka($uang)
     return number_format($uang, 0, ",", ".");
 }
 
-function encode_jwt($data)
-{
-
-    $jwt = JWT::encode($data, getenv("KEY_JWT"), 'HS256');
-
-    return $jwt;
-}
-
 function decode_jwt($encode_jwt)
 {
     try {

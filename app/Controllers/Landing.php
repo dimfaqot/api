@@ -14,6 +14,8 @@ class Landing extends BaseController
 
         $decode = decode_jwt($jwt);
 
-        sukses('Ok', profile($decode));
+        if ($decode['order'] == "Show") {
+            sukses('Ok', profile($decode));
+        }
     }
 }
