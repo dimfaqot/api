@@ -30,7 +30,7 @@ class Home extends BaseController
 
     function unlock($decode)
     {
-        $keep = ($decode['kepp'] == 0 ? 1 : 0);
+        $keep = ($decode['keep'] == 0 ? 1 : 0);
 
         $q = db('backup', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
