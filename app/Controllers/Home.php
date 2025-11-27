@@ -19,44 +19,20 @@ class Home extends BaseController
         if ($decode['order'] == 'Menu') {
             sukses("Ok", tahuns($decode), bulans());
         } else {
-            $data = get_data($decode);
-            sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
+            if ($decode['jenis'] == "Unlock") {
+                $this->unlock($decode);
+            } else {
+                $data = get_data($decode);
+                sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
+            }
         }
     }
-    public function menu($db, $tabel, $lokasi = '')
+
+    function unlock($decode)
     {
-        // CORS Headers
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: GET, OPTIONS");
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+        $keep = ($decode['kepp'] == 0 ? 1 : 0);
 
-        $decode = ['db' => $db, 'tabel' => $tabel];
-        if ($lokasi !== "") {
-            $decode['lokasi'] = $lokasi;
-        }
-        sukses("Ok", tahuns($decode), bulans());
-    }
-    public function data($dbs, $order, $tahun, $bulan, $jenis, $lokasi = '')
-    {
-        // CORS Headers
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: GET, OPTIONS");
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-        $data = get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi);
-        sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
-    }
-
-    public function unlock($dbs, $id, $keep)
-    {
-        // CORS Headers
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: GET, OPTIONS");
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-        $keep = ($keep == 0 ? 1 : 0);
-
-        $q = db('backup', $dbs)->where('id', $id)->get()->getRowArray();
+        $q = db('backup', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
         if (!$q) {
             gagal("Id not found");
@@ -64,8 +40,8 @@ class Home extends BaseController
 
         $q['keep'] = $keep;
 
-        if (db('backup', $dbs)->where('id', $q['id'])->update($q)) {
-            $backup = db('backup', $dbs)->select('*')->orderBy('tahun', 'ASC')
+        if (db('backup', $decode['db'])->where('id', $q['id'])->update($q)) {
+            $backup = db('backup', $decode['db'])->select('*')->orderBy('tahun', 'ASC')
                 ->get()
                 ->getResultArray();
             $tot = array_sum(array_column($backup, 'saldo'));
