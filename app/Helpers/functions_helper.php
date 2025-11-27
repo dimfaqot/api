@@ -230,6 +230,7 @@ function get_data($decode)
             }
         }
         if ($decode['jenis'] == "Tahunan") {
+            sukses($decode);
             foreach (tahuns($decode) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {
@@ -238,8 +239,8 @@ function get_data($decode)
                     if (array_key_exists("lokasi", $decode)) {
                         $db->where('lokasi', $decode['lokasi']);
                     }
-                    $res = $db->orderBy('tgl', 'ASC')
-                        ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
+                    $res = $db->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
+                        ->orderBy('tgl', 'ASC')
                         ->get()
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
