@@ -251,7 +251,7 @@ function get_data($decode)
             }
         }
         if ($decode['jenis'] == "Backup") {
-            foreach (tahuns($decode['db'], 'transaksi', $decode['lokasi']) as $t) {
+            foreach (tahuns($decode) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {
                     $db = db($i, $decode['db']);
