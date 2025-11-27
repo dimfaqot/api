@@ -230,7 +230,8 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
             }
         }
         if ($jenis == "Tahunan") {
-            foreach (tahuns($dbs, 'transaksi', $lokasi) as $t) {
+            $decode = ['tabel' => 'transaksi', 'db' => $dbs];
+            foreach (tahuns($decode) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {
                     $db = db($i, $dbs);
@@ -363,6 +364,18 @@ function decode_jwt($encode_jwt)
         echo json_encode($data);
         die;
     }
+}
+
+// Fungsi untuk mendekripsi string dengan kunci
+function dekripsi($encryptedStr, $key = null)
+{
+    $key = ($key == null ? getenv("KEY_ENKRIP") : $key);
+    $str = base64_decode($encryptedStr);
+    $result = '';
+    for ($i = 0; $i < strlen($str); $i++) {
+        $result .= chr(ord($str[$i]) ^ ord($key[$i % strlen($key)]));
+    }
+    return $result;
 }
 
 function random_str($length = 14)
