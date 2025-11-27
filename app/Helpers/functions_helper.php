@@ -230,7 +230,6 @@ function get_data($decode)
             }
         }
         if ($decode['jenis'] == "Tahunan") {
-            $decode = ['tabel' => 'transaksi', 'db' => $decode['db']];
             foreach (tahuns($decode) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {

@@ -5,41 +5,102 @@ namespace App\Controllers;
 class Cetak extends BaseController
 {
 
-    public function nota($dbs, $no_nota)
+    public function general($jwt)
     {
-        $no_nota = str_replace("-", '/', $no_nota);
+        $decode = decode_jwt($jwt);
 
-        $data = db('nota', $dbs)->where('no_nota', $no_nota)->get()->getResultArray();
-        if (count($data) == 0) {
-            echo '<h2 style="font-family: Arial, sans-serif;text-align:center">Data tidak ada</h2>';
-            die;
+        if ($decode['order'] == 'Nota') {
+
+            $data = db('nota', $decode['db'])->where('no_nota', $decode['no_nota'])->get()->getResultArray();
+            if (count($data) == 0) {
+                echo '<h2 style="font-family: Arial, sans-serif;text-align:center">Data tidak ada</h2>';
+                die;
+            }
+            $h = (count($data) == 1 ? 0 : count($data) * 4);
+
+            $set = [
+                'mode' => 'utf-8',
+                'format' => [80, 90 + $h],
+                'orientation' => 'P',
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0
+            ];
+
+            $mpdf = new \Mpdf\Mpdf($set);
+            $mpdf->SetAutoPageBreak(true);
+
+            $judul = "NOTA " . $decode['no_nota'];
+            // Dapatkan konten HTML
+            // $logo = '<img width="90" src="logo.png" alt="KOP"/>';
+            $html = view('guest/nota', ['judul' => $judul, 'data' => $data, 'no_nota' => $decode['no_nota']]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
+
+            // Setel konten HTML ke mPDF
+            $mpdf->WriteHTML($html);
+
+            // Output PDF ke browser
+            $this->response->setHeader('Content-Type', 'application/pdf');
+            $mpdf->Output($judul . '.pdf', 'I');
         }
-        $h = (count($data) == 1 ? 0 : count($data) * 4);
 
-        $set = [
-            'mode' => 'utf-8',
-            'format' => [80, 90 + $h],
-            'orientation' => 'P',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0
-        ];
+        if ($decode['order'] == "Laporan") {
+            $rangkuman = [];
+            $tables = ['transaksi', 'pengeluaran'];
+            $total = ['transaksi' => 0, 'pengeluaran' => 0];
+            foreach (bulans() as $b) {
+                if ($b['angka'] <= $decode['bulan']) {
+                    $bulanan = [];
+                    foreach ($tables as $i) {
+                        $db = db($i, $decode['db']);
+                        $db->select('*');
+                        if (array_key_exists("lokasi", $decode)) {
+                            $db->where('lokasi', $decode['lokasi']);
+                        }
+                        $res = $db->orderBy('tgl', 'ASC')
+                            ->where("MONTH(FROM_UNIXTIME(tgl))", $b['satuan'])
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $total[$i] += $tot;
+                        $bulanan[] = $tot;
+                    }
 
-        $mpdf = new \Mpdf\Mpdf($set);
-        $mpdf->SetAutoPageBreak(true);
+                    $rangkuman[] = ['bulan' => $b['bulan'], 'masuk' => $bulanan[0], 'keluar' => $bulanan[1], 'total' => $bulanan[0] - $bulanan[1]];
+                }
+            }
 
-        $judul = "NOTA " . $no_nota;
-        // Dapatkan konten HTML
-        // $logo = '<img width="90" src="logo.png" alt="KOP"/>';
-        $html = view('guest/nota', ['judul' => $judul, 'data' => $data, 'no_nota' => $no_nota]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
 
-        // Setel konten HTML ke mPDF
-        $mpdf->WriteHTML($html);
+            $data = get_data($decode);
+            // dd($data);
+            $profile = profile($decode);
+            $set = [
+                'mode' => 'utf-8',
+                'format' => [210, 330],
+                'orientation' => 'P',
+                'margin_left' => 5,
+                'margin_right' => 5,
+                'margin_top' => 5,
+                'margin_bottom' => 5
+            ];
 
-        // Output PDF ke browser
-        $this->response->setHeader('Content-Type', 'application/pdf');
-        $mpdf->Output($judul . '.pdf', 'I');
+            $judul1 = "LAPORAN " . strtoupper(($decode['jenis'] == "All" ? "detail" : $decode['jenis'])) . " " . strtoupper($profile['nama']) . " ";
+            $judul2 = ($decode['jenis'] == "All" || $decode['jenis'] == "Harian" || $decode['jenis'] == "Bulanan" ? "BULAN " . strtoupper(bulans($decode['bulan'])['bulan']) . " TAHUN " . $decode['tahun'] : "TAHUN " . $decode['tahun']);
+            $dbs = ($decode['db'] == "nineclean" ? "9clean" : $decode['db']);
+            $img = "https://" . $dbs . ".walisongosragen.com/logo.png";
+            // Dapatkan konten HTML
+            $logo = '<img width="90" src="' . $img . '" alt="KOP"/>';
+            $mpdf = new \Mpdf\Mpdf($set);
+            $html = view('cetak/laporan', ['judul1' => $judul1, 'judul2' => $judul2, 'data' => $data, 'logo' => $logo, 'bulan' => bulans($decode['bulan'])['bulan'], 'order' => $decode['order'], 'jenis' => $decode['jenis'], 'rangkuman' => $rangkuman]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
+
+            // Setel konten HTML ke mPDF
+            $mpdf->WriteHTML($html);
+
+            // Output PDF ke browser
+            $this->response->setHeader('Content-Type', 'application/pdf');
+            $mpdf->Output($judul1 . $judul2 . '.pdf', 'I');
+        }
     }
 
     public function laporan($dbs, $order, $tahun, $bulan, $jenis, $lokasi = '')
