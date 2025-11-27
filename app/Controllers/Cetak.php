@@ -9,7 +9,7 @@ class Cetak extends BaseController
     {
         $decode = decode_jwt($jwt);
 
-        if ($decode['order'] == 'Nota') {
+        if ($decode['order'] == 'nota') {
 
             $data = db('nota', $decode['db'])->where('no_nota', $decode['no_nota'])->get()->getResultArray();
             if (count($data) == 0) {
@@ -44,7 +44,7 @@ class Cetak extends BaseController
             $mpdf->Output($judul . '.pdf', 'I');
         }
 
-        if ($decode['order'] == "Laporan") {
+        if ($decode['order'] == "laporan") {
             $rangkuman = [];
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
