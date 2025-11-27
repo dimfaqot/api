@@ -22,7 +22,7 @@ $routes->get('/general/menu/(:any)', 'General::menu/$1');
 
 // $routes->get('/home/data/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)', 'Home::data/$1/$2/$3/$4/$5/$6');
 // $routes->get('/home/data/(:any)/(:any)/(:any)/(:any)/(:any)', 'Home::data/$1/$2/$3/$4/$5');
-$routes->get('/home(:any)', 'Home::general/$1');
+$routes->get('/home/(:any)', 'Home::general/$1');
 // $routes->get('/home/menu/(:any)/(:any)', 'Home::menu/$1/$2');
 // $routes->get('/home/unlock/(:any)/(:num)/(:num)', 'Home::unlock/$1/$2/$3');
 
