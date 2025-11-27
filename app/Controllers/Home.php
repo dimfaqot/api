@@ -18,8 +18,7 @@ class Home extends BaseController
 
         if ($decode['order'] == 'Menu') {
             sukses("Ok", tahuns($decode), bulans());
-        }
-        if ($decode['order'] == 'Unlock') {
+        } elseif ($decode['order'] == 'Unlock') {
             $keep = ($decode['keep'] == 0 ? 1 : 0);
 
             $q = db('backup', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
@@ -40,8 +39,7 @@ class Home extends BaseController
             } else {
                 gagal("Unlock gagal");
             }
-        }
-        if ($decode['order'] == 'Data') {
+        } else {
             $data = get_data($decode);
             sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
         }
