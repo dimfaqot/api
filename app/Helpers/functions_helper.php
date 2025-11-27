@@ -161,43 +161,43 @@ function upper_first($text)
     return implode(" ", $val);
 }
 
-function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
+function get_data($decode)
 {
 
     $data = [];
     $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
-    if ($order == 'laporan') {
-        $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
+    if ($decode['order'] == 'laporan') {
+        $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         $tables = ['transaksi', 'pengeluaran'];
         $total = ['transaksi' => 0, 'pengeluaran' => 0];
-        if ($jenis == "All") {
+        if ($decode['jenis'] == "All") {
             foreach ($tables as $i) {
-                $db = db($i, $dbs);
+                $db = db($i, $decode['db']);
                 $db->select('*');
-                if ($lokasi !== '') {
-                    $db->where('lokasi', $lokasi);
+                if (array_key_exists("lokasi", $decode)) {
+                    $db->where('lokasi', $decode['lokasi']);
                 }
-                $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
-                    ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+                $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                    ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                     ->get()
                     ->getResultArray();
                 $tot = array_sum(array_column($res, 'biaya'));
                 $data[$i] = ['total' => $tot, 'data' => $res];
             }
         }
-        if ($jenis == "Harian") {
+        if ($decode['jenis'] == "Harian") {
             for ($x = 1; $x <= $jumlahHari; $x++) {
                 $harian = [];
                 foreach ($tables as $i) {
-                    $db = db($i, $dbs);
+                    $db = db($i, $decode['db']);
                     $db->select('*');
-                    if ($lokasi !== '') {
-                        $db->where('lokasi', $lokasi);
+                    if (array_key_exists("lokasi", $decode)) {
+                        $db->where('lokasi', $decode['lokasi']);
                     }
                     $res = $db->orderBy('tgl', 'ASC')
                         ->where("DAY(FROM_UNIXTIME(tgl))", $x)
-                        ->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
-                        ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+                        ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                        ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                         ->get()
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
@@ -208,18 +208,18 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
                 $data[] = ['tgl' => $x, 'masuk' => $harian[0], 'keluar' => $harian[1]];
             }
         }
-        if ($jenis == "Bulanan") {
+        if ($decode['jenis'] == "Bulanan") {
             foreach (bulans() as $b) {
                 $bulanan = [];
                 foreach ($tables as $i) {
-                    $db = db($i, $dbs);
+                    $db = db($i, $decode['db']);
                     $db->select('*');
-                    if ($lokasi !== '') {
-                        $db->where('lokasi', $lokasi);
+                    if (array_key_exists("lokasi", $decode)) {
+                        $db->where('lokasi', $decode['lokasi']);
                     }
                     $res = $db->orderBy('tgl', 'ASC')
                         ->where("MONTH(FROM_UNIXTIME(tgl))", $b['satuan'])
-                        ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
+                        ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                         ->get()
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
@@ -230,15 +230,15 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
                 $data[] = ['tgl' => $b['bulan'], 'masuk' => $bulanan[0], 'keluar' => $bulanan[1]];
             }
         }
-        if ($jenis == "Tahunan") {
-            $decode = ['tabel' => 'transaksi', 'db' => $dbs];
+        if ($decode['jenis'] == "Tahunan") {
+            $decode = ['tabel' => 'transaksi', 'db' => $decode['db']];
             foreach (tahuns($decode) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {
-                    $db = db($i, $dbs);
+                    $db = db($i, $decode['db']);
                     $db->select('*');
-                    if ($lokasi !== '') {
-                        $db->where('lokasi', $lokasi);
+                    if (array_key_exists("lokasi", $decode)) {
+                        $db->where('lokasi', $decode['lokasi']);
                     }
                     $res = $db->orderBy('tgl', 'ASC')
                         ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
@@ -252,14 +252,14 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
                 $data[] = ['tgl' => $t['tahun'], 'masuk' => $tahunan[0], 'keluar' => $tahunan[1]];
             }
         }
-        if ($jenis == "Backup") {
-            foreach (tahuns($dbs, 'transaksi', $lokasi) as $t) {
+        if ($decode['jenis'] == "Backup") {
+            foreach (tahuns($decode['db'], 'transaksi', $decode['lokasi']) as $t) {
                 $tahunan = [];
                 foreach ($tables as $i) {
-                    $db = db($i, $dbs);
+                    $db = db($i, $decode['db']);
                     $db->select('*');
-                    if ($lokasi !== '') {
-                        $db->where('lokasi', $lokasi);
+                    if (array_key_exists("lokasi", $decode)) {
+                        $db->where('lokasi', $decode['lokasi']);
                     }
                     $res = $db->orderBy('tgl', 'ASC')
                         ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
@@ -272,7 +272,7 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
 
                 $data[] = ['tgl' => $t['tahun'], 'masuk' => $tahunan[0], 'keluar' => $tahunan[1]];
 
-                $q = db('backup', $dbs)->where('tahun', $t['tahun'])->get()->getRowArray();
+                $q = db('backup', $decode['db'])->where('tahun', $t['tahun'])->get()->getRowArray();
 
                 if (!$q) {
                     $insert = [
@@ -282,18 +282,18 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
                         'saldo' => $tahunan[0] - $tahunan[1],
                         'keep' => 1
                     ];
-                    db('backup', $dbs)->insert($insert);
+                    db('backup', $decode['db'])->insert($insert);
                 } else {
                     if ($q['keep'] == 0) {
                         $q['masuk'] = $tahunan[0];
                         $q['keluar'] = $tahunan[1];
                         $q['saldo'] = $tahunan[0] - $tahunan[1];
                         $q['keep'] = 1;
-                        db('backup', $dbs)->where('id', $q['id'])->update($q);
+                        db('backup', $decode['db'])->where('id', $q['id'])->update($q);
                     }
                 }
 
-                $backup = db('backup', $dbs)->select('*')->orderBy('tahun', 'ASC')
+                $backup = db('backup', $decode['db'])->select('*')->orderBy('tahun', 'ASC')
                     ->get()
                     ->getResultArray();
                 $tot = array_sum(array_column($backup, 'saldo'));
@@ -304,29 +304,29 @@ function get_data($dbs, $order, $tahun, $bulan, $jenis, $lokasi)
     } else {
         $sub_menu = [];
 
-        if ($order == 'pengeluaran') {
-            foreach (options($dbs, "Inv") as $i) {
+        if ($decode['order'] == 'pengeluaran') {
+            foreach (options($decode['db'], "Inv") as $i) {
                 $sub_menu[] = $i['value'];
             }
         }
-        if ($order == 'transaksi') {
-            foreach (options($dbs, "Kantin") as $i) {
+        if ($decode['order'] == 'transaksi') {
+            foreach (options($decode['db'], "Kantin") as $i) {
                 $sub_menu[] = $i['value'];
             }
         }
 
-        $db = db($order, $dbs);
+        $db = db($decode['order'], $decode['db']);
         $db->select('*');
-        if ($jenis !== "All") {
-            $db->where('jenis', $jenis);
+        if ($decode['jenis'] !== "All") {
+            $db->where('jenis', $decode['jenis']);
         }
-        if ($lokasi !== '') {
-            $db->where('lokasi', $lokasi);
+        if (array_key_exists("lokasi", $decode)) {
+            $db->where('lokasi', $decode['lokasi']);
         }
         $db->orderBy('tgl', 'ASC')
-            ->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
-            ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun);
-        if ($order == "hutang") {
+            ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
+        if ($decode['order'] == "hutang") {
             $db->orderBy('nama', 'ASC');
         }
         $data = $db->get()
