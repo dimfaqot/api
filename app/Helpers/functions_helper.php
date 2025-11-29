@@ -136,11 +136,24 @@ function clear($text)
     return $text;
 }
 
-function options($db, $kategori)
-{
-    $q = db('options', $db)->where("kategori", upper_first($kategori))->orderBy("value", "ASC")->get()->getResultArray();
 
-    return $q;
+function options($decode)
+{
+
+    $q = db('options', $decode['db'])->where("kategori", $decode['kategori'])->orderBy("value", "ASC")->get()->getResultArray();
+
+    $data = [];
+    foreach ($q as $i) {
+        $data[] = $i['value'];
+    }
+
+    if ($decode['format'] == "array") {
+        return $data;
+    } elseif ($decode['format'] == "text") {
+        return implode(",", $data);
+    } else {
+        return $q;
+    }
 }
 
 function upper_first($text)

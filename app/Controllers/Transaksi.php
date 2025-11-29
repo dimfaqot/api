@@ -18,7 +18,7 @@ class Transaksi extends BaseController
 
         if ($decode['order'] == "Show") {
 
-            sukses('Ok', tahuns($decode), bulans());
+            sukses('Ok', tahuns($decode), bulans(), options($decode));
         }
 
         if ($decode['order'] == "Add") {
@@ -86,6 +86,10 @@ class Transaksi extends BaseController
 
         if ($decode['order'] == "Delete") {
             delete($decode, ['Root']);
+        }
+
+        if ($decode['order'] == "Cari Barang") {
+            cari_barang($decode);
         }
     }
 
