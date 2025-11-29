@@ -31,3 +31,4 @@ $routes->get('/barang/(:any)', 'Barang::general/$1');
 $routes->get('/pengeluaran/(:any)', 'Pengeluaran::general/$1');
 $routes->get('/inv/(:any)', 'Inv::general/$1');
 $routes->get('/landing/(:any)', 'Landing::general/$1');
+$routes->get('/transaksi/(:any)', 'Transaksi::general/$1');
