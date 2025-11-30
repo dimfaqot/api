@@ -581,26 +581,27 @@ function cari_user($decode)
 
     foreach ($data as $i) {
         $exp = explode(",", $i['db']);
-        if (in_array($decode['db'], $exp)) {
 
-            if (array_key_exists('is_data', $decode)) {
-                if ($decode['is_data'] == "hutang") {
-                    $total = 0;
-                    $dbh = db('transaksi', $decode['db']);
-                    $db->select('*');
-                    if (array_key_exists('lokasi', $decode)) {
-                        $dbh->where('lokasi', $decode['lokasi']);
-                    }
-                    $dbh->where('user_id', $i['id']);
-                    $dbh->where('metode', "Hutang");
-                    $hutangs = $dbh->get()->getResultArray();
-                    if ($hutangs) {
-                        $total = array_sum(array_column($hutangs, 'biaya'));
-                    }
-                    $i['hutang'] = $total;
-                }
+        if ($decode['is_data'] == "karyawan") {
+            if (in_array($decode['db'], $exp)) {
+                $res[] = $i;
             }
+        }
 
+        if ($decode['is_data'] == "hutang") {
+            $total = 0;
+            $dbh = db('transaksi', $decode['db']);
+            $db->select('*');
+            if (array_key_exists('lokasi', $decode)) {
+                $dbh->where('lokasi', $decode['lokasi']);
+            }
+            $dbh->where('user_id', $i['id']);
+            $dbh->where('metode', "Hutang");
+            $hutangs = $dbh->get()->getResultArray();
+            if ($hutangs) {
+                $total = array_sum(array_column($hutangs, 'biaya'));
+            }
+            $i['hutang'] = $total;
             $res[] = $i;
         }
         if (count($res) == 10) {
