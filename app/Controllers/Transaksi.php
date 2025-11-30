@@ -91,6 +91,9 @@ class Transaksi extends BaseController
         if ($decode['order'] == "Cari Barang") {
             cari_barang($decode);
         }
+        if ($decode['order'] == "Cari User") {
+            cari_user($decode);
+        }
     }
 
     function data($decode)
