@@ -550,13 +550,13 @@ function cari_barang($decode)
         $db->where('lokasi', $decode['lokasi']);
     }
     if (array_key_exists('filters', $decode)) {
-        $db->where('filters', $decode['filters']);
+        $db->where('jenis', $decode['filters']);
     }
 
     $data = $db->like("barang", $text, "both")->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
     $datas = [];
     if (array_key_exists('is_datas', $decode)) {
-        $datas = db('barang', $decode['db'])->whereIn('kategori', $decode['filters'])->orderBy('barang', 'ASC')->get()->getResultArray();
+        $datas = db('barang', $decode['db'])->whereIn('jenis', $decode['filters'])->orderBy('barang', 'ASC')->get()->getResultArray();
     }
 
     sukses("Ok", $data, $datas);
@@ -572,13 +572,13 @@ function cari_user($decode)
     }
 
     if (array_key_exists('filters', $decode)) {
-        $db->where('filters', $decode['filters']);
+        $db->where('role', $decode['filters']);
     }
 
     $data = $db->like("nama", $text, "both")->orderBy('nama', 'ASC')->get()->getResultArray();
     $res = [];
 
-    foreach ($data as $k => $i) {
+    foreach ($data as $i) {
         $exp = explode(",", $i['db']);
         if (in_array($decode['db'], $exp)) {
             $res[] = $i;
