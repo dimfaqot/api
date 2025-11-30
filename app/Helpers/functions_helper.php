@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 function db($tabel, $db = null)
 {
-    if ($db == null || $db == 'playground') {
+    if ($db == null || $db == 'bkw') {
         $db = \Config\Database::connect();
     } else {
         $db = \Config\Database::connect(strtolower(str_replace(" ", "_", $db)));
@@ -566,7 +566,7 @@ function cari_barang($decode)
 function cari_user($decode)
 {
     $text = clear($decode['text']);
-    $db = db('user', 'bkw');
+    $db = db('user');
 
     if (array_key_exists('lokasi', $decode)) {
         $db->where('lokasi', $decode['lokasi']);
