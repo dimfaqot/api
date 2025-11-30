@@ -566,7 +566,7 @@ function cari_barang($decode)
 function cari_user($decode)
 {
     $text = clear($decode['text']);
-    $db = db('user', $decode['db']);
+    $db = db('user', 'bkw');
 
     if (array_key_exists('lokasi', $decode)) {
         $db->where('lokasi', $decode['lokasi']);
