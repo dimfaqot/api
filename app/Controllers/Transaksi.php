@@ -18,7 +18,7 @@ class Transaksi extends BaseController
 
         if ($decode['order'] == "Show") {
 
-            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategpri' => 'Metode', 'format' => 'array']));
+            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']));
         }
 
         if ($decode['order'] == "Add") {
