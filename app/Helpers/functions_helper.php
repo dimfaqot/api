@@ -585,7 +585,8 @@ function cari_user($decode)
 
             if (array_key_exists('is_data', $decode)) {
                 if ($decode['is_data'] == "hutang") {
-                    $dbh = db('transaksi', $decode['metode']);
+                    $total = 0;
+                    $dbh = db('transaksi', $decode['db']);
                     $db->select('*');
                     if (array_key_exists('lokasi', $decode)) {
                         $dbh->where('lokasi', $decode['lokasi']);
@@ -593,7 +594,9 @@ function cari_user($decode)
                     $dbh->where('user_id', $i['id']);
                     $dbh->where('metode', "Hutang");
                     $hutangs = $dbh->get()->getResultArray();
-                    $total = array_sum(array_column($hutangs, 'biaya'));
+                    if ($hutangs) {
+                        $total = array_sum(array_column($hutangs, 'biaya'));
+                    }
                     $i['hutang'] = $total;
                 }
             }
