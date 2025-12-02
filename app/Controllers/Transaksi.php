@@ -94,6 +94,35 @@ class Transaksi extends BaseController
         if ($decode['order'] == "Cari User") {
             cari_user($decode);
         }
+        if ($decode['order'] == "Simpan User") {
+            $input = [
+                'nama'      => upper_first(clear($decode['nama'])),
+                'wa'       => clear($decode['wa']),
+                'role'       => "Member",
+                'username'       => random_str(10),
+                'password'       => password_hash(settings($decode['db'], 'password'), PASSWORD_DEFAULT)
+            ];
+
+            if (db($decode['tabel'], $decode['db'])->where('wa', $decode['wa'])->get()->getRowArray()) {
+                gagal("Wa existed");
+            }
+            if (db($decode['tabel'], $decode['db'])->where('nama', $decode['nama'])->get()->getRowArray()) {
+                gagal("Nama existed");
+            }
+
+            if (array_key_exists('lokasi', $decode)) {
+                $input['lokasi'] = $decode['lokasi'];
+            }
+            if (array_key_exists('input_db', $decode)) {
+                $input['db'] = $decode['input_db'];
+            }
+
+            if (!db($decode['tabel'], $decode['db'])->insert($input)) {
+                gagal("Insert gagal");
+            }
+
+            sukses("Sukses");
+        }
     }
 
     function data($decode)
