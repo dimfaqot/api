@@ -49,24 +49,14 @@ class Transaksi extends BaseController
                     "user_id" => $decode['penghutang']['id'],
                     'metode' => "Hutang"
                 ];
-                sukses($input);
-                $db->table($decode['tabel'], $decode['db'])->insert([
-                    "no_nota" => $nota,
-                    "tgl" => $tgl,
-                    "jenis" => $i['jenis'],
-                    "barang" => $i['barang'],
-                    "karyawan" => $i['karyawan'],
-                    "barang_id" => $i['id'],
-                    "harga" => $i['harga'],
-                    "qty" => $i['qty'],
-                    "total" => $i['total'],
-                    "diskon" => $i['diskon'],
-                    "biaya" => $i['biaya'],
-                    "petugas" => $decode['petugas'],
-                    "nama" => $decode['penghutang']['nama'],
-                    "user_id" => $decode['penghutang']['id'],
-                    'metode' => "Hutang"
-                ]);
+
+                if (array_key_exists('lokasi', $decode)) {
+                    $input['lokasi'] = $decode['lokasi'];
+                }
+
+                if (!$db->table($decode['tabel'], $decode['db'])->insert($input)) {
+                    gagal($input["barang"] . " gagal");
+                }
 
                 $barang = db('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
                 if (!$barang) {
