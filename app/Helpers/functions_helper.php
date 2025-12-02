@@ -364,9 +364,15 @@ function decode_jwt($encode_jwt)
     try {
 
         $decoded = JWT::decode($encode_jwt, new Key(getenv("KEY_JWT"), 'HS256'));
-        $arr = (array)$decoded;
+        // $arr = (array)$decoded;
+        if (is_object($decoded)) {
+            $data = (array) $decoded;
+        }
+        if (is_array($decoded)) {
+            return array_map('objectToArray', $decoded);
+        }
 
-        return $arr;
+        return $data;
     } catch (\Exception $e) { // Also tried JwtException
         $data = [
             'status' => '400',
