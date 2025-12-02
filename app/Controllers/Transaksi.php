@@ -27,7 +27,7 @@ class Transaksi extends BaseController
 
             $db = \Config\Database::connect();
             $db->transStart();
-            $nota = next_invoice("hutang");
+            $nota = next_invoice($decode);
 
             $tgl = time();
 

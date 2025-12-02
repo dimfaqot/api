@@ -402,23 +402,21 @@ function random_str($length = 14)
 }
 
 
-function next_invoice($order = null)
+function next_invoice($decode)
 {
-
-    $db = db('nota');
 
     $year  = date('Y');
     $month = date('m');
     $prefix = "$year/$month/";
 
     // Cari no_nota terakhir berdasarkan bulan ini
-    $lastNota = $db->select('no_nota')
+    $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', "Hutang")
         ->orderBy('tgl', 'DESC')
         ->get()
         ->getRowArray();
 
-    if ($order == "inv") {
-        $lastNota = $db->select('inv')
+    if ($decode['order'] == "inv") {
+        $lastNota = db('pengeluaran', $decode['db'])->where('jenis', 'Inv')
             ->orderBy('tgl', 'DESC')
             ->get()
             ->getRowArray();
@@ -434,8 +432,8 @@ function next_invoice($order = null)
 
     $nota = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-    if ($order == "hutang") {
-        $nota = $prefix . random_str(6);
+    if ($decode['order'] == "hutang") {
+        $nota = $prefix . random_str(10);
     }
 
     return $nota;
