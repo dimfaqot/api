@@ -13,9 +13,7 @@ class Transaksi extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        foreach ($decode['datas'] as $i) {
-            dd($i);
-        }
+
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
@@ -36,18 +34,19 @@ class Transaksi extends BaseController
 
 
             foreach ($decode['datas'] as $i) {
+                $arr = (array) $i;;
                 $db->table($decode['tabel'], $decode['db'])->insert([
                     "no_nota" => $nota,
                     "tgl" => $tgl,
-                    "jenis" => $i['jenis'],
-                    "barang" => $i['barang'],
-                    "karyawan" => $i['karyawan'],
-                    "barang_id" => $i['id'],
-                    "harga" => $i['harga'],
-                    "qty" => $i['qty'],
-                    "total" => $i['total'],
-                    "diskon" => $i['diskon'],
-                    "biaya" => $i['biaya'],
+                    "jenis" => $arr['jenis'],
+                    "barang" => $arr['barang'],
+                    "karyawan" => $arr['karyawan'],
+                    "barang_id" => $arr['id'],
+                    "harga" => $arr['harga'],
+                    "qty" => $arr['qty'],
+                    "total" => $arr['total'],
+                    "diskon" => $arr['diskon'],
+                    "biaya" => $arr['biaya'],
                     "petugas" => $decode['petugas'],
                     "nama" => $decode['penghutang']['nama'],
                     "user_id" => $decode['penghutang']['id'],
