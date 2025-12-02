@@ -50,7 +50,7 @@ class Transaksi extends BaseController
                     'metode' => "Hutang"
                 ]);
 
-                $barang = $db->table('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+                $barang = db('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
                 if (!$barang) {
                     gagal("Id " . $i['barang'] . " not found");
                 }
@@ -58,7 +58,7 @@ class Transaksi extends BaseController
                     $exp = explode(",", $barang['link']);
 
                     foreach ($exp as $x) {
-                        $val = $db->table('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+                        $val = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
 
                         if (!$val) {
                             gagal("Link barang id null");
@@ -89,7 +89,7 @@ class Transaksi extends BaseController
             }
 
             $total = 0;
-            $dbh = $db->table('transaksi', $decode['db']);
+            $dbh = db('transaksi', $decode['db']);
             $dbh->select('*');
             if (array_key_exists('lokasi', $decode)) {
                 $dbh->where('lokasi', $decode['lokasi']);
