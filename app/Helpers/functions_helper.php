@@ -410,7 +410,7 @@ function next_invoice($decode)
     $prefix = "$year/$month/";
 
     // Cari no_nota terakhir berdasarkan bulan ini
-    $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', "Hutang")
+    $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', ["Hutang"])
         ->orderBy('tgl', 'DESC')
         ->get()
         ->getRowArray();
