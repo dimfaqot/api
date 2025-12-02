@@ -54,7 +54,7 @@ class Transaksi extends BaseController
                     $input['lokasi'] = $decode['lokasi'];
                 }
 
-                if (!$db->table($decode['tabel'], $decode['db'])->insert($input)) {
+                if (db($decode['tabel'], $decode['db'])->insert($input)) {
                     gagal($input["barang"] . " gagal");
                 }
 
