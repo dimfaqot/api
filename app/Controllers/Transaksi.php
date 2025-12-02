@@ -103,10 +103,10 @@ class Transaksi extends BaseController
                 'password'       => password_hash(settings($decode['db'], 'password'), PASSWORD_DEFAULT)
             ];
 
-            if (db($decode['tabel'], $decode['db'])->where('wa', $decode['wa'])->get()->getRowArray()) {
+            if (db($decode['tabel'])->where('wa', $decode['wa'])->get()->getRowArray()) {
                 gagal("Wa existed");
             }
-            if (db($decode['tabel'], $decode['db'])->where('nama', $decode['nama'])->get()->getRowArray()) {
+            if (db($decode['tabel'])->where('nama', $decode['nama'])->get()->getRowArray()) {
                 gagal("Nama existed");
             }
 
@@ -117,7 +117,7 @@ class Transaksi extends BaseController
                 $input['db'] = $decode['input_db'];
             }
 
-            if (!db($decode['tabel'], $decode['db'])->insert($input)) {
+            if (!db($decode['tabel'])->insert($input)) {
                 gagal("Insert gagal");
             }
 
