@@ -31,6 +31,8 @@ class Transaksi extends BaseController
 
             $tgl = time();
 
+            sukses($decode['datas']);
+
             foreach ($decode['datas'] as $i) {
                 $db->table($decode['tabel'], $decode['db'])->insert([
                     "no_nota" => $nota,
