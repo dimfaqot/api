@@ -37,6 +37,7 @@ class Transaksi extends BaseController
                     "tgl" => $tgl,
                     "jenis" => $i['jenis'],
                     "barang" => $i['barang'],
+                    "karyawan" => $i['karyawan'],
                     "barang_id" => $i['id'],
                     "harga" => $i['harga'],
                     "qty" => $i['qty'],
