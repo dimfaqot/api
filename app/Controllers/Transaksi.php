@@ -13,7 +13,7 @@ class Transaksi extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-
+        dd($decode['datas']);
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
@@ -31,7 +31,7 @@ class Transaksi extends BaseController
 
             $tgl = time();
 
-            sukses($decode['datas'][0]);
+
 
             foreach ($decode['datas'] as $i) {
                 $db->table($decode['tabel'], $decode['db'])->insert([
