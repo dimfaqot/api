@@ -14,7 +14,7 @@ class Transaksi extends BaseController
 
         $decode = decode_jwt($jwt);
         foreach ($decode['datas'] as $i) {
-            dd($i['barang']);
+            dd($i);
         }
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
