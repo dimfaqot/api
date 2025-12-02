@@ -21,37 +21,92 @@ class Transaksi extends BaseController
             sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']));
         }
 
-        if ($decode['order'] == "Add") {
-
-            $tipe = (clear($decode['tipe']) == "on" ? "Mix" : "Count");
-
-            $input = [
-                'jenis'      => upper_first(clear($decode['jenis'])),
-                'barang'       => upper_first(clear($decode['barang'])),
-                'petugas'       => upper_first(clear($decode['petugas'])),
-                'link'       => clear($decode['link']),
-                'qty'       => 0,
-                'tipe' => $tipe,
-                'harga'      => angka_to_int(clear($decode['harga']))
-            ];
-
-            if (array_key_exists('lokasi', $decode)) {
-                $input['lokasi'] = $decode['lokasi'];
-            }
-            if (array_key_exists('qty', $decode)) {
-                $input['qty'] = $decode['qty'];
-            }
-
-            // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('barang', $input['barang'])->countAllResults() > 0) {
-                gagal('Barang existed');
-            }
-
-            // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
-                ? sukses('Sukses', $this->data($decode))
-                : gagal('Gagal');
+        if ($decode['order'] == "Transaksi") {
         }
+        if ($decode['order'] == "Hutang") {
+
+            $db = \Config\Database::connect();
+            $db->transStart();
+            $nota = next_invoice("hutang");
+
+            $tgl = time();
+
+            foreach ($decode['data'] as $i) {
+                $db->table($decode['tabel'], $decode['db'])->insert([
+                    "no_nota" => $nota,
+                    "tgl" => $tgl,
+                    "jenis" => $i['jenis'],
+                    "barang" => $i['barang'],
+                    "barang_id" => $i['id'],
+                    "harga" => $i['harga'],
+                    "qty" => $i['qty'],
+                    "total" => $i['total'],
+                    "diskon" => $i['diskon'],
+                    "biaya" => $i['biaya'],
+                    "petugas" => $decode['petugas'],
+                    "nama" => $decode['penghutang']['nama'],
+                    "user_id" => $decode['penghutang']['id'],
+                    'metode' => "Hutang"
+                ]);
+
+                $barang = db('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+                if (!$barang) {
+                    gagal("Id " . $i['barang'] . " not found");
+                }
+                if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
+                    $exp = explode(",", $barang['link']);
+
+                    foreach ($exp as $x) {
+                        $val = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+
+                        if (!$val) {
+                            gagal("Link barang id null");
+                        }
+
+                        if ($val['qty'] < (int)$i['qty']) {
+                            gagal('Stok kurang');
+                        }
+
+                        $val['qty'] -= (int)$i['qty'];
+
+                        if (!db('barang', $decode['db'])->where('id', $val['id'])->update($val)) {
+                            gagal("Update stok gagal");
+                        }
+                    }
+                }
+
+                if ($barang['tipe'] == "Count") {
+                    if ($barang['qty'] < (int)$i['qty']) {
+                        gagal('Stok kurang');
+                    }
+                    $barang['qty'] -= (int)$i['qty'];
+
+                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                        gagal("Update stok gagal");
+                    }
+                }
+            }
+
+            $total = 0;
+            $dbh = db('transaksi', $decode['db']);
+            $dbh->select('*');
+            if (array_key_exists('lokasi', $decode)) {
+                $dbh->where('lokasi', $decode['lokasi']);
+            }
+            $dbh->where('user_id', $decode['penghutang']['id']);
+            $dbh->where('metode', "Hutang");
+            $hutangs = $dbh->get()->getResultArray();
+            if ($hutangs) {
+                $total = array_sum(array_column($hutangs, 'biaya'));
+            }
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", '<div>TOTAL HUTANG</div><h5>' . angka($total) . '</h5>')
+                : gagal("Gagal");
+        }
+
         if ($decode['order'] == "Edit") {
 
 
