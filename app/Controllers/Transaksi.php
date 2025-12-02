@@ -32,6 +32,24 @@ class Transaksi extends BaseController
             $tgl = time();
 
             foreach ($decode['datas'] as $i) {
+                $input = [
+                    "no_nota" => $nota,
+                    "tgl" => $tgl,
+                    "jenis" => $i['jenis'],
+                    "barang" => $i['barang'],
+                    "karyawan" => $i['karyawan'],
+                    "barang_id" => $i['id'],
+                    "harga" => $i['harga'],
+                    "qty" => $i['qty'],
+                    "total" => $i['total'],
+                    "diskon" => $i['diskon'],
+                    "biaya" => $i['biaya'],
+                    "petugas" => $decode['petugas'],
+                    "nama" => $decode['penghutang']['nama'],
+                    "user_id" => $decode['penghutang']['id'],
+                    'metode' => "Hutang"
+                ];
+                sukses($input);
                 $db->table($decode['tabel'], $decode['db'])->insert([
                     "no_nota" => $nota,
                     "tgl" => $tgl,
@@ -70,7 +88,7 @@ class Transaksi extends BaseController
 
                         $val['qty'] -= (int)$i['qty'];
 
-                        if (!$db->table('barang', $decode['db'])->where('id', $val['id'])->update($val)) {
+                        if (!db('barang', $decode['db'])->where('id', $val['id'])->update($val)) {
                             gagal("Update stok gagal");
                         }
                     }
@@ -82,7 +100,7 @@ class Transaksi extends BaseController
                     }
                     $barang['qty'] -= (int)$i['qty'];
 
-                    if (!$db->table('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                         gagal("Update stok gagal");
                     }
                 }
