@@ -13,7 +13,9 @@ class Transaksi extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        dd($decode['datas']);
+        foreach ($decode['datas'] as $i) {
+            dd($i['barang']);
+        }
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
