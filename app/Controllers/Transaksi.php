@@ -31,7 +31,7 @@ class Transaksi extends BaseController
 
             $tgl = time();
 
-            sukses($decode['datas'][0]['barang']);
+            sukses($decode['datas'][0]);
 
             foreach ($decode['datas'] as $i) {
                 $db->table($decode['tabel'], $decode['db'])->insert([
