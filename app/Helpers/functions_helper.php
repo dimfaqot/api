@@ -334,15 +334,15 @@ function get_data($decode)
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
-        $db->orderBy('tgl', 'ASC')
-            ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+        $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
         if ($decode['order'] == "hutang") {
             $db->where('metode', 'Hutang');
             $db->orderBy('nama', 'ASC');
         }
-        $data = $db->get()
-            ->getResultArray();
+        $db->orderBy('tgl', 'ASC');
+        $data = $db->get()->getResultArray();
+
         $total = array_sum(array_column($data, 'biaya'));
     }
 
