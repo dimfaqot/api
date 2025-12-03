@@ -326,7 +326,7 @@ function get_data($decode)
             }
         }
 
-        $db = db($decode['order'], $decode['db']);
+        $db = db($decode['order'] == "hutang" ? "transaksi" : $decode['order'], $decode['db']);
         $db->select('*');
         if ($decode['jenis'] !== "All") {
             $db->where('jenis', $decode['jenis']);
@@ -338,6 +338,7 @@ function get_data($decode)
             ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
         if ($decode['order'] == "hutang") {
+            $db->where('metode', 'Hutang');
             $db->orderBy('nama', 'ASC');
         }
         $data = $db->get()
