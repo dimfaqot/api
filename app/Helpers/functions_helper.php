@@ -627,7 +627,7 @@ function get_hutang($decode)
             ->select("
         user_id,
         nama,
-        SUM(biaya) as biaya,
+        SUM(biaya) as total,
         GROUP_CONCAT(CONCAT(barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ")
             ->where('metode', 'Hutang')
