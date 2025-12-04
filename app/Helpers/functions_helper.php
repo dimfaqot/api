@@ -315,6 +315,7 @@ function get_data($decode)
     } else {
         if ($decode['order'] == 'hutang') {
             $decode['filter'] = "by user";
+            $decode['tabel'] = "transaksi";
             return get_hutang($decode);
         }
         $sub_menu = [];
