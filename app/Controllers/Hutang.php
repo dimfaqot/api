@@ -17,22 +17,7 @@ class Hutang extends BaseController
         check($decode);
 
         if ($decode['order'] == "show") {
-            $input = [
-                'kategori'       => upper_first(clear($decode['kategori'])),
-                'value'       => upper_first(clear($decode['value']))
-            ];
-
-
-            // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('kategori', $input['kategori'])->where('value', $input['value'])->countAllResults() > 0) {
-                gagal('Option existed');
-            }
-
-
-            // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
-                ? sukses('Sukses')
-                : gagal('Gagal');
+            sukses('Ok', get_hutang($decode));
         }
     }
 }
