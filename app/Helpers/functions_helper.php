@@ -620,8 +620,6 @@ function get_hutang($decode)
 
     $db = db($decode['tabel'], $decode['db']);
 
-    $data = [];
-
     if ($decode['filter'] == "by user") {
         $result = $db
             ->select("
@@ -644,17 +642,15 @@ function get_hutang($decode)
         }
         unset($row);
 
-        if ($decode['order'] == "hutang") {
-            $val = [
-                'data' => $result,
-                'total' => array_sum(array_column($result, 'biaya')),
-                'sub_menu' => []
 
-            ];
-            return $val;
-        }
+        $data = [
+            'data' => $result,
+            'total' => array_sum(array_column($result, 'biaya')),
+            'sub_menu' => []
 
-        $data = $result;
+        ];
+
+        return $data;
     }
 
     return $data;
