@@ -619,7 +619,7 @@ function get_hutang($decode)
 {
 
     $db = db($decode['tabel'], $decode['db']);
-
+    $data = [];
     if ($decode['filter'] == "by user") {
         $result = $db
             ->select("
@@ -649,8 +649,6 @@ function get_hutang($decode)
             'sub_menu' => []
 
         ];
-
-        return $data;
     }
 
     return $data;
