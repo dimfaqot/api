@@ -643,7 +643,7 @@ function get_hutang($decode)
         unset($row);
         $res = [];
         foreach ($result as $i) {
-            $q = db('user')->where('id', $i['user_id'])->get()->getResultArray();
+            $q = db('user')->where('id', $i['user_id'])->get()->getRowArray();
             if ($q) {
                 $i['wa'] = $q['wa'];
             }
