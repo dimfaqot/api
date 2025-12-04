@@ -313,6 +313,10 @@ function get_data($decode)
             }
         }
     } else {
+        if ($decode['order'] == 'hutang') {
+            $decode['filter'] = "by user";
+            return get_hutang($decode);
+        }
         $sub_menu = [];
 
         if ($decode['order'] == 'pengeluaran') {
@@ -608,4 +612,47 @@ function cari_user($decode)
     }
 
     sukses("Ok", $res);
+}
+
+function get_hutang($decode)
+{
+
+    $db = db($decode['tabel'], $decode['fb']);
+
+    $data = [];
+
+    if ($decode['filter'] == "by user") {
+        $result = $db
+            ->select("
+        user_id,
+        nama,
+        SUM(biaya) as biaya,
+        GROUP_CONCAT(CONCAT(barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
+    ")
+            ->where('metode', 'Hutang')
+            ->groupBy('user_id, nama')
+            ->get()
+            ->getResultArray();
+
+        // parsing string jadi array
+        foreach ($result as &$row) {
+            $row['data'] = array_map(function ($item) {
+                [$barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+                return ['barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
+            }, explode(',', $row['data']));
+        }
+        unset($row);
+
+        if ($decode['order'] == "hutang") {
+            $val = [
+                'data' => $result,
+                'total' => array_sum(array_column($result, 'biaya')),
+                'sub_menu' => []
+
+            ];
+            return $val;
+        }
+    }
+
+    return $data;
 }
