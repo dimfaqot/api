@@ -17,7 +17,7 @@ class Hutang extends BaseController
         check($decode);
 
         if ($decode['order'] == "Show") {
-            sukses('Ok', get_hutang($decode));
+            sukses('Ok', get_hutang($decode), options($decode));
         }
     }
 }
