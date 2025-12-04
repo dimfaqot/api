@@ -617,7 +617,7 @@ function cari_user($decode)
 function get_hutang($decode)
 {
 
-    $db = db($decode['tabel'], $decode['fb']);
+    $db = db($decode['tabel'], $decode['db']);
 
     $data = [];
 
