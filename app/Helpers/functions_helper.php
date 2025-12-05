@@ -412,7 +412,7 @@ function next_invoice($decode)
 
     $year  = date('Y');
     $month = date('m');
-    $prefix = "$year/$month/";
+    $prefix = "$year-$month-";
 
     // Cari no_nota terakhir berdasarkan bulan ini
     $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', ["Hutang"])
@@ -420,7 +420,7 @@ function next_invoice($decode)
         ->get()
         ->getRowArray();
 
-    if ($decode['order'] == "inv") {
+    if ($decode['ket'] == "inv") {
         $lastNota = db('pengeluaran', $decode['db'])->where('jenis', 'Inv')
             ->orderBy('tgl', 'DESC')
             ->get()
@@ -437,7 +437,7 @@ function next_invoice($decode)
 
     $nota = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-    if ($decode['order'] == "hutang") {
+    if ($decode['ket'] == "hutang") {
         $nota = $prefix . random_str(10);
     }
 
@@ -658,4 +658,135 @@ function get_hutang($decode)
     }
 
     return $data;
+}
+
+
+function transaksi($decode)
+{
+
+
+    $nota = next_invoice($decode);
+
+    $tgl = time();
+
+    foreach ($decode['datas'] as $i) {
+        $db = \Config\Database::connect();
+        $db->transStart();
+        if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
+            $input = [
+                "no_nota" => $nota,
+                "tgl" => $tgl,
+                "jenis" => $i['jenis'],
+                "barang" => $i['barang'],
+                "karyawan" => $i['karyawan'],
+                "barang_id" => $i['id'],
+                "harga" => $i['harga'],
+                "qty" => $i['qty'],
+                "total" => $i['total'],
+                "diskon" => $i['diskon'],
+                "biaya" => $i['biaya'],
+                "petugas" => $decode['petugas']
+            ];
+
+            $message = base_url('cetak/' . $input['no_nota']);
+
+            $input['metode'] = upper_first($decode['ket']);
+
+            if (array_key_exists('lokasi', $decode)) {
+                $input['lokasi'] = $decode['lokasi'];
+            }
+
+            if (array_key_exists('user_id', $decode)) {
+                $input['user_id'] = $decode['user_id'];
+                $input['nama'] = $decode['nama'];
+            }
+
+            // insert data
+            if (!db($decode['tabel'], $decode['db'])->insert($input)) {
+                gagal($input["barang"] . " gagal");
+            }
+
+            // cari barang update qty
+            $barang = db('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+            if (!$barang) {
+                gagal("Id " . $i['barang'] . " not found");
+            }
+            if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
+                $exp = explode(",", $barang['link']);
+
+                foreach ($exp as $x) {
+                    $val = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+
+                    if (!$val) {
+                        gagal("Link barang id null");
+                    }
+
+                    if ($val['qty'] < (int)$i['qty']) {
+                        gagal('Stok kurang');
+                    }
+
+                    $val['qty'] -= (int)$i['qty'];
+
+                    if (!db('barang', $decode['db'])->where('id', $val['id'])->update($val)) {
+                        gagal("Update stok gagal");
+                    }
+                }
+            }
+
+            // update_qty
+            if ($barang['tipe'] == "Count") {
+                if ($barang['qty'] < (int)$i['qty']) {
+                    gagal('Stok kurang');
+                }
+                $barang['qty'] -= (int)$i['qty'];
+
+                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                    gagal("Update stok gagal");
+                }
+            }
+
+            if ($decode['ket'] == "hutang") {
+                $total = 0;
+                $dbh = db('transaksi', $decode['db']);
+                $dbh->select('*');
+                if (array_key_exists('lokasi', $decode)) {
+                    $dbh->where('lokasi', $decode['lokasi']);
+                }
+                $dbh->where('user_id', $decode['penghutang']['id']);
+                $dbh->where('metode', "Hutang");
+                $hutangs = $dbh->get()->getResultArray();
+                if ($hutangs) {
+                    $total = array_sum(array_column($hutangs, 'biaya'));
+                }
+
+                $message = '<div>TOTAL HUTANG</div><h5>' . angka($total) . '</h5>';
+            }
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", $message)
+                : gagal("Gagal");
+        }
+
+        if ($decode['ket'] == "bayar hutang") {
+
+            $db = \Config\Database::connect();
+            $db->transStart();
+
+            $i['no_nota'] = next_invoice($decode);
+            $i['metode'] = $i['metode'];
+            $i['tgl'] = $tgl;
+
+            if (!db($decode['tabel'], $decode['db'])->where('id', $i['i'])->update($i)) {
+                gagal("Update hutang gagal");
+            }
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", base_url('cetak/') . $i['no_nota'])
+                : gagal("Gagal");
+        }
+    }
 }
