@@ -689,9 +689,11 @@ function transaksi($decode)
                 "petugas" => $decode['petugas']
             ];
 
-            $message = base_url('cetak/' . $input['no_nota']);
+            $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
 
-
+            if (array_key_exists('uang', $decode)) {
+                $message .= "/" . $decode['uang'];
+            }
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
@@ -701,6 +703,7 @@ function transaksi($decode)
                 $input['nama'] = $decode['penghutang']['nama'];
             } else {
                 $input['metode'] = $decode['metode'];
+                $input['uang'] = $decode['uang'];
             }
 
             // insert data
@@ -769,13 +772,14 @@ function transaksi($decode)
 
             $i['no_nota'] = next_invoice($decode);
             $i['metode'] = $i['metode'];
+            $i['uang'] = $decode['uang'];
             $i['tgl'] = $tgl;
 
             if (!db($decode['tabel'], $decode['db'])->where('id', $i['i'])->update($i)) {
                 gagal("Update hutang gagal");
             }
 
-            $message = base_url('cetak/' . $decode['db'] . '/' . $input['no_nota']);
+            $message = base_url('cetak/nota/' . $decode['db'] . '/' . $input['no_nota'] . "/" . $decode['uang']);
         }
     }
 

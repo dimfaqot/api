@@ -139,11 +139,11 @@
                 </tr>
                 <tr>
                     <td colspan="3">Uang</td>
-                    <td class="total"><?= angka($data[0]['uang']); ?></td>
+                    <td class="total"><?= angka($uang); ?></td>
                 </tr>
                 <tr>
                     <td colspan="3">Kembalian</td>
-                    <td class="total"><?= angka($data[0]['uang'] - ($total - $diskon)); ?></td>
+                    <td class="total"><?= angka($uang - ($total - $diskon)); ?></td>
                 </tr>
             </tfoot>
         </table>
