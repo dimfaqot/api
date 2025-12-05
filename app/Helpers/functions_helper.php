@@ -775,7 +775,7 @@ function transaksi($decode)
             $i['uang'] = $decode['uang'];
             $i['tgl'] = $tgl;
 
-            if (!db($decode['tabel'], $decode['db'])->where('id', $i['i'])->update($i)) {
+            if (!db($decode['tabel'], $decode['db'])->where('id', $i['id'])->update($i)) {
                 gagal("Update hutang gagal");
             }
 
