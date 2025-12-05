@@ -698,7 +698,7 @@ function transaksi($decode)
             }
 
             if (count($decode['penghutang']) > 0) {
-                $input['user_id'] = $decode['user_id'];
+                $input['user_id'] = $decode['id'];
                 $input['nama'] = $decode['nama'];
             }
 
