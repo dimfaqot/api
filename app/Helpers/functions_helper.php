@@ -698,8 +698,8 @@ function transaksi($decode)
             }
 
             if (count($decode['penghutang']) > 0) {
-                $input['user_id'] = $decode['id'];
-                $input['nama'] = $decode['nama'];
+                $input['user_id'] = $decode['penghutang']['id'];
+                $input['nama'] = $decode['penghutang']['nama'];
             }
 
             // insert data
