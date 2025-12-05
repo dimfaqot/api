@@ -691,15 +691,16 @@ function transaksi($decode)
 
             $message = base_url('cetak/' . $input['no_nota']);
 
-            $input['metode'] = upper_first($decode['ket']);
 
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
 
-            if (count($decode['penghutang']) > 0) {
+            if ($decode['ket'] == "hutang") {
                 $input['user_id'] = $decode['penghutang']['id'];
                 $input['nama'] = $decode['penghutang']['nama'];
+            } else {
+                $input['metode'] = $decode['metode'];
             }
 
             // insert data
