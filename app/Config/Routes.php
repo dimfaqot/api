@@ -20,8 +20,8 @@ $routes->get('/general/menu', 'General::menu');
 $routes->get('/general/menu/(:any)', 'General::menu/$1');
 
 $routes->get('/home/(:any)', 'Home::general/$1');
-$routes->get('/cetak/(:any)', 'Cetak::General/$1');
 $routes->get('/cetak/nota/(:any)/(:any)', 'Cetak::Nota/$1/$2');
+$routes->get('/cetak/(:any)', 'Cetak::General/$1');
 
 $routes->get('/settings/(:any)', 'Settings::general/$1');
 $routes->get('/menu/(:any)', 'Menu::general/$1');
