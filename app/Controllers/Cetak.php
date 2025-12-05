@@ -93,7 +93,7 @@ class Cetak extends BaseController
         $judul = "NOTA " . $no_nota;
         // Dapatkan konten HTML
         // $logo = '<img width="90" src="logo.png" alt="KOP"/>';
-        $html = view('guest/nota', ['judul' => $judul, 'data' => $data, 'no_nota' => $no_nota, 'decode' => ['db' => $db]]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
+        $html = view('cetak/nota', ['judul' => $judul, 'data' => $data, 'no_nota' => $no_nota, 'decode' => ['db' => $db]]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
 
         // Setel konten HTML ke mPDF
         $mpdf->WriteHTML($html);
