@@ -70,7 +70,7 @@ class Cetak extends BaseController
 
     public function nota($db, $no_nota)
     {
-        $data = db('transaksi', $db)->where('no_nota', $no_nota['no_nota'])->get()->getResultArray();
+        $data = db('transaksi', $db)->where('no_nota', $no_nota)->get()->getResultArray();
         if (count($data) == 0) {
             echo '<h2 style="font-family: Arial, sans-serif;text-align:center">Data tidak ada</h2>';
             die;
