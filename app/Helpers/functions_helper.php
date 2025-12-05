@@ -771,7 +771,7 @@ function transaksi($decode)
         if ($decode['ket'] == "bayar hutang") {
 
             $i['no_nota'] = next_invoice($decode);
-            $i['metode'] = $i['metode'];
+            $i['metode'] = $decode['metode'];
             $i['uang'] = $decode['uang'];
             $i['tgl'] = $tgl;
 
