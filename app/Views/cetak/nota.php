@@ -81,8 +81,8 @@
 <body style="font-size: 10px;">
     <div class="receipt">
         <div class="header">
-            <h1><?= profile()['nama']; ?></h1>
-            <p>Karangmalang Sragen Jawa Tengah<br /><?= profile()['cp']; ?></p>
+            <h1><?= profile($decode)['nama']; ?></h1>
+            <p>Karangmalang Sragen Jawa Tengah<br /><?= profile($decode)['cp']; ?></p>
         </div>
 
         <div class="line"></div>
