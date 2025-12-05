@@ -438,7 +438,7 @@ function next_invoice($decode)
     $nota = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
     if ($decode['ket'] == "hutang") {
-        $nota = $prefix . random_str(10);
+        $nota = random_str(10);
     }
 
     return $nota;
@@ -664,14 +664,15 @@ function get_hutang($decode)
 function transaksi($decode)
 {
 
+    $db = \Config\Database::connect();
+    $db->transStart();
 
     $nota = next_invoice($decode);
+    $message = "";
 
     $tgl = time();
 
     foreach ($decode['datas'] as $i) {
-        $db = \Config\Database::connect();
-        $db->transStart();
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
                 "no_nota" => $nota,
@@ -761,18 +762,9 @@ function transaksi($decode)
 
                 $message = '<div>TOTAL HUTANG</div><h5>' . angka($total) . '</h5>';
             }
-
-            $db->transComplete();
-
-            return $db->transStatus()
-                ? sukses("Sukses", $message)
-                : gagal("Gagal");
         }
 
         if ($decode['ket'] == "bayar hutang") {
-
-            $db = \Config\Database::connect();
-            $db->transStart();
 
             $i['no_nota'] = next_invoice($decode);
             $i['metode'] = $i['metode'];
@@ -782,11 +774,13 @@ function transaksi($decode)
                 gagal("Update hutang gagal");
             }
 
-            $db->transComplete();
-
-            return $db->transStatus()
-                ? sukses("Sukses", base_url('cetak/') . $i['no_nota'])
-                : gagal("Gagal");
+            $message = base_url('cetak/' . $input['no_nota']);
         }
     }
+
+    $db->transComplete();
+
+    return $db->transStatus()
+        ? sukses("Sukses", $message)
+        : gagal("Gagal");
 }
