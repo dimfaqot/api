@@ -697,7 +697,7 @@ function transaksi($decode)
                 $input['lokasi'] = $decode['lokasi'];
             }
 
-            if (array_key_exists('user_id', $decode)) {
+            if (count($decode['penghutang']) > 0) {
                 $input['user_id'] = $decode['user_id'];
                 $input['nama'] = $decode['nama'];
             }
