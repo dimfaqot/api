@@ -321,14 +321,10 @@ function get_data($decode)
         $sub_menu = [];
 
         if ($decode['order'] == 'pengeluaran') {
-            foreach (options($decode) as $i) {
-                $sub_menu[] = $i['value'];
-            }
+            $sub_menu = options($decode);
         }
         if ($decode['order'] == 'transaksi') {
-            foreach (options($decode) as $i) {
-                $sub_menu[] = $i['value'];
-            }
+            $sub_menu = options($decode);
         }
 
         $db = db($decode['order'] == "hutang" ? "transaksi" : $decode['order'], $decode['db']);
