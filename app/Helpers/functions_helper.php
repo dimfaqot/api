@@ -647,7 +647,7 @@ function get_hutang($decode)
         }
         $data = [
             'data' => $res,
-            'biaya' => array_sum(array_column($result, 'total_biaya')),
+            'total' => array_sum(array_column($result, 'total_biaya')),
             'sub_menu' => []
 
         ];
