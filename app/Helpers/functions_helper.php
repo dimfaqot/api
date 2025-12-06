@@ -321,12 +321,12 @@ function get_data($decode)
         $sub_menu = [];
 
         if ($decode['order'] == 'pengeluaran') {
-            foreach (options($decode['db'], "Inv") as $i) {
+            foreach (options($decode) as $i) {
                 $sub_menu[] = $i['value'];
             }
         }
         if ($decode['order'] == 'transaksi') {
-            foreach (options($decode['db'], "Kantin") as $i) {
+            foreach (options($decode) as $i) {
                 $sub_menu[] = $i['value'];
             }
         }
@@ -626,7 +626,7 @@ function get_hutang($decode)
         user_id,
         nama,
         SUM(biaya) as total,
-        GROUP_CONCAT(CONCAT(barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
+        GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ")
             ->where('metode', 'Hutang')
             ->groupBy('user_id, nama')
@@ -636,8 +636,8 @@ function get_hutang($decode)
         // parsing string jadi array
         foreach ($result as &$row) {
             $row['data'] = array_map(function ($item) {
-                [$barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
-                return ['barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
+                [$id, $barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+                return ['id' => $id, 'barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
             }, explode(',', $row['data']));
         }
         unset($row);

@@ -70,7 +70,10 @@ class Cetak extends BaseController
 
     public function nota($db, $no_nota, $uang = 0)
     {
-        $data = db('transaksi', $db)->where('no_nota', $no_nota)->get()->getResultArray();
+        $data = db('transaksi', $db)->where('no_nota', $no_nota)->whereNotIn('metode', ['Hutang'])->get()->getResultArray();
+        if (!$data) {
+            gagal("No. nota tidak ditemukan");
+        }
         $total = 0;
         if ($uang == 0 && $data) {
             $uang = (int)$data[0]['uang'];
