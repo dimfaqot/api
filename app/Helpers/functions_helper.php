@@ -775,7 +775,7 @@ function transaksi($decode)
                 gagal("Update hutang gagal");
             }
 
-            $message = base_url('cetak/nota/' . $decode['db'] . '/' . $input['no_nota'] . "/" . $decode['uang']);
+            $message = base_url('cetak/nota/' . $decode['db'] . '/' . $i['no_nota'] . "/" . $decode['uang']);
         }
     }
 
