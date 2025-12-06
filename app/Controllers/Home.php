@@ -23,7 +23,7 @@ class Home extends BaseController
                 $this->unlock($decode);
             } else {
                 $data = get_data($decode);
-                sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
+                sukses("Ok", $data['data'], $data['biaya'], $data['sub_menu']);
             }
         }
     }
