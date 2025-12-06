@@ -687,9 +687,10 @@ function transaksi($decode)
 
             $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
 
-            if (array_key_exists('uang', $decode)) {
+            if ($decode['uang'] !== "") {
                 $message .= "/" . $decode['uang'];
             }
+
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
@@ -697,6 +698,7 @@ function transaksi($decode)
             if ($decode['ket'] == "hutang") {
                 $input['user_id'] = $decode['penghutang']['id'];
                 $input['nama'] = $decode['penghutang']['nama'];
+                $input['metode'] = "Hutang";
             } else {
                 $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
