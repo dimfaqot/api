@@ -17,8 +17,9 @@ class Transaksi extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
+            $data = db('barang', $decode['db'])->whereIn('jenis', options(['db' => $decode['db'], 'kategori' => 'Kantin', 'format' => 'array']))->get()->getResultArray();
 
-            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']));
+            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']), $data);
         }
         // transaksi= simpan data baik bayar langsung maupun hutang
         // Hutang= membayar hutang yang datanya sudah ada
