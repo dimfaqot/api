@@ -85,7 +85,7 @@ class Pengeluaran extends BaseController
         if ($decode['order'] == "Edit") {
 
             $harga = angka_to_int($decode['harga']);
-            $qty = angka_to_int($decode['qty']);
+
             $total = angka_to_int($decode['harga']) * angka_to_int($decode['qty']);
             $diskon = angka_to_int($decode['diskon']);
             $biaya = $total - $diskon;
@@ -93,7 +93,7 @@ class Pengeluaran extends BaseController
             $db = \Config\Database::connect();
             $db->transStart();
 
-            // Ambil data lama
+            // Ambil data lama dari pengeluaran
             $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
@@ -103,9 +103,15 @@ class Pengeluaran extends BaseController
             if (!$barang)    return gagal("Barang not found");
 
             // Update stok jika qty berubah
-            if ($barang['tipe'] == "Count") {
-                if ($q['qty'] != $qty) {
-                    $barang['qty'] -= $qty;
+            if ($barang['tipe'] == "Count" && array_key_exists("qty", $decode)) {
+                $qty = angka_to_int($decode['qty']);
+
+                if ((int)$q['qty'] !== $qty) {
+                    if ($q['qty'] < $qty) {
+                        $barang['qty'] += ($qty - $q['qty']);
+                    } elseif ($q['qty'] > $qty) {
+                        $barang['qty'] -= ($q['qty'] - $qty);
+                    }
                     if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                         return gagal("Update qty gagal");
                     }
