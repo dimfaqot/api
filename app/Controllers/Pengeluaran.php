@@ -36,11 +36,11 @@ class Pengeluaran extends BaseController
             $db = \Config\Database::connect();
             $db->transStart();
 
-            $barang = db('barang', $decode['db'])->where('id', $barang_id)->get()->getRowArray();
-
             if ($diskon > ($harga * $qty)) {
                 gagal("Diskon over");
             }
+            $barang = db('barang', $decode['db'])->where('id', $barang_id)->get()->getRowArray();
+
             if (!$barang) {
                 gagal("Barang not found");
             }
@@ -75,7 +75,7 @@ class Pengeluaran extends BaseController
 
             // Simpan data  
             db($decode['tabel'], $decode['db'])->insert($input);
-
+            $decode['order'] = $decode['tabel'];
             $db->transComplete();
 
             return $db->transStatus()
@@ -129,7 +129,7 @@ class Pengeluaran extends BaseController
             if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update gagal");
             }
-
+            $decode['order'] = $decode['tabel'];
             $db->transComplete();
 
             return $db->transStatus()
@@ -167,6 +167,8 @@ class Pengeluaran extends BaseController
             if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()) {
                 gagal("Delete gagal");
             }
+
+            $decode['order'] = $decode['tabel'];
 
             $db->transComplete();
 
