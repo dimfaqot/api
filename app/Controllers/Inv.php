@@ -58,7 +58,7 @@ class Inv extends BaseController
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
-
+            sukses($input);
             // Simpan data  
             db($decode['tabel'], $decode['db'])->insert($input);
 
