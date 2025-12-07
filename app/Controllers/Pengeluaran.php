@@ -20,6 +20,7 @@ class Pengeluaran extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
+            $decode['order'] = $decode['tabel'];
             get_data($decode);
         }
 
