@@ -326,7 +326,11 @@ function get_data($decode)
             $dec = $decode;
             $dec['kategori'] = "Kantin";
             $sub_menu2 = options($dec);
-            $sub_menu = array_merge($sub_menu1, $sub_menu2);
+            if ($decode['kategori'] == "Inv") {
+                $sub_menu = $sub_menu1;
+            } else {
+                $sub_menu = array_merge($sub_menu1, $sub_menu2);
+            }
         }
         if ($decode['order'] == 'transaksi') {
             $sub_menu = options($decode);
