@@ -110,7 +110,7 @@ class Inv extends BaseController
         }
 
         if ($decode['order'] == "Delete") {
-            delete($decode);
+            delete($decode, ['Advisor', 'Root']);
         }
     }
 }
