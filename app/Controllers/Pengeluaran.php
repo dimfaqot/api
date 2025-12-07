@@ -167,7 +167,7 @@ class Pengeluaran extends BaseController
 
             // Update stok jika qty berubah
             if ($barang['tipe'] == "Count") {
-                $barang['qty'] -=  $q['qty'];
+                $barang['qty'] -= (int) $q['qty'];
                 if ((int)$barang['qty'] < 0) {
                     gagal("Barang minus");
                 }
