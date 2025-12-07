@@ -321,10 +321,6 @@ function get_data($decode)
         }
         $sub_menu = [];
 
-        if ($decode['order'] == 'pengeluaran' || $decode['order'] == 'transaksi') {
-            $sub_menu = options($decode);
-        }
-
         $db = db($decode['tabel'], $decode['db']);
         $db->select('*');
         if ($decode['jenis'] !== "All") {
@@ -335,6 +331,7 @@ function get_data($decode)
         }
 
         if ($decode['order'] == "show" && $decode['tabel'] == "pengeluaran") {
+            $sub_menu = options($decode);
             $db->whereIn('jenis', $sub_menu);
         }
 
