@@ -111,6 +111,9 @@ class Pengeluaran extends BaseController
                         $barang['qty'] += ($qty - $q['qty']);
                     } elseif ($q['qty'] > $qty) {
                         $barang['qty'] -= ($q['qty'] - $qty);
+                        if ((int)$barang['qty'] < 0) {
+                            gagal("Barang minus");
+                        }
                     }
                     if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                         return gagal("Update qty gagal");
@@ -154,7 +157,7 @@ class Pengeluaran extends BaseController
             $db = \Config\Database::connect();
             $db->transStart();
 
-            // Ambil data lama
+            // Ambil data lama dari pengeluaran
             $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
@@ -165,6 +168,9 @@ class Pengeluaran extends BaseController
             // Update stok jika qty berubah
             if ($barang['tipe'] == "Count") {
                 $barang['qty'] -=  $q['qty'];
+                if ((int)$barang['qty'] < 0) {
+                    gagal("Barang minus");
+                }
                 if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                     return gagal("Update qty gagal");
                 }
