@@ -321,18 +321,7 @@ function get_data($decode)
         }
         $sub_menu = [];
 
-        if ($decode['order'] == 'pengeluaran') {
-            $sub_menu1 = options($decode);
-            $dec = $decode;
-            $dec['kategori'] = "Kantin";
-            $sub_menu2 = options($dec);
-            if ($decode['kategori'] == "Inv") {
-                $sub_menu = $sub_menu1;
-            } else {
-                $sub_menu = array_merge($sub_menu1, $sub_menu2);
-            }
-        }
-        if ($decode['order'] == 'transaksi') {
+        if ($decode['order'] == 'pengeluaran' || $decode['order'] == 'transaksi') {
             $sub_menu = options($decode);
         }
 
@@ -343,6 +332,10 @@ function get_data($decode)
         }
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
+        }
+
+        if ($decode['order'] == "show" && $decode['tabel'] == "pengeluaran") {
+            $db->whereIn('jenis', $sub_menu);
         }
 
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
@@ -519,36 +512,6 @@ function delete($decode, $roles = [])
         : gagal('Gagal');
 }
 
-function lists($decode)
-{
-    $tahun = clear($decode['tahun']);
-    $bulan = clear($decode['bulan']);
-    $jenis = clear($decode['jenis']);
-
-    $filters = $decode['filters'];
-
-    $db = db($decode['tabel'], $decode['db']);
-    $db->select('*');
-    if ($jenis == "All") {
-        $db->whereIn('jenis', $filters);
-    } else {
-        $db->where('jenis', $jenis);
-    }
-
-    if (array_key_exists('lokasi', $decode)) {
-        $db->where('lokasi', $decode['lokasi']);
-    }
-
-    $data = $db->orderBy('updated_at', 'DESC')
-        ->where("MONTH(FROM_UNIXTIME(tgl))", $bulan)
-        ->where("YEAR(FROM_UNIXTIME(tgl))", $tahun)
-        ->get()
-        ->getResultArray();
-    $total = array_sum(array_column($data, 'biaya'));
-
-
-    sukses("Ok", $data, $total);
-}
 
 function cari_barang($decode)
 {

@@ -113,9 +113,5 @@ class Inv extends BaseController
         if ($decode['order'] == "Delete") {
             delete($decode);
         }
-
-        if ($decode['order'] == "Lists") {
-            lists($decode);
-        }
     }
 }
