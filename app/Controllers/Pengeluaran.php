@@ -15,11 +15,11 @@ class Pengeluaran extends BaseController
         $decode = decode_jwt($jwt);
         $decode['tahun'] = date('Y');
         $decode['bulan'] = date('n');
+        $decode['jenis'] = "All";
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $decode['jenis'] = "All";
 
             sukses("Ok",  get_data($decode), tahuns($decode), bulans());
         }
