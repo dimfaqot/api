@@ -13,11 +13,13 @@ class Pengeluaran extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
+        $decode['tahun'] = date('Y');
+        $decode['bulan'] = date('n');
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $this->data($decode);
+            get_data($decode);
         }
 
 
@@ -75,7 +77,7 @@ class Pengeluaran extends BaseController
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses('Sukses', $this->data($decode))
+                ? sukses('Sukses', get_data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
@@ -129,7 +131,7 @@ class Pengeluaran extends BaseController
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses("Sukses", $this->data($decode))
+                ? sukses("Sukses", get_data($decode))
                 : gagal("Gagal");
         }
 
@@ -167,7 +169,7 @@ class Pengeluaran extends BaseController
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses("Sukses", $this->data($decode))
+                ? sukses("Sukses", get_data($decode))
                 : gagal("Gagal");
         }
 
@@ -177,26 +179,5 @@ class Pengeluaran extends BaseController
         if ($decode['order'] == "Lists") {
             lists($decode);
         }
-    }
-
-    function data($decode)
-    {
-
-        $filters = [];
-        foreach (options($decode['db'], "Kantin") as $i) {
-            $filters[] = $i['value'];
-        }
-
-        $db = db($decode['tabel'], $decode['db']);
-        $db->select('*');
-        if (array_key_exists('lokasi', $decode)) {
-            $db->where('lokasi', $decode['lokasi']);
-        }
-        $db->whereIn('jenis', $filters);
-        $data = $db->where("MONTH(FROM_UNIXTIME(tgl))", date('n'))
-            ->where("YEAR(FROM_UNIXTIME(tgl))", date('Y'))
-            ->orderBy("updated_at", "DESC")->get()->getResultArray();
-        $total = array_sum(array_column($data, 'biaya'));
-        sukses("Ok", $data, $total, tahuns($decode), bulans(), options($decode));
     }
 }
