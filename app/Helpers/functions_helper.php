@@ -319,7 +319,8 @@ function get_data($decode)
             $decode['tabel'] = "transaksi";
             return get_hutang($decode);
         }
-        $sub_menu = [];
+
+        $sub_menu = options($decode);
 
         $db = db($decode['tabel'], $decode['db']);
         $db->select('*');
@@ -331,7 +332,6 @@ function get_data($decode)
         }
 
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            $sub_menu = options($decode);
             $db->whereIn('jenis', $sub_menu);
         }
 
