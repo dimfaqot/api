@@ -325,7 +325,7 @@ function get_data($decode)
             $sub_menu1 = options($decode);
             $dec = $decode;
             $dec['kategori'] = "Inv";
-            $sub_menu2 = options($decode);
+            $sub_menu2 = options($dec);
             $sub_menu = array_merge($sub_menu1, $sub_menu2);
         }
         if ($decode['order'] == 'transaksi') {
