@@ -148,7 +148,7 @@ class Pengeluaran extends BaseController
 
         if ($decode['order'] == "Delete") {
 
-            $roles = ['Admin', 'Root'];
+            $roles = ['Root', 'Advisor'];
 
             if (!in_array($decode['admin'], $roles)) {
                 gagal("Role not allowed");
