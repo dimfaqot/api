@@ -20,7 +20,7 @@ class Pengeluaran extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $decode['order'] = $decode['tabel'];
+
             sukses("Ok",  get_data($decode), tahuns($decode), bulans());
         }
 
@@ -75,7 +75,7 @@ class Pengeluaran extends BaseController
 
             // Simpan data  
             db($decode['tabel'], $decode['db'])->insert($input);
-            $decode['order'] = $decode['tabel'];
+
             $db->transComplete();
 
             return $db->transStatus()
@@ -129,7 +129,7 @@ class Pengeluaran extends BaseController
             if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update gagal");
             }
-            $decode['order'] = $decode['tabel'];
+
             $db->transComplete();
 
             return $db->transStatus()
@@ -168,7 +168,7 @@ class Pengeluaran extends BaseController
                 gagal("Delete gagal");
             }
 
-            $decode['order'] = $decode['tabel'];
+
 
             $db->transComplete();
 

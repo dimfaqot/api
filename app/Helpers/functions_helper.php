@@ -322,13 +322,16 @@ function get_data($decode)
         $sub_menu = [];
 
         if ($decode['order'] == 'pengeluaran') {
-            $sub_menu = options($decode);
+            $sub_menu1 = options($decode);
+            $dec = $decode;
+            $dec['kategori'] = "Inv";
+            $sub_menu1 = options($decode);
         }
         if ($decode['order'] == 'transaksi') {
             $sub_menu = options($decode);
         }
 
-        $db = db($decode['order'] == "hutang" ? "transaksi" : $decode['order'], $decode['db']);
+        $db = db($decode['tabel'], $decode['db']);
         $db->select('*');
         if ($decode['jenis'] !== "All") {
             $db->where('jenis', $decode['jenis']);
@@ -336,6 +339,7 @@ function get_data($decode)
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
+
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
         if ($decode['order'] == "hutang") {
