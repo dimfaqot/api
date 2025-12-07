@@ -324,7 +324,7 @@ function get_data($decode)
         if ($decode['order'] == 'pengeluaran') {
             $sub_menu1 = options($decode);
             $dec = $decode;
-            $dec['kategori'] = "Inv";
+            $dec['kategori'] = "Kantin";
             $sub_menu2 = options($dec);
             $sub_menu = array_merge($sub_menu1, $sub_menu2);
         }
