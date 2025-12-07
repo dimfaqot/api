@@ -171,7 +171,7 @@ class Pengeluaran extends BaseController
                 if ((int)$barang['qty'] < 0) {
                     gagal("Barang minus");
                 }
-                sukses($barang);
+
                 if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                     return gagal("Update qty gagal");
                 }
