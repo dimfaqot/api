@@ -15,12 +15,11 @@ class Inv extends BaseController
         $decode = decode_jwt($jwt);
         $decode['tahun'] = date('Y');
         $decode['bulan'] = date('n');
-        $decode['jenis'] = "All";
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-
+            $decode['jenis'] = "All";
             sukses("Ok",  get_data($decode), tahuns($decode), bulans());
         }
 
@@ -61,7 +60,7 @@ class Inv extends BaseController
             sukses($input);
             // Simpan data  
             db($decode['tabel'], $decode['db'])->insert($input);
-
+            $decode['jenis'] = "All";
             $db->transComplete();
 
             return $db->transStatus()
@@ -102,7 +101,7 @@ class Inv extends BaseController
             if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update gagal");
             }
-
+            $decode['jenis'] = "All";
             $db->transComplete();
 
             return $db->transStatus()
