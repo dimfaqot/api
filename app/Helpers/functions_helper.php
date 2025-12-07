@@ -330,7 +330,7 @@ function get_data($decode)
             $db->where('lokasi', $decode['lokasi']);
         }
 
-        if ($decode['order'] == "show" && $decode['tabel'] == "pengeluaran") {
+        if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
             $sub_menu = options($decode);
             $db->whereIn('jenis', $sub_menu);
         }
