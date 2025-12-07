@@ -21,7 +21,7 @@ class Pengeluaran extends BaseController
 
         if ($decode['order'] == "Show") {
             $decode['order'] = $decode['tabel'];
-            get_data($decode);
+            sukses("Ok",  get_data($decode));
         }
 
 
