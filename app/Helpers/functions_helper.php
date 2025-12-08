@@ -640,8 +640,7 @@ function get_hutang($decode)
         'data' => $res,
         'total' => array_sum(array_column($result, 'biaya')),
         'range' => $range,
-        'sub_menu' => []
-
+        'sub_menu' => date("t") //jml hari bulan ini
     ];
 
     if (array_key_exists('kategori', $decode)) {
