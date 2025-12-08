@@ -659,7 +659,7 @@ function get_hutang($decode)
             ->getResultArray();
 
 
-        return $data;
+        $data = $res;
     }
 
     return $data;
