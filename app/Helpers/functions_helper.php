@@ -600,6 +600,7 @@ function time_today($decode)
 
 function get_hutang($decode)
 {
+    $range = time_today($decode);
 
     $db = db($decode['tabel'], $decode['db']);
     $data = [];
@@ -641,7 +642,7 @@ function get_hutang($decode)
     }
     if ($decode['filter'] == "by nota") {
 
-        $range = time_today($decode);
+
         $db = db($decode['tabel'], $decode['db']);
         $result = $db
             ->select("
@@ -670,7 +671,8 @@ function get_hutang($decode)
         $data = [
             'data' => $res,
             'total' => array_sum(array_column($result, 'biaya')),
-            'sub_menu' => options($decode)
+            'sub_menu' => options($decode),
+            'range' => $range
 
         ];
     }
