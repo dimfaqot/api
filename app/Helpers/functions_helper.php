@@ -639,9 +639,14 @@ function get_hutang($decode)
     $data = [
         'data' => $res,
         'total' => array_sum(array_column($result, 'biaya')),
-        'sub_menu' => options($decode)
+        'range' => $range,
+        'sub_menu' => []
 
     ];
+
+    if (array_key_exists('kategori', $decode)) {
+        $data['sub_menu'] = options($decode);
+    }
 
     return $data;
 }
