@@ -659,7 +659,30 @@ function get_hutang($decode)
             ->getResultArray();
 
 
-        $data = $result;
+        foreach ($result as &$row) {
+            $row['data'] = array_map(function ($item) {
+                [$id, $barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+                return [
+                    'id'        => (int)$id,
+                    'barang'    => $barang,
+                    'biaya'     => (int)$biaya,
+                    'harga'     => (int)$harga,
+                    'qty'       => (int)$qty,
+                    'total'     => (int)$total,
+                    'diskon'    => (int)$diskon,
+                    'barang_id' => (int)$barang_id,
+                    'tgl'       => (int)$tgl
+                ];
+            }, explode(',', $row['data']));
+        }
+        unset($row);
+
+        // hasil akhir
+        $data = [
+            'data'  => $result, // ini array berisi user_id, nama, biaya, dan data[] yang sudah diparse
+            'total' => array_sum(array_column($result, 'biaya')),
+            'sub_menu' => options($decode)
+        ];
     }
 
     return $data;
