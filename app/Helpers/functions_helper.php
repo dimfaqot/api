@@ -616,7 +616,7 @@ function get_hutang($decode)
         $db->groupBy('user_id, nama');
     }
     if ($decode['filter'] == "by nota") {
-        $db->groupBy('no_nota, nama');
+        $db->groupBy('no_nota, nama,no_nota');
     }
     $result = $db->get()->getResultArray();
 
