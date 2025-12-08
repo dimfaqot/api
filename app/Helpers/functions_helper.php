@@ -581,6 +581,22 @@ function cari_user($decode)
     sukses("Ok", $res);
 }
 
+function time_today($decode)
+{
+    $today = date("Y-m-d");
+    // Timestamp mulai: hari ini jam 12:00 siang
+    $start = strtotime($today . " 07:00:00");
+
+    if ($decode['db'] == "playground") {
+        // Timestamp akhir: besok jam 04:00 pagi
+        $end = strtotime($today . " +1 day 04:00:00");
+    } else {
+        $end = strtotime($today . " +1 day 01:00:00");
+    }
+
+    $res = ['start' => $start, 'end' => $end];
+}
+
 function get_hutang($decode)
 {
 
@@ -621,6 +637,28 @@ function get_hutang($decode)
             'sub_menu' => options($decode)
 
         ];
+    }
+    if ($decode['filter'] == "by nota") {
+
+        $range = time_today($decode);
+        $db = db($decode['tabel'], $decode['db']);
+        $result = $db
+            ->select("
+                user_id,
+                nama,
+                SUM(biaya) as biaya,
+                GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) 
+                ORDER BY barang SEPARATOR ',') as data
+            ")
+            ->where('metode', 'Hutang')
+            ->where("tgl >=", $range['start'])
+            ->where("tgl <=", $range['end'])
+            ->groupBy('no_nota, nama')
+            ->get()
+            ->getResultArray();
+
+
+        return $data;
     }
 
     return $data;
