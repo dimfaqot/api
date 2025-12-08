@@ -604,78 +604,44 @@ function get_hutang($decode)
 
     $db = db($decode['tabel'], $decode['db']);
     $data = [];
-    if ($decode['filter'] == "by user") {
-        $result = $db
-            ->select("
+    $db
+        ->select("
         user_id,
         nama,
         SUM(biaya) as biaya,
         GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
-        ")
-            ->where('metode', 'Hutang')
-            ->groupBy('user_id, nama')
-            ->get()
-            ->getResultArray();
-
-        // parsing string jadi array
-        foreach ($result as &$row) {
-            $row['data'] = array_map(function ($item) {
-                [$id, $barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
-                return ['id' => $id, 'barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
-            }, explode(',', $row['data']));
-        }
-        unset($row);
-        $res = [];
-        foreach ($result as $i) {
-            $q = db('user')->where('id', $i['user_id'])->get()->getRowArray();
-            if ($q) {
-                $i['wa'] = $q['wa'];
-            }
-            $res[] = $i;
-        }
-        $data = [
-            'data' => $res,
-            'total' => array_sum(array_column($result, 'biaya')),
-            'sub_menu' => options($decode)
-
-        ];
+        ");
+    $db->where('metode', 'Hutang');
+    if ($decode['filter'] == "by user") {
+        $db->groupBy('user_id, nama');
     }
     if ($decode['filter'] == "by nota") {
-
-
-        $db = db($decode['tabel'], $decode['db']);
-        $result = $db
-            ->select("
-                user_id,
-                nama,
-                SUM(biaya) as biaya,
-                GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) 
-                ORDER BY barang SEPARATOR ',') as data
-            ")
-            ->where('metode', 'Hutang')
-            ->where("tgl >=", $range['start'])
-            ->where("tgl <=", $range['end'])
-            ->groupBy('no_nota, nama')
-            ->get()
-            ->getResultArray();
-
-        unset($row);
-        $res = [];
-        foreach ($result as $i) {
-            $q = db('user')->where('id', $i['user_id'])->get()->getRowArray();
-            if ($q) {
-                $i['wa'] = $q['wa'];
-            }
-            $res[] = $i;
-        }
-        $data = [
-            'data' => $res,
-            'total' => array_sum(array_column($result, 'biaya')),
-            'sub_menu' => [],
-            'range' => $range
-
-        ];
+        $db->groupBy('no_nota, nama');
     }
+    $result = $db->get()->getResultArray();
+
+    // parsing string jadi array
+    foreach ($result as &$row) {
+        $row['data'] = array_map(function ($item) {
+            [$id, $barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+            return ['id' => $id, 'barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
+        }, explode(',', $row['data']));
+    }
+    unset($row);
+    $res = [];
+    foreach ($result as $i) {
+        $q = db('user')->where('id', $i['user_id'])->get()->getRowArray();
+        if ($q) {
+            $i['wa'] = $q['wa'];
+        }
+        $res[] = $i;
+    }
+    $data = [
+        'data' => $res,
+        'total' => array_sum(array_column($result, 'biaya')),
+        'sub_menu' => options($decode)
+
+    ];
 
     return $data;
 }
