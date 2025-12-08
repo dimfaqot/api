@@ -681,7 +681,8 @@ function get_hutang($decode)
         $data = [
             'data'  => $result, // ini array berisi user_id, nama, biaya, dan data[] yang sudah diparse
             'total' => array_sum(array_column($result, 'biaya')),
-            'sub_menu' => options($decode)
+            'sub_menu' => options($decode),
+            'range' => $range
         ];
     }
 
