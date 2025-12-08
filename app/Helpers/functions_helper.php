@@ -613,10 +613,10 @@ function get_hutang($decode)
         ");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
-        $db->groupBy('user_id, nama');
+        $db->groupBy('user_id, nama, no_nota');
     }
     if ($decode['filter'] == "by nota") {
-        $db->groupBy('no_nota, nama,no_nota');
+        $db->groupBy('no_nota, nama');
     }
     $result = $db->get()->getResultArray();
 
