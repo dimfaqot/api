@@ -583,7 +583,12 @@ function cari_user($decode)
 
 function time_today($decode)
 {
-    $today = date("Y-m-" . $decode['tanggal']);
+    $today = date("Y-m-d");
+
+    if (array_key_exists('tanggal', $decode)) {
+        $exp = explode("-", $today);
+        $today = $exp[0] . "-" . $exp[1] . "-" . $decode['tanggal'];
+    }
     // Timestamp mulai: hari ini jam 12:00 siang
     $start = strtotime($today . " 07:00:00");
 
