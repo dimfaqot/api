@@ -617,6 +617,7 @@ function get_hutang($decode)
         $db->groupBy('user_id');
     }
     if ($decode['filter'] == "by nota") {
+        $db->where('tgl >=', $range['start'])->where('tgl <=', $range['end']);
         $db->groupBy('no_nota');
     }
     $result = $db->get()->getResultArray();
