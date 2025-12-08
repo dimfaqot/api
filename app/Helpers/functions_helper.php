@@ -595,6 +595,7 @@ function time_today($decode)
     }
 
     $res = ['start' => $start, 'end' => $end];
+    return $res;
 }
 
 function get_hutang($decode)
