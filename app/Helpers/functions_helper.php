@@ -608,15 +608,16 @@ function get_hutang($decode)
         ->select("
         user_id,
         nama,
+        no_nota,
         SUM(biaya) as biaya,
         GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
-        $db->groupBy('user_id, nama, no_nota');
+        $db->groupBy('user_id');
     }
     if ($decode['filter'] == "by nota") {
-        $db->groupBy('no_nota, nama');
+        $db->groupBy('no_nota');
     }
     $result = $db->get()->getResultArray();
 
