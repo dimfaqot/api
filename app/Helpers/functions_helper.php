@@ -581,7 +581,7 @@ function cari_user($decode)
     sukses("Ok", $res);
 }
 
-function time_today($decode)
+function today($decode)
 {
     $today = date("Y-m-d");
 
@@ -592,12 +592,8 @@ function time_today($decode)
     // Timestamp mulai: hari ini jam 12:00 siang
     $start = strtotime($today . " 07:00:00");
 
-    if ($decode['db'] == "playground") {
-        // Timestamp akhir: besok jam 04:00 pagi
-        $end = strtotime($today . " +1 day 04:00:00");
-    } else {
-        $end = strtotime($today . " +1 day 01:00:00");
-    }
+    $end = strtotime($today . " +1 day 05:00:00");
+
 
     $res = ['start' => $start, 'end' => $end];
     return $res;
@@ -605,7 +601,7 @@ function time_today($decode)
 
 function get_hutang($decode)
 {
-    $range = time_today($decode);
+    $range = today($decode);
 
     $db = db($decode['tabel'], $decode['db']);
     $data = [];
@@ -615,7 +611,7 @@ function get_hutang($decode)
         nama,
         no_nota,
         SUM(biaya) as biaya,
-        GROUP_CONCAT(CONCAT(id, ':',barang, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
+        GROUP_CONCAT(CONCAT(id, ':',barang, ':',jenis, ':',link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
@@ -630,8 +626,8 @@ function get_hutang($decode)
     // parsing string jadi array
     foreach ($result as &$row) {
         $row['data'] = array_map(function ($item) {
-            [$id, $barang, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
-            return ['id' => $id, 'barang' => $barang, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
+            [$id, $barang, $biaya, $jenis, $link, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+            return ['id' => $id, 'barang' => $barang, 'jenis' => $jenis, 'link' => $link, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
         }, explode(',', $row['data']));
     }
     unset($row);
