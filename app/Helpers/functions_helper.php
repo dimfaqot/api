@@ -611,7 +611,7 @@ function get_hutang($decode)
         nama,
         no_nota,
         SUM(biaya) as biaya,
-        GROUP_CONCAT(CONCAT(id, ':',barang, ':',jenis, ':',link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
+        GROUP_CONCAT(CONCAT(id, ':', barang, ':', tipe, ':',link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
@@ -626,8 +626,8 @@ function get_hutang($decode)
     // parsing string jadi array
     foreach ($result as &$row) {
         $row['data'] = array_map(function ($item) {
-            [$id, $barang, $biaya, $jenis, $link, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
-            return ['id' => $id, 'barang' => $barang, 'jenis' => $jenis, 'link' => $link, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
+            [$id, $barang, $biaya, $tipe, $link, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+            return ['id' => $id, 'barang' => $barang, 'tipe' => $tipe, 'link' => $link, 'barang_id' => $barang_id, 'tgl' => (int)$tgl, 'biaya' => (int)$biaya, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'harga' => (int)$harga];
         }, explode(',', $row['data']));
     }
     unset($row);
@@ -679,6 +679,8 @@ function transaksi($decode)
                 "total" => $i['total'],
                 "diskon" => $i['diskon'],
                 "biaya" => $i['biaya'],
+                "tipe" => $i['tipe'],
+                "link" => $i['link'],
                 "petugas" => $decode['petugas']
             ];
 
