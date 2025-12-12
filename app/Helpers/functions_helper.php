@@ -778,6 +778,126 @@ function transaksi($decode)
 
             $message = base_url('cetak/nota/' . $decode['db'] . '/' . $i['no_nota'] . "/" . $decode['uang']);
         }
+        if ($decode['ket'] == "update pesanan") {
+            $data_old = db('transaksi', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+
+            if (!$data_old) {
+                gagal('Id transaksi not found');
+            }
+
+            if ($i['is_update'] == "true" || $i['is_update'] == "new") {
+                $barang = db('barang', $decode['db'])->where('id', ($i['is_update'] == "new" ? $i['id'] : $i['barang_id']))->get()->getRowArray();
+
+                if (!$barang) {
+                    gagal('Id barang not found');
+                }
+
+                if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
+
+                    $exp = explode(",", $barang['link']);
+
+                    foreach ($exp as $x) {
+                        $brng = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+
+                        if (!$brng) {
+                            gagal("Id link barang kosong");
+                        }
+
+                        if ($i['is_update'] == "new") {
+                            if ($brng['qty'] < $i['qty']) {
+                                gagal("Stok " . $brng['barang'] . " kurang");
+                            }
+                            $brng['qty'] -= $i['qty'];
+                        } else {
+                            $selisih_qty = 0;
+                            if ($data_old['qty'] < $i['qty']) {
+                                $selisih_qty = $i['qty'] - $data_old['qty'];
+
+                                if ($brng['qty'] < $selisih_qty) {
+                                    gagal("Stok " . $brng['barang'] . " kurang");
+                                }
+                                $brng['qty'] -= $selisih_qty;
+                            }
+
+                            if ($data_old['qty'] > $i['qty']) {
+                                $selisih_qty =  $data_old['qty'] - $i['qty'];
+                                $brng['qty'] += $selisih_qty;
+                            }
+                        }
+
+                        if (!db('barang', $decode['db'])->where('id', $brng['id'])->update($brng)) {
+                            gagal("Update stok gagal");
+                        }
+                    }
+                }
+
+                // update_qty
+                if ($barang['tipe'] == "Count") {
+                    if ($i['is_update'] == "new") {
+                        if ($barang['qty'] < $i['qty']) {
+                            gagal("Stok " . $barang['barang'] . " kurang");
+                        }
+                        $barang['qty'] -= $i['qty'];
+
+                        $new = [
+                            "no_nota" => $decode['no_nota'],
+                            "tgl" => $data_old['tgl'],
+                            "jenis" => $i['jenis'],
+                            "barang" => $i['barang'],
+                            "barang_id" => $i['id'],
+                            "harga" => $i['harga'],
+                            "qty" => $i['qty'],
+                            "total" => $i['total'],
+                            "diskon" => $i['diskon'],
+                            "biaya" => $i['biaya'],
+                            "karyawan" => $i['karyawan'],
+                            "tipe" => $i['tipe'],
+                            "link" => $i['link'],
+                            "metode" => 'Hutang',
+                            "user_id" => $data_old['user_id'],
+                            "nama" => $data_old['nama'],
+                            "petugas" => $decode['petugas']
+                        ];
+
+                        if (array_key_exists('lokasi', $decode)) {
+                            $new['lokasi'] = $decode['lokasi'];
+                        }
+
+                        if (!db('transaksi', $decode['db'])->insert($new)) {
+                            gagal("Insert new data gagal");
+                        }
+                    } else {
+                        $selisih_qty = 0;
+                        if ($data_old['qty'] < $i['qty']) {
+                            $selisih_qty = $i['qty'] - $data_old['qty'];
+
+                            if ($barang['qty'] < $selisih_qty) {
+                                gagal("Stok " . $i['barang'] . " kurang");
+                            }
+                            $barang['qty'] -= $selisih_qty;
+                        }
+
+                        if ($data_old['qty'] > $i['qty']) {
+                            $selisih_qty =  $data_old['qty'] - $i['qty'];
+                            $barang['qty'] += $selisih_qty;
+                        }
+                        $update = [
+                            'petugas' => $decode['petugas'],
+                            'qty' => $i['qty']
+                        ];
+                        if (!db('transaksi', $decode['db'])->where('id', $i['id'])->update($update)) {
+                            gagal("Update transaksi gagal");
+                        }
+                    }
+
+                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                        gagal("Update stok gagal");
+                    }
+                }
+            }
+
+            $message = "Sukses";
+        }
     }
 
     $db->transComplete();
