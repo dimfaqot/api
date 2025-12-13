@@ -81,10 +81,6 @@ class Cetak extends BaseController
             $total = array_sum(array_column($data, 'biaya'));
         }
 
-        if ($uang < $total) {
-            gagal("Uang kurang");
-        }
-
         if (count($data) == 0) {
             echo '<h2 style="font-family: Arial, sans-serif;text-align:center">Data tidak ada</h2>';
             die;
