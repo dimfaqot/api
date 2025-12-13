@@ -583,21 +583,27 @@ function cari_user($decode)
 
 function today($decode)
 {
-    $today = date("Y-m-d");
+    $nowHour = (int)date("H"); // ambil jam sekarang
+    $today   = date("Y-m-d");
 
+    // jika jam 0-5 pagi, mundurkan 1 hari
+    if ($nowHour >= 0 && $nowHour < 6) {
+        $today = date("Y-m-d", strtotime("-1 day"));
+    }
+
+    // jika ada override tanggal dari $decode
     if (array_key_exists('tanggal', $decode)) {
-        $exp = explode("-", $today);
+        $exp   = explode("-", $today);
         $today = $exp[0] . "-" . $exp[1] . "-" . $decode['tanggal'];
     }
-    // Timestamp mulai: hari ini jam 12:00 siang
+
+    // range waktu: mulai jam 07:00 hari itu sampai jam 05:00 besok
     $start = strtotime($today . " 07:00:00");
+    $end   = strtotime($today . " +1 day 05:00:00");
 
-    $end = strtotime($today . " +1 day 05:00:00");
-
-
-    $res = ['start' => $start, 'end' => $end];
-    return $res;
+    return ['start' => $start, 'end' => $end];
 }
+
 
 function get_hutang($decode)
 {
@@ -779,13 +785,17 @@ function transaksi($decode)
             $message = base_url('cetak/nota/' . $decode['db'] . '/' . $i['no_nota'] . "/" . $decode['uang']);
         }
         if ($decode['ket'] == "update pesanan") {
-            $data_old = db('transaksi', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
 
-            if (!$data_old) {
-                gagal('Id transaksi not found');
-            }
+
 
             if ($i['is_update'] == "true" || $i['is_update'] == "new") {
+                if ($i['is_update'] == "true") {
+                    $data_old = db('transaksi', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+
+                    if (!$data_old) {
+                        gagal('Id transaksi not found');
+                    }
+                }
                 $barang = db('barang', $decode['db'])->where('id', ($i['is_update'] == "new" ? $i['id'] : $i['barang_id']))->get()->getRowArray();
 
                 if (!$barang) {
