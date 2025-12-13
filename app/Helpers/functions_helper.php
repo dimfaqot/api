@@ -839,42 +839,12 @@ function transaksi($decode)
                         }
                     }
                 }
-
-                // update_qty
                 if ($barang['tipe'] == "Count") {
                     if ($i['is_update'] == "new") {
                         if ($barang['qty'] < $i['qty']) {
                             gagal("Stok " . $barang['barang'] . " kurang");
                         }
                         $barang['qty'] -= $i['qty'];
-
-                        $new = [
-                            "no_nota" => $decode['no_nota'],
-                            "tgl" => $decode['tgl'],
-                            "jenis" => $i['jenis'],
-                            "barang" => $i['barang'],
-                            "barang_id" => $i['id'],
-                            "harga" => $i['harga'],
-                            "qty" => $i['qty'],
-                            "total" => $i['total'],
-                            "diskon" => $i['diskon'],
-                            "biaya" => $i['biaya'],
-                            "karyawan" => $i['karyawan'],
-                            "tipe" => $i['tipe'],
-                            "link" => $i['link'],
-                            "metode" => 'Hutang',
-                            "user_id" => $decode['penghutang']['user_id'],
-                            "nama" => $decode['penghutang']['nama'],
-                            "petugas" => $decode['petugas']
-                        ];
-
-                        if (array_key_exists('lokasi', $decode)) {
-                            $new['lokasi'] = $decode['lokasi'];
-                        }
-
-                        if (!db('transaksi', $decode['db'])->insert($new)) {
-                            gagal("Insert new data gagal");
-                        }
                     } else {
                         $selisih_qty = 0;
                         if ($data_old['qty'] < $i['qty']) {
@@ -890,17 +860,48 @@ function transaksi($decode)
                             $selisih_qty =  $data_old['qty'] - $i['qty'];
                             $barang['qty'] += $selisih_qty;
                         }
-                        $update = [
-                            'petugas' => $decode['petugas'],
-                            'qty' => $i['qty']
-                        ];
-                        if (!db('transaksi', $decode['db'])->where('id', $i['id'])->update($update)) {
-                            gagal("Update transaksi gagal");
-                        }
                     }
 
                     if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
                         gagal("Update stok gagal");
+                    }
+                }
+
+                if ($i['is_update'] == "new") {
+                    $new = [
+                        "no_nota" => $decode['no_nota'],
+                        "tgl" => $decode['tgl'],
+                        "jenis" => $i['jenis'],
+                        "barang" => $i['barang'],
+                        "barang_id" => $i['id'],
+                        "harga" => $i['harga'],
+                        "qty" => $i['qty'],
+                        "total" => $i['total'],
+                        "diskon" => $i['diskon'],
+                        "biaya" => $i['biaya'],
+                        "karyawan" => $i['karyawan'],
+                        "tipe" => $i['tipe'],
+                        "link" => $i['link'],
+                        "metode" => 'Hutang',
+                        "user_id" => $decode['penghutang']['user_id'],
+                        "nama" => $decode['penghutang']['nama'],
+                        "petugas" => $decode['petugas']
+                    ];
+
+                    if (array_key_exists('lokasi', $decode)) {
+                        $new['lokasi'] = $decode['lokasi'];
+                    }
+
+                    if (!db('transaksi', $decode['db'])->insert($new)) {
+                        gagal("Insert new data gagal");
+                    }
+                } else {
+                    $update = [
+                        'petugas' => $decode['petugas'],
+                        'qty' => $i['qty']
+                    ];
+                    if (!db('transaksi', $decode['db'])->where('id', $i['id'])->update($update)) {
+                        gagal("Update transaksi gagal");
                     }
                 }
             }
