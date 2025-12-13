@@ -863,8 +863,8 @@ function transaksi($decode)
                             "tipe" => $i['tipe'],
                             "link" => $i['link'],
                             "metode" => 'Hutang',
-                            "user_id" => $decode['user_hutang']['user_id'],
-                            "nama" => $decode['user_hutang']['nama'],
+                            "user_id" => $decode['penghutang']['user_id'],
+                            "nama" => $decode['penghutang']['nama'],
                             "petugas" => $decode['petugas']
                         ];
 
