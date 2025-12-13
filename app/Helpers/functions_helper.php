@@ -616,8 +616,9 @@ function get_hutang($decode)
         user_id,
         nama,
         no_nota,
+        tgl,
         SUM(biaya) as biaya,
-        GROUP_CONCAT(CONCAT(id, ':',tgl, ':', barang, ':', tipe, ':',link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
+        GROUP_CONCAT(CONCAT(id, ':', barang, ':', tipe, ':',link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
         ");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
@@ -632,8 +633,8 @@ function get_hutang($decode)
     // parsing string jadi array
     foreach ($result as &$row) {
         $row['data'] = array_map(function ($item) {
-            [$id, $tgl, $barang, $tipe, $link, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
-            return ['id' => $id, "tgl" => $tgl, 'barang' => $barang, 'biaya' => (int)$biaya, 'tipe' => $tipe, 'link' => $link, 'harga' => (int)$harga, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'barang_id' => $barang_id, 'tgl' => (int)$tgl];
+            [$id, $barang, $tipe, $link, $biaya, $harga, $qty, $total, $diskon, $barang_id, $tgl] = explode(':', trim($item));
+            return ['id' => $id, 'barang' => $barang, 'biaya' => (int)$biaya, 'tipe' => $tipe, 'link' => $link, 'harga' => (int)$harga, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'barang_id' => $barang_id, 'tgl' => (int)$tgl];
         }, explode(',', $row['data']));
     }
     unset($row);
@@ -786,8 +787,6 @@ function transaksi($decode)
         }
         if ($decode['ket'] == "update pesanan") {
 
-
-
             if ($i['is_update'] == "true" || $i['is_update'] == "new") {
                 if ($i['is_update'] == "true") {
                     $data_old = db('transaksi', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
@@ -851,7 +850,7 @@ function transaksi($decode)
 
                         $new = [
                             "no_nota" => $decode['no_nota'],
-                            "tgl" => $data_old['tgl'],
+                            "tgl" => $decode['tgl'],
                             "jenis" => $i['jenis'],
                             "barang" => $i['barang'],
                             "barang_id" => $i['id'],
@@ -864,8 +863,8 @@ function transaksi($decode)
                             "tipe" => $i['tipe'],
                             "link" => $i['link'],
                             "metode" => 'Hutang',
-                            "user_id" => $data_old['user_id'],
-                            "nama" => $data_old['nama'],
+                            "user_id" => $decode['user_hutang']['user_id'],
+                            "nama" => $decode['user_hutang']['nama'],
                             "petugas" => $decode['petugas']
                         ];
 
