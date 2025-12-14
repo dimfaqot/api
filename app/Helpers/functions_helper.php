@@ -629,7 +629,7 @@ function get_hutang($decode)
         $db->groupBy('no_nota');
     }
     $result = $db->get()->getResultArray();
-
+    sukses($result);
     // parsing string jadi array
     foreach ($result as &$row) {
         $row['data'] = array_map(function ($item) {
@@ -646,7 +646,19 @@ function get_hutang($decode)
                 $barang_id,
                 $tgl
             ] = explode(':', trim($item));
-            return ['id' => $id, 'barang' => $barang, 'biaya' => (int)$biaya, 'tipe' => $tipe, 'link' => $link, 'harga' => (int)$harga, 'qty' => (int)$qty, 'total' => (int)$total, 'diskon' => (int)$diskon, 'barang_id' => $barang_id, 'tgl' => (int)$tgl];
+            return [
+                'id' => $id,
+                'barang' => $barang,
+                'biaya' => (int)$biaya,
+                'tipe' => $tipe,
+                'link' => $link,
+                'harga' => (int)$harga,
+                'qty' => (int)$qty,
+                'total' => (int)$total,
+                'diskon' => (int)$diskon,
+                'barang_id' => $barang_id,
+                'tgl' => (int)$tgl
+            ];
         }, explode(',', $row['data']));
     }
     unset($row);
