@@ -77,9 +77,7 @@ class Cetak extends BaseController
 
         $uang = (int)$data[0]['uang'];
 
-        if ($data) {
-            $total = array_sum(array_column($data, 'biaya'));
-        }
+
 
         if (count($data) == 0) {
             echo '<h2 style="font-family: Arial, sans-serif;text-align:center">Data tidak ada</h2>';
