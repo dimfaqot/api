@@ -617,9 +617,7 @@ function get_hutang($decode)
         nama,
         no_nota,
         tgl,
-        SUM(biaya) as biaya,
-        GROUP_CONCAT(CONCAT(id, ':', barang, ':', tipe, ':', link, ':', biaya, ':', harga, ':', qty, ':', total, ':', diskon, ':', barang_id, ':', tgl) ORDER BY barang SEPARATOR ',') as data
-        ");
+        SUM(biaya) as biaya");
     $db->where('metode', 'Hutang');
     if ($decode['filter'] == "by user") {
         $db->groupBy('user_id');
@@ -629,47 +627,22 @@ function get_hutang($decode)
         $db->groupBy('no_nota');
     }
     $result = $db->get()->getResultArray();
-    sukses($result);
-    // parsing string jadi array
-    foreach ($result as &$row) {
-        $row['data'] = array_map(function ($item) {
-            [
-                $id,
-                $barang,
-                $tipe,
-                $link,
-                $biaya,
-                $harga,
-                $qty,
-                $total,
-                $diskon,
-                $barang_id,
-                $tgl
-            ] = explode(':', trim($item));
-            return [
-                'id' => $id,
-                'barang' => $barang,
-                'biaya' => (int)$biaya,
-                'tipe' => $tipe,
-                'link' => $link,
-                'harga' => (int)$harga,
-                'qty' => (int)$qty,
-                'total' => (int)$total,
-                'diskon' => (int)$diskon,
-                'barang_id' => $barang_id,
-                'tgl' => (int)$tgl
-            ];
-        }, explode(',', $row['data']));
-    }
-    unset($row);
+
     $res = [];
     foreach ($result as $i) {
         $q = db('user')->where('id', $i['user_id'])->get()->getRowArray();
         if ($q) {
             $i['wa'] = $q['wa'];
         }
+        if ($decode['filter'] == "by user") {
+            $i['data'] = db('transaksi', $decode['db'])->where('user_id', $i['user_id'])->get()->getResultArray();
+        }
+        if ($decode['filter'] == "by nota") {
+            $i['data'] = db('transaksi', $decode['db'])->where('no_nota', $i['no_nota'])->get()->getResultArray();
+        }
         $res[] = $i;
     }
+
     $data = [
         'data' => $res,
         'total' => array_sum(array_column($result, 'biaya')),
