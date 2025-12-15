@@ -611,8 +611,7 @@ function get_hutang($decode)
 
     $db = db($decode['tabel'], $decode['db']);
     $data = [];
-    $db
-        ->select("
+    $db->select("
         user_id,
         nama,
         no_nota,
@@ -634,12 +633,18 @@ function get_hutang($decode)
         if ($q) {
             $i['wa'] = $q['wa'];
         }
+        $dbv = db('transaksi', $decode['db'])->select('*');
         if ($decode['filter'] == "by user") {
-            $i['data'] = db('transaksi', $decode['db'])->where('user_id', $i['user_id'])->get()->getResultArray();
+            $dbv->where('user_id', $i['user_id']);
         }
         if ($decode['filter'] == "by nota") {
-            $i['data'] = db('transaksi', $decode['db'])->where('no_nota', $i['no_nota'])->get()->getResultArray();
+            $dbv->where('no_nota', $i['no_nota']);
         }
+        $val = $dbv->get()->getResultArray();
+        $totv = array_sum(array_column($val, 'biaya'));
+
+        $i['data'] = $val;
+        $i['biaya'] = $totv;
         $res[] = $i;
     }
 
