@@ -583,27 +583,31 @@ function cari_user($decode)
 
 function today($decode)
 {
-    $nowHour = (int)date("H"); // ambil jam sekarang
+    $nowHour = (int)date("H");
     $today   = date("Y-m-d");
+    $yesterday = date("Y-m-d", strtotime("-1 day"));
 
-    // jika jam 0-5 pagi, mundurkan 1 hari
-    if ($nowHour >= 0 && $nowHour < 6) {
-        $today = date("Y-m-d", strtotime("-1 day"));
-    }
-
-    // jika ada override tanggal dari $decode
+    // override tanggal jika ada di $decode
     if (array_key_exists('tanggal', $decode)) {
-        $exp   = explode("-", $today);
-        $today = $exp[0] . "-" . $exp[1] . "-" . $decode['tanggal'];
+        $expToday = explode("-", $today);
+        $today    = $expToday[0] . "-" . $expToday[1] . "-" . $decode['tanggal'];
+
+        $expYest  = explode("-", $yesterday);
+        $yesterday = $expYest[0] . "-" . $expYest[1] . "-" . $decode['tanggal'];
     }
 
-    // range waktu: mulai jam 07:00 hari itu sampai jam 05:00 besok
-    $start = strtotime($today . " 07:00:00");
-    $end   = strtotime($today . " +1 day 05:00:00");
+    if ($nowHour < 7) {
+        // 00:00–06:59 → start kemarin 07:00, end hari ini 05:00
+        $start = strtotime($yesterday . " 07:00:00");
+        $end   = strtotime($today . " 05:00:00");
+    } else {
+        // 07:00–23:59 → start hari ini 07:00, end saat ini
+        $start = strtotime($today . " 07:00:00");
+        $end   = time();
+    }
 
     return ['start' => $start, 'end' => $end];
 }
-
 
 function get_hutang($decode)
 {
