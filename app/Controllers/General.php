@@ -23,7 +23,7 @@ class General extends BaseController
                     $d['db'] = '';
                 }
                 unset($d['id']);
-                db('options')->insert($d);
+                db('user')->insert($d);
             }
         }
     }
