@@ -603,11 +603,13 @@ function today($decode)
     } else {
         // 07:00–23:59 → start hari ini 07:00, end saat ini
         $start = strtotime($today . " 07:00:00");
-        $end   = time();
+        $end   = strtotime($today . " 23:59:59");
     }
 
     return ['start' => $start, 'end' => $end];
 }
+
+
 
 function get_hutang($decode)
 {
@@ -644,7 +646,8 @@ function get_hutang($decode)
         if ($decode['filter'] == "by nota") {
             $dbv->where('no_nota', $i['no_nota']);
         }
-        $val = $dbv->get()->getResultArray();
+        $val = $dbv->get()
+            ->getResultArray();
         $totv = array_sum(array_column($val, 'biaya'));
 
         $i['data'] = $val;
