@@ -12,7 +12,7 @@ class General extends BaseController
             $data = db('menu', $i)->orderBy('role', 'ASC')->orderBy('urutan', 'ASC')->get()->getResultArray();
 
             foreach ($data as $d) {
-                $d['db'] = $d;
+                $d['db'] = $i;
                 unset($d['id']);
                 db('menu')->insert($d);
             }
