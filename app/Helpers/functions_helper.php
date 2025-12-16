@@ -141,7 +141,7 @@ function clear($text)
 function options($decode)
 {
 
-    $q = db('options', $decode['db'])->where("kategori", $decode['kategori'])->orderBy("value", "ASC")->get()->getResultArray();
+    $q = db('options')->where('db', $decode['db'])->where("kategori", $decode['kategori'])->orderBy("value", "ASC")->get()->getResultArray();
 
     $data = [];
     foreach ($q as $i) {

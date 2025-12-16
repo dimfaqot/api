@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+$routes->get('/copy', 'General::copy');
 $routes->get('/general/data/(:any)/(:any)', 'General::data/$1/$2');
 $routes->get('/general/data/(:any)/(:any)/(:any)', 'General::data/$1/$2/$3');
 $routes->get('/general/data/(:any)/(:any)/(:any)/(:any)', 'General::data/$1/$2/$3/$4');

@@ -15,9 +15,14 @@ class User extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode);
+        if ($decode == "Show") {
+            $q = db('user')->orderBy('nama', 'ASC')->get()->getResultArray();
+            sukses('Ok', $q, options($decode));
+        }
 
         if ($decode['order'] == "Add") {
             $input = [
+                'db '       => clear($decode['db']),
                 'role '       => upper_first(clear($decode['role'])),
                 'nama'       => upper_first(clear($decode['nama'])),
                 'username'       => ($decode['username'] == '' ? strtolower(random_str(6)) : $decode['username']),
