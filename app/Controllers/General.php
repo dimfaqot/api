@@ -13,7 +13,7 @@ class General extends BaseController
 
             foreach ($data as $d) {
                 $d['db'] = $i;
-                unset($i['id']);
+                unset($d['id']);
                 db('options')->insert($d);
             }
         }
