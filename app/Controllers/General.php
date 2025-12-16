@@ -9,21 +9,12 @@ class General extends BaseController
     {
         $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
         foreach ($dbs as $i) {
-            $data = db('user', $i)->orderBy('role', 'ASC')->orderBy('id', 'ASC')->get()->getResultArray();
+            $data = db('menu', $i)->orderBy('role', 'ASC')->orderBy('urutan', 'ASC')->get()->getResultArray();
 
             foreach ($data as $d) {
-                if (array_key_exists('lokasi', $d)) {
-                    $d['lokasi'] = $d['lokasi'];
-                } else {
-                    $d['lokasi'] = '';
-                }
-                if (array_key_exists('db', $d)) {
-                    $d['db'] = $d['db'];
-                } else {
-                    $d['db'] = '';
-                }
+                $d['db'] = $d;
                 unset($d['id']);
-                db('user')->insert($d);
+                db('menu')->insert($d);
             }
         }
     }
