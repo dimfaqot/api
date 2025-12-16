@@ -9,10 +9,19 @@ class General extends BaseController
     {
         $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
         foreach ($dbs as $i) {
-            $data = db('options', $i)->orderBy('kategori', 'ASC')->orderBy('id', 'ASC')->get()->getResultArray();
+            $data = db('user', $i)->orderBy('role', 'ASC')->orderBy('id', 'ASC')->get()->getResultArray();
 
             foreach ($data as $d) {
-                $d['db'] = $i;
+                if (array_key_exists('lokasi', $d)) {
+                    $d['lokasi'] = $d['lokasi'];
+                } else {
+                    $d['lokasi'] = '';
+                }
+                if (array_key_exists('db', $d)) {
+                    $d['db'] = $d['db'];
+                } else {
+                    $d['db'] = '';
+                }
                 unset($d['id']);
                 db('options')->insert($d);
             }
