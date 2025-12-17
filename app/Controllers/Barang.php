@@ -17,7 +17,7 @@ class Barang extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $status_qty = db('settings')->where('db', $decode['db'])->where('name', 'qty')->get()->getRowArray();
+            $status_qty = db('settings')->where('db', $decode['db'])->where('nama', 'qty')->get()->getRowArray();
             sukses('Ok', $this->data($decode), $status_qty['value'], options($decode));
         }
 
