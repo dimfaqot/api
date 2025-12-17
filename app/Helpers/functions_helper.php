@@ -353,7 +353,7 @@ function get_data($decode)
 
 function profile($decode)
 {
-    return db('profile', $decode['db'])->get()->getRowArray();
+    return db('profile')->where('db', $decode['db'])->get()->getRowArray();
 }
 
 function angka($uang)

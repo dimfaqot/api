@@ -19,31 +19,32 @@ class Settings extends BaseController
         if ($decode['order'] == "Add") {
             $input = [
                 'nama'       => strtolower(clear($decode['nama'])),
+                'db'       => strtolower(clear($decode['db'])),
                 'value'       => upper_first(clear($decode['value']))
             ];
 
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
+            if (db($decode['tabel'])->where('db', $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
                 gagal('Setting existed');
             }
 
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
+            db($decode['tabel'])->insert($input)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
+            if ((db($decode['tabel'])->where('db', $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
                 gagal("Setting existed");
             }
 
@@ -52,7 +53,7 @@ class Settings extends BaseController
 
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+            db($decode['tabel'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }

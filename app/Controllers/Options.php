@@ -25,26 +25,26 @@ class Options extends BaseController
 
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('kategori', $input['kategori'])->where('value', $input['value'])->countAllResults() > 0) {
+            if (db($decode['tabel'])->where('db', $decode['db'])->where('kategori', $input['kategori'])->where('value', $input['value'])->countAllResults() > 0) {
                 gagal('Option existed');
             }
 
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
+            db($decode['tabel'])->insert($input)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'])->where('db', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("kategori", $q['kategori'])->where('value', $decode['value'])->get()->getRowArray()) {
+            if ((db($decode['tabel'])->where('db', $decode['db'])->whereNotIn('id', [$decode['id']]))->where("kategori", $q['kategori'])->where('value', $decode['value'])->get()->getRowArray()) {
                 gagal("Option existed");
             }
 
@@ -53,7 +53,7 @@ class Options extends BaseController
 
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+            db($decode['tabel'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }

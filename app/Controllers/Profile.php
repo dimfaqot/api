@@ -23,7 +23,7 @@ class Profile extends BaseController
         if ($decode['order'] == "Edit") {
 
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
@@ -37,7 +37,7 @@ class Profile extends BaseController
             $q['modal_asal'] = upper_first(clear($decode['modal_asal']));
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+            db($decode['tabel'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
@@ -48,7 +48,7 @@ class Profile extends BaseController
 
     function data($decode)
     {
-        $data = db($decode['tabel'], $decode['db'])->get()->getRowArray();
+        $data = db($decode['tabel'])->where('db', $decode['db'])->get()->getRowArray();
         sukses("Ok", $data, uang_modal($decode));
     }
 }

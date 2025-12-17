@@ -23,6 +23,7 @@ class Menu extends BaseController
                 'menu'       => upper_first(clear($decode['menu'])),
                 'tabel'      => strtolower(clear($decode['tabel'])),
                 'controller' => strtolower(clear($decode['controller'])),
+                'db' => strtolower(clear($decode['db'])),
                 'icon'       => strtolower(clear($decode['icon'])),
                 'grup'       => upper_first(clear($decode['grup']))
             ];
@@ -33,24 +34,24 @@ class Menu extends BaseController
             }
 
             // Cek duplikat
-            if (db('menu', $decode['db'])->where('role', $input['role'])->where('menu', $input['menu'])->countAllResults() > 0) {
+            if (db('menu')->where('db', $decode['db'])->where('role', $input['role'])->where('menu', $input['menu'])->countAllResults() > 0) {
                 gagal('Menu existed');
             }
 
             // Dapatkan urutan terakhir
-            $last = db('menu', $decode['db'])->select('urutan')->orderBy('urutan', 'DESC')->get()->getRowArray();
+            $last = db('menu')->where('db', $decode['db'])->select('urutan')->orderBy('urutan', 'DESC')->get()->getRowArray();
             $input['urutan'] = isset($last['urutan']) ? $last['urutan'] + 1 : 1;
 
 
             // Simpan data  
-            db('menu', $decode['db'])->insert($input)
+            db('menu')->insert($input)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
 
-            $q = db('menu', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db('menu')->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
@@ -64,34 +65,34 @@ class Menu extends BaseController
             $q['icon'] = strtolower(clear($decode['icon']));
             $q['grup'] = upper_first(clear($decode['grup']));
 
-            if (db('menu', $decode['db'])->whereNotIn('id', [$q['id']])->where("menu", $q['menu'])->get()->getRowArray()) {
+            if (db('menu')->whereNotIn('id', [$q['id']])->where('db', $decode['db'])->where("menu", $q['menu'])->get()->getRowArray()) {
                 gagal("Menu existed");
             }
 
-            if (db('menu', $decode['db'])->whereNotIn('id', [$q['id']])->where("urutan", $q['urutan'])->get()->getRowArray()) {
+            if (db('menu')->whereNotIn('id', [$q['id']])->where('db', $decode['db'])->where("urutan", $q['urutan'])->get()->getRowArray()) {
                 gagal("Urutan existed");
             }
 
             // Simpan data
-            db('menu', $decode['db'])->where('id', $q['id'])->update($q)
+            db('menu')->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Copy") {
 
-            $q = db('menu', $decode['db'])->where('id', $decode['menu_id'])->get()->getRowArray();
+            $q = db('menu')->where('id', $decode['menu_id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Menu id not found");
             }
 
-            if (db('menu', $decode['db'])->where('role', $decode['role'])->where("menu", $q['menu'])->get()->getRowArray()) {
+            if (db('menu')->where('db', $decode['db'])->where('role', $decode['role'])->where("menu", $q['menu'])->get()->getRowArray()) {
                 gagal("Menu in role existed");
             }
             unset($q['id']);
 
             // Dapatkan urutan terakhir
-            $last = db('menu', $decode['db'])->select('urutan')->where('menu', $q['menu'])->orderBy('urutan', 'DESC')->get()->getRowArray();
+            $last = db('menu')->where('db', $decode['db'])->select('urutan')->where('menu', $q['menu'])->orderBy('urutan', 'DESC')->get()->getRowArray();
             $q['urutan'] = isset($last['urutan']) ? $last['urutan'] + 1 : 1;
             $q['role'] = upper_first(clear($decode['role']));
 

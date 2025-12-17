@@ -36,28 +36,28 @@ class User extends BaseController
 
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('nama', $input['nama'])->countAllResults() > 0) {
+            if (db($decode['tabel'])->where('nama', $input['nama'])->countAllResults() > 0) {
                 gagal('Nama existed');
             }
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('username', $input['username'])->countAllResults() > 0) {
+            if (db($decode['tabel'])->where('username', $input['username'])->countAllResults() > 0) {
                 gagal('Username existed');
             }
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('wa', $input['wa'])->countAllResults() > 0) {
+            if (db($decode['tabel'])->where('wa', $input['wa'])->countAllResults() > 0) {
                 gagal('No. wa existed');
             }
 
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
+            db($decode['tabel'])->insert($input)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
@@ -67,15 +67,15 @@ class User extends BaseController
                 gagal("Format wa salah");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
+            if ((db($decode['tabel'])->whereNotIn('id', [$decode['id']]))->where("nama", $q['nama'])->get()->getRowArray()) {
                 gagal("Nama existed");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("username", $q['username'])->get()->getRowArray()) {
+            if ((db($decode['tabel'])->whereNotIn('id', [$decode['id']]))->where("username", $q['username'])->get()->getRowArray()) {
                 gagal("Username existed");
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$decode['id']]))->where("wa", $q['wa'])->get()->getRowArray()) {
+            if ((db($decode['tabel'])->whereNotIn('id', [$decode['id']]))->where("wa", $q['wa'])->get()->getRowArray()) {
                 gagal("No. wa existed");
             }
 
@@ -92,7 +92,7 @@ class User extends BaseController
 
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+            db($decode['tabel'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses')
                 : gagal('Gagal');
         }
