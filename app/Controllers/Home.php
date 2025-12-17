@@ -13,10 +13,10 @@ class Home extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-
         check($decode);
 
         if ($decode['order'] == 'Menu') {
+            sukses('Ok');
             sukses("Ok", tahuns($decode), bulans());
         } else {
             if ($decode['jenis'] == "Unlock") {
