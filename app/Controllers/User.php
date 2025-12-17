@@ -15,7 +15,8 @@ class User extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode);
-        if ($decode == "Show") {
+
+        if ($decode['order'] == "Show") {
             $q = db('user')->orderBy('nama', 'ASC')->get()->getResultArray();
             sukses('Ok', $q, options($decode));
         }
