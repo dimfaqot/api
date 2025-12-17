@@ -17,7 +17,8 @@ class Profile extends BaseController
         check($decode);
 
         if ($decode['order'] == "Show") {
-            $this->data($decode);
+            $data = db($decode['tabel'])->where('db', $decode['db'])->get()->getRowArray();
+            sukses("Ok", $data, uang_modal($decode));
         }
 
         if ($decode['order'] == "Edit") {
@@ -44,11 +45,5 @@ class Profile extends BaseController
         if ($decode['order'] == "Detail") {
             sukses("Ok", uang_modal($decode['db']));
         }
-    }
-
-    function data($decode)
-    {
-        $data = db($decode['tabel'])->where('db', $decode['db'])->get()->getRowArray();
-        sukses("Ok", $data, uang_modal($decode));
     }
 }
