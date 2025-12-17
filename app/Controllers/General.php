@@ -9,7 +9,7 @@ class General extends BaseController
     {
         $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
         foreach ($dbs as $i) {
-            $data = db('menu', $i)->get()->getRowArray();
+            $data = db('profile', $i)->get()->getRowArray();
 
             $data['db'] = $i;
             unset($data['id']);
