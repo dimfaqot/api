@@ -15,6 +15,10 @@ class Options extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode);
+        if ($decode['order'] == "Show") {
+            $q = db('options')->where('db', $decode['db'])->orderBy('kategori', 'ASC')->orderBy('value', 'ASC')->get()->getResultArray();
+            sukses('Ok', $q);
+        }
 
         if ($decode['order'] == "Add") {
             $input = [
