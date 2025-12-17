@@ -16,7 +16,6 @@ class Home extends BaseController
         check($decode);
 
         if ($decode['order'] == 'Menu') {
-            sukses('Ok');
             sukses("Ok", tahuns($decode), bulans());
         } else {
             if ($decode['jenis'] == "Unlock") {
