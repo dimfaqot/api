@@ -16,6 +16,10 @@ class Menu extends BaseController
 
         check($decode);
 
+        if ($decode['order'] == "Show") {
+            $q = db('menu')->where('db', $decode['db'])->orderBy('urutan', 'ASC')->get()->getResultArray();
+            sukses('Ok', $q, options($decode));
+        }
 
         if ($decode['order'] == "Add") {
             $input = [
