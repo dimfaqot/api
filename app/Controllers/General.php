@@ -5,19 +5,17 @@ namespace App\Controllers;
 class General extends BaseController
 {
 
-    // public function copy()
-    // {
-    //     $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
-    //     foreach ($dbs as $i) {
-    //         $data = db('menu', $i)->orderBy('role', 'ASC')->orderBy('urutan', 'ASC')->get()->getResultArray();
+    public function copy()
+    {
+        $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
+        foreach ($dbs as $i) {
+            $data = db('menu', $i)->get()->getRowArray();
 
-    //         foreach ($data as $d) {
-    //             $d['db'] = $i;
-    //             unset($d['id']);
-    //             db('menu')->insert($d);
-    //         }
-    //     }
-    // }
+            $data['db'] = $i;
+            unset($data['id']);
+            db('profile')->insert($data);
+        }
+    }
     public function data($dbs, $tabel, $tanggal = "", $lokasi = "", $customer_id = "")
     {
         // CORS Headers

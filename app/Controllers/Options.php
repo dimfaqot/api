@@ -19,6 +19,7 @@ class Options extends BaseController
         if ($decode['order'] == "Add") {
             $input = [
                 'kategori'       => upper_first(clear($decode['kategori'])),
+                'db'       => clear($decode['db']),
                 'value'       => upper_first(clear($decode['value']))
             ];
 
