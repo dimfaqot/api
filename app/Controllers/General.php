@@ -9,12 +9,12 @@ class General extends BaseController
     // {
     //     $dbs = ['batea', 'grosir', 'nineclean', 'playbox', 'cafe'];
     //     foreach ($dbs as $i) {
-    //         $data = db('settings', $i)->orderBy('nama', 'ASC')->get()->getResultArray();
+    //         $data = db('backup', $i)->orderBy('nama', 'ASC')->get()->getResultArray();
 
     //         foreach ($data as $d) {
     //             $d['db'] = $i;
     //             unset($d['id']);
-    //             db('settings')->insert($d);
+    //             db('backup')->insert($d);
     //         }
     //     }
     // }

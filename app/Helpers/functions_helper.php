@@ -284,7 +284,7 @@ function get_data($decode)
 
                 $data[] = ['tgl' => $t['tahun'], 'masuk' => $tahunan[0], 'keluar' => $tahunan[1]];
 
-                $q = db('backup', $decode['db'])->where('tahun', $t['tahun'])->get()->getRowArray();
+                $q = db('backup')->where('db', $decode['db'])->where('tahun', $t['tahun'])->get()->getRowArray();
 
                 if (!$q) {
                     $insert = [
@@ -294,18 +294,18 @@ function get_data($decode)
                         'saldo' => $tahunan[0] - $tahunan[1],
                         'keep' => 1
                     ];
-                    db('backup', $decode['db'])->insert($insert);
+                    db('backup')->where('db', $decode['db'])->insert($insert);
                 } else {
                     if ($q['keep'] == 0) {
                         $q['masuk'] = $tahunan[0];
                         $q['keluar'] = $tahunan[1];
                         $q['saldo'] = $tahunan[0] - $tahunan[1];
                         $q['keep'] = 1;
-                        db('backup', $decode['db'])->where('id', $q['id'])->update($q);
+                        db('backup')->where('db', $decode['db'])->where('id', $q['id'])->update($q);
                     }
                 }
 
-                $backup = db('backup', $decode['db'])->select('*')->orderBy('tahun', 'ASC')
+                $backup = db('backup')->where('db', $decode['db'])->select('*')->orderBy('tahun', 'ASC')
                     ->get()
                     ->getResultArray();
                 $tot = array_sum(array_column($backup, 'saldo'));

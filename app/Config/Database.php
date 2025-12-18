@@ -172,6 +172,26 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
+    public array $playground = [
+        'DSN'          => '',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'bkw',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => true,
+        'charset'      => 'utf8',
+        'DBCollat'     => 'utf8_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
 
 
     //    /**
@@ -344,9 +364,9 @@ class Database extends Config
             $this->playbox['username'] = getenv('db_username_playbox');
             $this->playbox['password'] = getenv('db_pass_playbox');
 
-            // $this->bkw['database'] = getenv('db_name_bkw');
-            // $this->bkw['username'] = getenv('db_username_bkw');
-            // $this->bkw['password'] = getenv('db_pass_bkw');
+            $this->playground['database'] = getenv('db_name_playground');
+            $this->playground['username'] = getenv('db_username_playground');
+            $this->playground['password'] = getenv('db_pass_playground');
 
             $this->cafe['database'] = getenv('db_name_cafe');
             $this->cafe['username'] = getenv('db_username_cafe');
