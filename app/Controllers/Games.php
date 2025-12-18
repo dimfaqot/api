@@ -43,6 +43,28 @@ class Games extends BaseController
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
+        if ($decode['order'] == "Add Diskon") {
+
+            $input = [
+                'nama'      => upper_first(clear($decode['nama'])),
+                'harga'       => angka_to_int(clear($decode['harga'])),
+                'game_id'       => clear($decode['id'])
+            ];
+
+            if (array_key_exists('lokasi', $decode)) {
+                $input['lokasi'] = $decode['lokasi'];
+            }
+
+            // Cek duplikat
+            if (db($decode['tabel'], $decode['db'])->where('game_id', $input['game_id'])->where('nama', $input['nama'])->countAllResults() > 0) {
+                gagal('Nama existed');
+            }
+
+            // Simpan data  
+            db($decode['tabel'], $decode['db'])->insert($input)
+                ? sukses('Sukses', $this->data($decode))
+                : gagal('Gagal');
+        }
         if ($decode['order'] == "Edit") {
 
 
