@@ -83,15 +83,18 @@ class Games extends BaseController
             $temp_diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->get()->getResultArray();
             $diskon = [];
 
+            $total = 0;
             foreach ($temp_diskon as $d) {
                 if ($d['nama'] === "Weekday" && ! is_weekday()) {
                     // lewati jika nama Weekday tapi bukan hari kerja
                     continue;
                 }
-
+                $total += $i['diskon'];
                 $diskon[] = $d;
             }
 
+            $i['total_diskon'] = $total;
+            $i['biaya'] = $i['harga'] - $total;
             $i['diskon'] = $diskon;
 
             $data[] = $i;
