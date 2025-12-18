@@ -59,12 +59,12 @@ class Games extends BaseController
             }
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('game_id', $input['game_id'])->where('nama', $input['nama'])->countAllResults() > 0) {
+            if (db('diskon', $decode['db'])->where('game_id', $input['game_id'])->where('nama', $input['nama'])->countAllResults() > 0) {
                 gagal('Nama existed');
             }
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
+            db('diskon', $decode['db'])->insert($input)
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
