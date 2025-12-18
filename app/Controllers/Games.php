@@ -75,7 +75,7 @@ class Games extends BaseController
 
     function data($decode)
     {
-        $val = db('games', $decode['db'])->orderBy('game', 'ASC')->orderBy('nama', 'ASC')->get()->getResultArray();
+        $val = db($decode['tabel'], $decode['db'])->orderBy('game', 'ASC')->orderBy('nama', 'ASC')->get()->getResultArray();
 
         $data = [];
 
