@@ -80,7 +80,7 @@ class Games extends BaseController
         $data = [];
 
         foreach ($val as $i) {
-            $temp_diskon = db($decode['tabel'], $decode['db'])->where('game_id', $i['id'])->get()->getResultArray();
+            $temp_diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->get()->getResultArray();
             $diskon = [];
 
             foreach ($temp_diskon as $d) {
