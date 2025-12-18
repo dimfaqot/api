@@ -925,3 +925,17 @@ function transaksi($decode)
         ? sukses("Sukses", $message)
         : gagal("Gagal");
 }
+
+
+function is_weekday(): bool
+{
+    // Ambil waktu sekarang
+    $now = new \DateTime('now', new \DateTimeZone('Asia/Jakarta')); // sesuaikan timezone
+
+    // Buat batas waktu
+    $mondayStart = new \DateTime('monday 12:00', $now->getTimezone());
+    $thursdayEnd = new \DateTime('thursday 12:00', $now->getTimezone());
+
+    // Cek apakah sekarang di antara Senin 12:00 dan Kamis 12:00
+    return ($now >= $mondayStart && $now <= $thursdayEnd);
+}

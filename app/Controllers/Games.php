@@ -75,8 +75,26 @@ class Games extends BaseController
 
     function data($decode)
     {
-        $data = db('games', $decode['db'])->orderBy('game', 'ASC')->orderBy('nama', 'ASC')->get()->getResultArray();
+        $val = db('games', $decode['db'])->orderBy('game', 'ASC')->orderBy('nama', 'ASC')->get()->getResultArray();
 
-        return $data ? $data : [];
+        $data = [];
+
+        foreach ($val as $i) {
+            $temp_diskon = db($decode['tabel'], $decode['db'])->where('game_id', $i['id'])->get()->getResultArray();
+            $diskon = [];
+
+            foreach ($temp_diskon as $d) {
+                if ($d['nama'] === "Weekday" && ! is_weekday()) {
+                    // lewati jika nama Weekday tapi bukan hari kerja
+                    continue;
+                }
+
+                $diskon[] = $d;
+            }
+
+            $i['diskon'] = $diskon;
+        }
+
+        return $data;
     }
 }
