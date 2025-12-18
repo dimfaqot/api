@@ -45,9 +45,12 @@ class Games extends BaseController
         }
         if ($decode['order'] == "Add Diskon") {
 
+            if (angka_to_int($decode['diskon']) > angka_to_int($decode['harga'])) {
+                gagal('Diskon terlalu besar');
+            }
             $input = [
                 'nama'      => upper_first(clear($decode['nama'])),
-                'harga'       => angka_to_int(clear($decode['harga'])),
+                'diskon'       => angka_to_int(clear($decode['diskon'])),
                 'game_id'       => clear($decode['id'])
             ];
 
