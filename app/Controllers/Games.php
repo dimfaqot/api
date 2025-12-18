@@ -22,8 +22,6 @@ class Games extends BaseController
 
         if ($decode['order'] == "Add") {
 
-            $tipe = (clear($decode['tipe']) == "on" ? "Mix" : "Count");
-
             $input = [
                 'game'      => upper_first(clear($decode['game'])),
                 'name'       => upper_first(clear($decode['name'])),
