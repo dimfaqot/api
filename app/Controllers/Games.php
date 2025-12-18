@@ -93,6 +93,8 @@ class Games extends BaseController
             }
 
             $i['diskon'] = $diskon;
+
+            $data[] = $i;
         }
 
         return $data;
