@@ -24,7 +24,7 @@ class Games extends BaseController
 
             $input = [
                 'game'      => upper_first(clear($decode['game'])),
-                'name'       => upper_first(clear($decode['name'])),
+                'nama'       => upper_first(clear($decode['nama'])),
                 'room'       => upper_first(clear($decode['room'])),
                 'harga'      => angka_to_int(clear($decode['harga']))
             ];
