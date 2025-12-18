@@ -17,7 +17,7 @@ class Games extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            sukses('Ok', $this->data($decode), options($decode));
+            sukses('Ok', $this->data($decode), options($decode), options(['db' => $decode['db'], 'kategori' => 'Room', 'format' => 'array']));
         }
 
         if ($decode['order'] == "Add") {

@@ -322,7 +322,7 @@ function get_data($decode)
 
         $sub_menu = options($decode);
 
-        $db = db($decode['tabel'], $decode['db']);
+        $db = db('options', $decode['db']);
         $db->select('*');
         if ($decode['jenis'] !== "All") {
             $db->where('jenis', $decode['jenis']);
@@ -334,7 +334,7 @@ function get_data($decode)
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
             $db->whereIn('jenis', $sub_menu);
         }
-
+        $db->where('db', $decode['db']);
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
         if ($decode['order'] == "hutang") {
