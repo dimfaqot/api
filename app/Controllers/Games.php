@@ -114,7 +114,7 @@ class Games extends BaseController
                     // lewati jika nama Weekday tapi bukan hari kerja
                     continue;
                 }
-                $total += $i['diskon'];
+                $total += $d['diskon'];
                 $diskon[] = $d;
             }
 
