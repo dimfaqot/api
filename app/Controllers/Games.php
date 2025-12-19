@@ -110,7 +110,7 @@ class Games extends BaseController
 
             $total = 0;
             foreach ($temp_diskon as $d) {
-                if ($d['nama'] === "Weekday" && ! is_weekday()) {
+                if (!array_key_exists('controller', $decode) && $d['nama'] === "Weekday" && ! is_weekday()) {
                     // lewati jika nama Weekday tapi bukan hari kerja
                     continue;
                 }
