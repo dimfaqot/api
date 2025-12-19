@@ -26,6 +26,7 @@ class Games extends BaseController
                 'game'      => upper_first(clear($decode['game'])),
                 'nama'       => upper_first(clear($decode['nama'])),
                 'room'       => upper_first(clear($decode['room'])),
+                'ket'       => upper_first(clear($decode['ket'])),
                 'harga'      => angka_to_int(clear($decode['harga']))
             ];
 
@@ -105,6 +106,7 @@ class Games extends BaseController
             $q['game'] = upper_first(clear($decode['game']));
             $q['nama'] = upper_first(clear($decode['nama']));
             $q['room'] = upper_first(clear($decode['room']));
+            $q['ket'] = upper_first(clear($decode['ket']));
             $q['harga'] = angka_to_int(clear($decode['harga']));
 
 
