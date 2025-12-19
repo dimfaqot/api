@@ -68,6 +68,31 @@ class Games extends BaseController
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
+
+        if ($decode['order'] == "Edit Diskon") {
+
+
+            $q = db('diskon', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$q) {
+                gagal("Id not found");
+            }
+
+            $q[$decode['col']] = ($decode['col'] == "nama" ? upper_first(clear($decode['val'])) : angka_to_int(clear($decode['val'])));
+
+
+            if ($decode['col'] == "nama") {
+                if ((db('diskon', $decode['db'])->whereNotIn('id', [$q['id']]))->where('nama', $decode['val'])->get()->getRowArray()) {
+                    gagal("Nama existed");
+                }
+            }
+
+            // Simpan data
+            db('diskon', $decode['db'])->where('id', $q['id'])->update($q)
+                ? sukses('Sukses', $this->data($decode))
+                : gagal('Gagal');
+        }
+
         if ($decode['order'] == "Edit") {
 
 
@@ -92,6 +117,7 @@ class Games extends BaseController
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
+
 
         if ($decode['order'] == "Delete") {
             delete($decode, ['Root']);
