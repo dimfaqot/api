@@ -27,6 +27,7 @@ class Games extends BaseController
                 'nama'       => upper_first(clear($decode['nama'])),
                 'room'       => upper_first(clear($decode['room'])),
                 'ket'       => upper_first(clear($decode['ket'])),
+                'iot_id'       => angka_to_int(clear($decode['iot_id'])),
                 'harga'      => angka_to_int(clear($decode['harga']))
             ];
 
@@ -108,6 +109,7 @@ class Games extends BaseController
             $q['room'] = upper_first(clear($decode['room']));
             $q['ket'] = upper_first(clear($decode['ket']));
             $q['harga'] = angka_to_int(clear($decode['harga']));
+            $q['iot_id'] = angka_to_int(clear($decode['iot_id']));
 
 
             if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$q['id']]))->where('game', $q['game'])->where('nama', $q['nama'])->get()->getRowArray()) {

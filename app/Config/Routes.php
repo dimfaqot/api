@@ -38,3 +38,5 @@ $routes->get('/hutang/(:any)', 'Hutang::general/$1');
 
 $routes->get('/bayar/(:any)', 'Bayar::general/$1');
 $routes->get('/games/(:any)', 'Games::general/$1');
+
+$routes->get('/playground/(:any)', 'Playground::transaksi/$1');

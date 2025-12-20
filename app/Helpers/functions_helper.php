@@ -486,7 +486,8 @@ function angka_to_int($uang)
 {
     $uang = str_replace("Rp. ", "", $uang);
     $uang = str_replace(".", "", $uang);
-    return $uang;
+    $uang = str_replace(",", "", $uang);
+    return (int)$uang;
 }
 
 function delete($decode, $roles = [])
