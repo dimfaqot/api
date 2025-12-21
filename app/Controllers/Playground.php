@@ -39,14 +39,25 @@ class Playground extends BaseController
                     $diskons = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
                     $i['diskon'] = $diskons;
                     $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
-                    $i['qty'] = $transaksi['qty'];
-                    $i['total'] = $transaksi['total'];
-                    $i['diskon'] = $transaksi['diskon'];
-                    $i['biaya'] = $transaksi['biaya'];
-                    $i['no_nota'] = $transaksi['no_nota'];
-                    $i['metode'] = $transaksi['metode'];
-                    $i['user_id'] = $transaksi['user_id'];
-                    $i['user'] = $transaksi['nama'];
+                    if ($transaksi) {
+                        $i['qty'] = $transaksi['qty'];
+                        $i['total'] = $transaksi['total'];
+                        $i['diskon'] = $transaksi['diskon'];
+                        $i['biaya'] = $transaksi['biaya'];
+                        $i['no_nota'] = $transaksi['no_nota'];
+                        $i['metode'] = $transaksi['metode'];
+                        $i['user_id'] = $transaksi['user_id'];
+                        $i['user'] = $transaksi['nama'];
+                    } else {
+                        $i['qty'] = '';
+                        $i['total'] = '';
+                        $i['diskon'] = '';
+                        $i['biaya'] = '';
+                        $i['no_nota'] = '';
+                        $i['metode'] = '';
+                        $i['user_id'] = '';
+                        $i['user'] = '';
+                    }
                     $data[] = $i;
                 }
             }
