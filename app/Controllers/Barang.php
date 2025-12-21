@@ -15,9 +15,10 @@ class Barang extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
+        $decode['db'] = ($decode['db'] == "playground" ? strtolower($decode['divisi']) : $decode['db']);
 
         if ($decode['order'] == "Show") {
-            $decode['db'] = ($decode['db'] == "playground" ? strtolower($decode['divisi']) : $decode['db']);
+
             $status_qty = db('settings')->where('db', $decode['db'])->where('nama', 'qty')->get()->getRowArray();
             sukses('Ok', $this->data($decode), $status_qty['value'], options($decode));
         }
