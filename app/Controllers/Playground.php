@@ -34,6 +34,11 @@ class Playground extends BaseController
                         $i['nama_wl'] = $wl['nama'];
                         $i['booking'] = $wl['booking'];
                         $i['dp'] = $wl['dp'];
+                    } else {
+                        $i['user_id_wl'] = "";
+                        $i['nama_wl'] = "";
+                        $i['booking'] = "";
+                        $i['dp'] = "";
                     }
 
                     $diskons = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
