@@ -67,7 +67,7 @@ class Playground extends BaseController
                         $i['user'] = '';
                         $i['start'] = '';
                         $i['end'] = '';
-                        $i['is_over'] = '';
+                        $i['is_over'] = 0;
                     }
                     $data[] = $i;
                 }
