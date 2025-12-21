@@ -56,6 +56,8 @@ class Playground extends BaseController
                         $i['start'] = $transaksi['start'];
                         $i['end'] = $transaksi['end'];
                         $i['is_over'] = $transaksi['is_over'];
+                        $i['is_open'] = $i['qty'] == 0 ? "Open" : "Reguler";
+                        $i['waktu'] = $this->hitungWaktu($transaksi['start'], $transaksi['end'], $transaksi['qty']);
                     } else {
                         $i['qty'] = '';
                         $i['total'] = '';
@@ -68,11 +70,36 @@ class Playground extends BaseController
                         $i['start'] = '';
                         $i['end'] = '';
                         $i['is_over'] = 0;
+                        $i['is_open'] = "";
+                        $i['waktu'] = "";
                     }
                     $data[] = $i;
                 }
             }
             sukses("Ok", $data, options($decode));
+        }
+    }
+
+    function hitungWaktu(int $start, int $end, int $qty): string
+    {
+        if ($qty > 0) {
+            $diff = time() - $start;
+            if ($diff < 0) return "00:00";
+
+            $hours   = floor($diff / 3600);
+            $minutes = floor(($diff % 3600) / 60);
+
+            // format dua digit jam:menit
+            return sprintf("%02d:%02d", $hours, $minutes);
+        } else {
+            // sisa waktu
+            $diff = $end - time();
+            if ($diff < 0) return "00:00";
+
+            $hours   = floor($diff / 3600);
+            $minutes = floor(($diff % 3600) / 60);
+
+            return "-" . sprintf("%02d:%02d", $hours, $minutes); // contoh: 01:08
         }
     }
 }
