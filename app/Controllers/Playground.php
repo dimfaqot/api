@@ -30,15 +30,23 @@ class Playground extends BaseController
                 foreach ($q as $i) {
                     $wl = db('wl', $decode['db'])->where('game_id', $i['id'])->get()->getRowArray();
                     if ($wl) {
-                        $i['user_id'] = $wl['user_id'];
-                        $i['user'] = $wl['nama'];
+                        $i['user_id_wl'] = $wl['user_id'];
+                        $i['nama_wl'] = $wl['nama'];
                         $i['booking'] = $wl['booking'];
                         $i['dp'] = $wl['dp'];
                     }
 
-                    $diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
-                    $i['diskon'] = $diskon;
-
+                    $diskons = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
+                    $i['diskon'] = $diskons;
+                    $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
+                    $i['qty'] = $transaksi['qty'];
+                    $i['total'] = $transaksi['total'];
+                    $i['diskon'] = $transaksi['diskon'];
+                    $i['biaya'] = $transaksi['biaya'];
+                    $i['no_nota'] = $transaksi['no_nota'];
+                    $i['metode'] = $transaksi['metode'];
+                    $i['user_id'] = $transaksi['user_id'];
+                    $i['user'] = $transaksi['nama'];
                     $data[] = $i;
                 }
             }
