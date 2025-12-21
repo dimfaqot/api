@@ -37,7 +37,7 @@ class Playground extends BaseController
                     }
 
                     $diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
-                    $i['data'] = $diskon;
+                    $i['diskon'] = $diskon;
 
                     $data[] = $i;
                 }
