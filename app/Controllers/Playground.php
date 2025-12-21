@@ -37,7 +37,7 @@ class Playground extends BaseController
                     }
 
                     $diskons = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
-                    $i['diskon'] = $diskons;
+                    $i['diskons'] = $diskons;
                     $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
                     if ($transaksi) {
                         $i['qty'] = $transaksi['qty'];
