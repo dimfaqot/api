@@ -15,12 +15,17 @@ class Playground extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode, $decode['admin'], ['Root', 'Kasir']);
-        $decode['db'] = ($decode['db'] == "playground" ? strtolower($decode['divisi']) : $decode['db']);
+        $decode['db'] = ($decode['divisi'] == "Kantin" || "Barber" ? strtolower($decode['divisi']) : $decode['db']);
         // transaksi= simpan data baik bayar langsung maupun hutang
         // Hutang= membayar hutang yang datanya sudah ada
         if ($decode['order'] == "Show") {
-
-            sukses("Ok", db('barang', $decode['db'])->orderBy('barang')->get()->getResultArray(), options($decode));
+            $data = [];
+            if ($decode['db'] == "Kantin" || $decode['db'] == "Barber") {
+                $data = db('barang', $decode['db'])->orderBy('barang', 'ASC')->get()->getResultArray();
+            } else {
+                $data = db('games', $decode['db'])->where('game', $decode['divisi'])->orderBy('id', 'ASC')->get()->getResultArray();
+            }
+            sukses("Ok", $data, options($decode));
         }
     }
 }
