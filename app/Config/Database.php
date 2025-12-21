@@ -192,6 +192,46 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
+    public array $kantin = [
+        'DSN'          => '',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'bkw',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => true,
+        'charset'      => 'utf8',
+        'DBCollat'     => 'utf8_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
+    public array $barber = [
+        'DSN'          => '',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'bkw',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => true,
+        'charset'      => 'utf8',
+        'DBCollat'     => 'utf8_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
 
 
     //    /**
@@ -371,6 +411,14 @@ class Database extends Config
             $this->cafe['database'] = getenv('db_name_cafe');
             $this->cafe['username'] = getenv('db_username_cafe');
             $this->cafe['password'] = getenv('db_pass_cafe');
+
+            $this->kantin['database'] = getenv('db_name_kantin');
+            $this->kantin['username'] = getenv('db_username_kantin');
+            $this->kantin['password'] = getenv('db_pass_kantin');
+
+            $this->barber['database'] = getenv('db_name_barber');
+            $this->barber['username'] = getenv('db_username_barber');
+            $this->barber['password'] = getenv('db_pass_barber');
         }
     }
 }
