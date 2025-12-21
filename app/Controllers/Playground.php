@@ -24,7 +24,7 @@ class Playground extends BaseController
             if ($decode['db'] == "kantin" || $decode['db'] == "barber") {
                 $data = db('barang', $decode['db'])->orderBy('barang', 'ASC')->get()->getResultArray();
             } else {
-                $data = db('games', $decode['db'])->select('games.id as id,game,nama,harga,room,ket,status')->join('iot', 'iot_id=games.id')->where('game', $decode['divisi'])->orderBy('games.id', 'ASC')->get()->getResultArray();
+                $data = db('games', $decode['db'])->select('games.id as id,game,games.nama as nama,harga,room,ket,status')->join('iot', 'iot_id=games.id')->where('game', $decode['divisi'])->orderBy('games.id', 'ASC')->get()->getResultArray();
             }
             sukses("Ok", $data, options($decode));
         }
