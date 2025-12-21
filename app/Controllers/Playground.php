@@ -24,7 +24,23 @@ class Playground extends BaseController
             if ($decode['db'] == "kantin" || $decode['db'] == "barber") {
                 $data = db('barang', $decode['db'])->orderBy('barang', 'ASC')->get()->getResultArray();
             } else {
-                $data = db('games', $decode['db'])->select('games.id as id,game,games.nama as nama,harga,room,ket,status')->join('iot', 'games.iot_id=iot.id')->where('game', $decode['divisi'])->orderBy('games.id', 'ASC')->get()->getResultArray();
+                $q = db('games', $decode['db'])->select('games.id as id,game,games.nama as nama,harga,room,ket,status')->join('iot', 'games.iot_id=iot.id')->where('game', $decode['divisi'])->orderBy('games.id', 'ASC')->get()->getResultArray();
+                $data = [];
+
+                foreach ($q as $i) {
+                    $wl = db('wl', $decode['db'])->where('game_id', $i['id'])->get()->getRowArray();
+                    if ($wl) {
+                        $i['user_id'] = $wl['user_id'];
+                        $i['user'] = $wl['nama'];
+                        $i['booking'] = $wl['booking'];
+                        $i['dp'] = $wl['dp'];
+                    }
+
+                    $diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
+                    $i['data'] = $diskon;
+
+                    $data[] = $i;
+                }
             }
             sukses("Ok", $data, options($decode));
         }
