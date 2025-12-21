@@ -15,8 +15,8 @@ class Playground extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode, $decode['admin'], ['Root', 'Kasir']);
-        $decode['db'] = ($decode['divisi'] == "Kantin" || "Barber" ? strtolower($decode['divisi']) : $decode['db']);
-        sukses($decode);
+        $decode['db'] = ($decode['divisi'] == "Kantin" || $decode['divisi'] == "Barber" ? strtolower($decode['divisi']) : $decode['db']);
+
         // transaksi= simpan data baik bayar langsung maupun hutang
         // Hutang= membayar hutang yang datanya sudah ada
         if ($decode['order'] == "Show") {
