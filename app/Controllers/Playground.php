@@ -20,7 +20,7 @@ class Playground extends BaseController
         // Hutang= membayar hutang yang datanya sudah ada
         if ($decode['order'] == "Show") {
 
-            sukses("Ok", db('barang', $decode['db'])->orderBy('barang')->get()->getResultArray());
+            sukses("Ok", db('barang', $decode['db'])->orderBy('barang')->get()->getResultArray(), options($decode));
         }
 
         if ($decode['order'] == "Edit") {
