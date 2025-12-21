@@ -48,6 +48,9 @@ class Playground extends BaseController
                         $i['metode'] = $transaksi['metode'];
                         $i['user_id'] = $transaksi['user_id'];
                         $i['user'] = $transaksi['nama'];
+                        $i['start'] = $transaksi['start'];
+                        $i['end'] = $transaksi['end'];
+                        $i['is_over'] = $transaksi['is_over'];
                     } else {
                         $i['qty'] = '';
                         $i['total'] = '';
@@ -57,6 +60,9 @@ class Playground extends BaseController
                         $i['metode'] = '';
                         $i['user_id'] = '';
                         $i['user'] = '';
+                        $i['start'] = '';
+                        $i['end'] = '';
+                        $i['is_over'] = '';
                     }
                     $data[] = $i;
                 }
