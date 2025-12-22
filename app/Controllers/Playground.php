@@ -20,7 +20,7 @@ class Playground extends BaseController
             $data = [];
             foreach ($decode['divisions'] as $d) {
 
-                if ($d['divisi'] == "Kantin" || $d['divisi'] == "Barber") {
+                if ($d == "Kantin" || $d == "Barber") {
                     $data[$d] = db('barang', strtolower($d))->orderBy('barang', 'ASC')->get()->getResultArray();
                 } else {
                     $q = db('games', $decode['db'])->select('games.id as id,game,games.nama as nama,harga,room,ket,status')->join('iot', 'games.iot_id=iot.id')->where('game', $d)->orderBy('games.id', 'ASC')->get()->getResultArray();
