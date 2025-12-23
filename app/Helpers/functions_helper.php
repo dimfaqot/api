@@ -930,12 +930,12 @@ function transaksi($decode)
 
 function is_weekdays(): bool
 {
-    // Ambil waktu sekarang
-    $now = new \DateTime('now', new \DateTimeZone('Asia/Jakarta')); // sesuaikan timezone
+    // Ambil waktu sekarang dalam timestamp
+    $now = time();
 
-    // Buat batas waktu
-    $mondayStart = new \DateTime('monday 12:00', $now->getTimezone());
-    $thursdayEnd = new \DateTime('thursday 12:00', $now->getTimezone());
+    // Buat batas waktu dalam timestamp
+    $mondayStart  = strtotime('monday 12:00');
+    $thursdayEnd  = strtotime('thursday 12:00');
 
     // Cek apakah sekarang di antara Senin 12:00 dan Kamis 12:00
     return ($now >= $mondayStart && $now <= $thursdayEnd);
