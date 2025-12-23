@@ -40,7 +40,14 @@ class Playground extends BaseController
                             $i['dp'] = "";
                         }
 
-                        $diskons = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
+                        $q_diskon = db('diskon', $decode['db'])->where('game_id', $i['id'])->orderBy('id', 'ASC')->get()->getResultArray();
+
+                        $diskons = [];
+
+                        foreach ($q_diskon as $s) {
+                            $s['is_weekday'] = $this->is_weekday();
+                            $diskons[] = is_weekday();
+                        }
                         $i['diskons'] = $diskons;
                         $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
                         if ($transaksi) {
