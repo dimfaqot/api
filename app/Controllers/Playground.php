@@ -46,7 +46,7 @@ class Playground extends BaseController
 
                         foreach ($q_diskon as $s) {
                             $s['is_weekday'] = is_weekday();
-                            $diskons[] = is_weekday();
+                            $diskons[] = $s;
                         }
                         $i['diskons'] = $diskons;
                         $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
