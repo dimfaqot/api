@@ -928,7 +928,7 @@ function transaksi($decode)
 }
 
 
-function is_weekday(): bool
+function is_weekdays(): bool
 {
     // Ambil waktu sekarang
     $now = new \DateTime('now', new \DateTimeZone('Asia/Jakarta')); // sesuaikan timezone

@@ -45,7 +45,7 @@ class Playground extends BaseController
                         $diskons = [];
 
                         foreach ($q_diskon as $s) {
-                            $s['is_weekday'] = is_weekday();
+                            $s['is_weekdays'] = is_weekdays();
                             $diskons[] = $s;
                         }
                         $i['diskons'] = $diskons;
