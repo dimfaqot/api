@@ -930,13 +930,21 @@ function transaksi($decode)
 
 function is_weekdays(): bool
 {
-    // Ambil waktu sekarang dalam timestamp
+    date_default_timezone_set('Asia/Jakarta'); // pastikan timezone
+
     $now = time();
 
-    // Buat batas waktu dalam timestamp
-    $mondayStart  = strtotime('monday 12:00');
-    $thursdayEnd  = strtotime('thursday 12:00');
+    // Ambil Minggu terakhir jam 22:00
+    $sundayStart = strtotime('last sunday 22:00');
 
-    // Cek apakah sekarang di antara Senin 12:00 dan Kamis 12:00
-    return ($now >= $mondayStart && $now <= $thursdayEnd);
+    // Ambil Kamis minggu ini jam 20:00
+    $thursdayEnd = strtotime('thursday 20:00');
+
+    // Jika sekarang sebelum Minggu jam 22:00, berarti kita masih di minggu ini
+    // jadi adjust supaya start = Minggu minggu ini
+    if ($now < $sundayStart) {
+        $sundayStart = strtotime('sunday 22:00');
+    }
+
+    return ($now >= $sundayStart && $now <= $thursdayEnd);
 }
