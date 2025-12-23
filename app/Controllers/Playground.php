@@ -46,6 +46,7 @@ class Playground extends BaseController
 
                         foreach ($q_diskon as $s) {
                             $s['is_weekdays'] = is_weekdays();
+                            $s['is_pelajar'] = $this->is_pelajar();
                             $diskons[] = $s;
                         }
                         $i['diskons'] = $diskons;
@@ -110,5 +111,14 @@ class Playground extends BaseController
 
             return "-" . sprintf("%02d:%02d", $hours, $minutes); // contoh: 01:08
         }
+    }
+
+    function is_pelajar()
+    {
+        // Ambil jam saat ini (format 24 jam)
+        $hour = (int)date('H');
+
+        // Cek apakah jam antara 12 sampai 16 (karena 17:00 sudah lewat)
+        return ($hour >= 12 && $hour < 17);
     }
 }
