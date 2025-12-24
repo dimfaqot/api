@@ -97,15 +97,6 @@ class Playground extends BaseController
     function hitungWaktu(int $start, int $end, int $qty): string
     {
         if ($qty > 0) {
-            $diff = time() - $start;
-            if ($diff < 0) return "00:00";
-
-            $hours   = floor($diff / 3600);
-            $minutes = floor(($diff % 3600) / 60);
-
-            // format dua digit jam:menit
-            return sprintf("%02d:%02d", $hours, $minutes);
-        } else {
             // sisa waktu
             $diff = $end - time();
             if ($diff < 0) return "00:00";
@@ -114,6 +105,15 @@ class Playground extends BaseController
             $minutes = floor(($diff % 3600) / 60);
 
             return "-" . sprintf("%02d:%02d", $hours, $minutes); // contoh: 01:08
+        } else {
+            $diff = time() - $start;
+            if ($diff < 0) return "00:00";
+
+            $hours   = floor($diff / 3600);
+            $minutes = floor(($diff % 3600) / 60);
+
+            // format dua digit jam:menit
+            return sprintf("%02d:%02d", $hours, $minutes);
         }
     }
 
