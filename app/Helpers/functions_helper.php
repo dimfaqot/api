@@ -713,6 +713,7 @@ function transaksi($decode)
                 $input['start'] = $tgl;
                 $input['end'] = ($input['qty'] == 0 ? 0 : $tgl + (int)$input['qty'] * (60 * 60));
                 $input['is_over'] = 0;
+                $input['roleplay'] = $i['roleplay'];
             }
 
             $message = base_url('cetak/nota/' . $dbs . "/" . $input['no_nota']);

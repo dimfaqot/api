@@ -63,7 +63,7 @@ class Playground extends BaseController
                             $i['start'] = $transaksi['start'];
                             $i['end'] = $transaksi['end'];
                             $i['is_over'] = $transaksi['is_over'];
-                            $i['is_open'] = $i['qty'] == 0 ? "Open" : "Reguler";
+                            $i['roleplay'] = $transaksi['roleplay'];
                             $i['waktu'] = $this->hitungWaktu($transaksi['start'], $transaksi['end'], $transaksi['qty']);
                         } else {
                             $i['qty'] = '';
@@ -79,6 +79,7 @@ class Playground extends BaseController
                             $i['is_over'] = 0;
                             $i['is_open'] = "";
                             $i['waktu'] = "";
+                            $i['roleplay'] = "";
                         }
                         $val[] = $i;
                     }
