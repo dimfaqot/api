@@ -737,7 +737,6 @@ function transaksi($decode)
                 $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
             }
-            sukses($input);
             // insert data
             if (db($decode['tabel'], $dbs)->insert($input)) {
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
