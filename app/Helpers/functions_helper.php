@@ -689,7 +689,7 @@ function transaksi($decode)
 
     foreach ($decode['datas'] as $i) {
         if ($decode['db'] == "playground") {
-            $dbs = strtolower($i['divisi']);
+            $dbs = ($i['divisi'] == "Kantin" || $i['divisi'] == "Barber" ? strtolower($i['divisi']) : "playground");
         }
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
