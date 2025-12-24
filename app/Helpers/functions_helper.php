@@ -757,10 +757,11 @@ function transaksi($decode)
 
             // cari barang update qty
             $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
-            if (!$barang) {
-                $message = "Id " . $i['barang'] . " not found";
-            }
+
             if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
+                if (!$barang) {
+                    $message = "Id " . $i['barang'] . " not found";
+                }
                 $exp = explode(",", $barang['link']);
 
                 foreach ($exp as $x) {
@@ -784,6 +785,9 @@ function transaksi($decode)
 
             // update_qty
             if ($barang['tipe'] == "Count") {
+                if (!$barang) {
+                    $message = "Id " . $i['barang'] . " not found";
+                }
                 if ($barang['qty'] < (int)$i['qty']) {
                     $message = 'Stok kurang';
                 }
