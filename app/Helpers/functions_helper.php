@@ -740,17 +740,17 @@ function transaksi($decode)
 
             // insert data
             if (!db($decode['tabel'], $dbs)->insert($input)) {
-                gagal($input["barang"] . " gagal");
+                $message = $input["barang"] . " gagal";
             } else {
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                     $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
                     if (!$iot) {
-                        gagal("Id iot not found");
+                        $message = "Id iot not found";
                     }
 
                     $iot['status'] = 1;
                     if (!db('iot', 'playground')->update($iot)) {
-                        gagal("Update iot gagal");
+                        $message = "Update iot gagal";
                     }
                 }
             }
@@ -758,7 +758,7 @@ function transaksi($decode)
             // cari barang update qty
             $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
             if (!$barang) {
-                gagal("Id " . $i['barang'] . " not found");
+                $message = "Id " . $i['barang'] . " not found";
             }
             if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
                 $exp = explode(",", $barang['link']);
@@ -767,17 +767,17 @@ function transaksi($decode)
                     $val = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
 
                     if (!$val) {
-                        gagal("Link barang id null");
+                        $message = "Link barang id null";
                     }
 
                     if ($val['qty'] < (int)$i['qty']) {
-                        gagal('Stok kurang');
+                        $message = 'Stok kurang';
                     }
 
                     $val['qty'] -= (int)$i['qty'];
 
                     if (!db('barang', $dbs)->where('id', $val['id'])->update($val)) {
-                        gagal("Update stok gagal");
+                        $message = "Update stok gagal";
                     }
                 }
             }
@@ -785,12 +785,12 @@ function transaksi($decode)
             // update_qty
             if ($barang['tipe'] == "Count") {
                 if ($barang['qty'] < (int)$i['qty']) {
-                    gagal('Stok kurang');
+                    $message = 'Stok kurang';
                 }
                 $barang['qty'] -= (int)$i['qty'];
 
                 if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
-                    gagal("Update stok gagal");
+                    $message = "Update stok gagal";
                 }
             }
 
@@ -820,7 +820,7 @@ function transaksi($decode)
             $i['tgl'] = $tgl;
 
             if (!db($decode['tabel'], $dbs)->where('id', $i['id'])->update($i)) {
-                gagal("Update hutang gagal");
+                $message = "Update hutang gagal";
             }
 
             $message = base_url('cetak/nota/' . $dbs . '/' . $i['no_nota'] . "/" . $decode['uang']);
@@ -833,13 +833,13 @@ function transaksi($decode)
                     $data_old = db('transaksi', $dbs)->where('id', $i['id'])->get()->getRowArray();
 
                     if (!$data_old) {
-                        gagal('Id transaksi not found');
+                        $message = 'Id transaksi not found';
                     }
                 }
                 $barang = db('barang', $dbs)->where('id', ($i['is_update'] == "new" ? $i['id'] : $i['barang_id']))->get()->getRowArray();
 
                 if (!$barang) {
-                    gagal('Id barang not found');
+                    $message = 'Id barang not found';
                 }
 
                 if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
@@ -850,12 +850,12 @@ function transaksi($decode)
                         $brng = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
 
                         if (!$brng) {
-                            gagal("Id link barang kosong");
+                            $message = "Id link barang kosong";
                         }
 
                         if ($i['is_update'] == "new") {
                             if ($brng['qty'] < $i['qty']) {
-                                gagal("Stok " . $brng['barang'] . " kurang");
+                                $message = "Stok " . $brng['barang'] . " kurang";
                             }
                             $brng['qty'] -= $i['qty'];
                         } else {
@@ -864,7 +864,7 @@ function transaksi($decode)
                                 $selisih_qty = $i['qty'] - $data_old['qty'];
 
                                 if ($brng['qty'] < $selisih_qty) {
-                                    gagal("Stok " . $brng['barang'] . " kurang");
+                                    $message = "Stok " . $brng['barang'] . " kurang";
                                 }
                                 $brng['qty'] -= $selisih_qty;
                             }
@@ -876,14 +876,14 @@ function transaksi($decode)
                         }
 
                         if (!db('barang', $dbs)->where('id', $brng['id'])->update($brng)) {
-                            gagal("Update stok gagal");
+                            $message = "Update stok gagal";
                         }
                     }
                 }
                 if ($barang['tipe'] == "Count") {
                     if ($i['is_update'] == "new") {
                         if ($barang['qty'] < $i['qty']) {
-                            gagal("Stok " . $barang['barang'] . " kurang");
+                            $message = "Stok " . $barang['barang'] . " kurang";
                         }
                         $barang['qty'] -= $i['qty'];
                     } else {
@@ -892,7 +892,7 @@ function transaksi($decode)
                             $selisih_qty = $i['qty'] - $data_old['qty'];
 
                             if ($barang['qty'] < $selisih_qty) {
-                                gagal("Stok " . $i['barang'] . " kurang");
+                                $message = "Stok " . $i['barang'] . " kurang";
                             }
                             $barang['qty'] -= $selisih_qty;
                         }
@@ -904,7 +904,7 @@ function transaksi($decode)
                     }
 
                     if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
-                        gagal("Update stok gagal");
+                        $message = "Update stok gagal";
                     }
                 }
 
@@ -934,7 +934,7 @@ function transaksi($decode)
                     }
 
                     if (!db('transaksi', $dbs)->insert($new)) {
-                        gagal("Insert new data gagal");
+                        $message = "Insert new data gagal";
                     }
                 } else {
                     $update = [
@@ -942,7 +942,7 @@ function transaksi($decode)
                         'qty' => $i['qty']
                     ];
                     if (!db('transaksi', $dbs)->where('id', $i['id'])->update($update)) {
-                        gagal("Update transaksi gagal");
+                        $message = "Update transaksi gagal";
                     }
                 }
             }
@@ -955,7 +955,7 @@ function transaksi($decode)
 
     return $db->transStatus()
         ? sukses("Sukses", $message)
-        : gagal("Gagal");
+        : gagal($message);
 }
 
 
