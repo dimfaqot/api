@@ -673,23 +673,31 @@ function get_hutang($decode)
 
 function transaksi($decode)
 {
+    $dbs = $decode['db'];
+
+
 
     $db = \Config\Database::connect();
     $db->transStart();
+
 
     $nota = next_invoice($decode);
     $message = "";
 
     $tgl = time();
 
+
     foreach ($decode['datas'] as $i) {
+        if ($decode['db'] == "playground") {
+            $dbs = strtolower($i['divisi']);
+        }
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
                 "no_nota" => $nota,
                 "tgl" => $tgl,
                 "jenis" => $i['jenis'],
                 "barang" => $i['barang'],
-                "karyawan" => $i['karyawan'],
+                "karyawan" => '',
                 "barang_id" => $i['id'],
                 "harga" => $i['harga'],
                 "qty" => $i['qty'],
@@ -701,10 +709,20 @@ function transaksi($decode)
                 "petugas" => $decode['petugas']
             ];
 
-            $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
+            if ($dbs == "ps" || $dbs == "billiard") {
+                $input['start'] = $tgl;
+                $input['end'] = ($input['qty'] == 0 ? 0 : $tgl + (int)$input['qty'] * (60 * 60));
+                $input['is_over'] = 0;
+            }
+
+            $message = base_url('cetak/nota/' . $dbs . "/" . $input['no_nota']);
 
             if ($decode['uang'] !== "") {
                 $message .= "/" . $decode['uang'];
+            }
+
+            if (array_key_exists('karyawan', $i)) {
+                $input['karyawan'] = $i['karyawan'];
             }
 
             if (array_key_exists('lokasi', $decode)) {
@@ -721,12 +739,24 @@ function transaksi($decode)
             }
 
             // insert data
-            if (!db($decode['tabel'], $decode['db'])->insert($input)) {
+            if (!db($decode['tabel'], $dbs)->insert($input)) {
                 gagal($input["barang"] . " gagal");
+            } else {
+                if ($dbs == "ps" || $dbs == "billiard") {
+                    $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
+                    if (!$iot) {
+                        gagal("Id iot not found");
+                    }
+
+                    $iot['status'] = 1;
+                    if (!db('iot', 'playground')->update($iot)) {
+                        gagal("Update iot gagal");
+                    }
+                }
             }
 
             // cari barang update qty
-            $barang = db('barang', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+            $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
             if (!$barang) {
                 gagal("Id " . $i['barang'] . " not found");
             }
@@ -734,7 +764,7 @@ function transaksi($decode)
                 $exp = explode(",", $barang['link']);
 
                 foreach ($exp as $x) {
-                    $val = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+                    $val = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
 
                     if (!$val) {
                         gagal("Link barang id null");
@@ -746,7 +776,7 @@ function transaksi($decode)
 
                     $val['qty'] -= (int)$i['qty'];
 
-                    if (!db('barang', $decode['db'])->where('id', $val['id'])->update($val)) {
+                    if (!db('barang', $dbs)->where('id', $val['id'])->update($val)) {
                         gagal("Update stok gagal");
                     }
                 }
@@ -759,14 +789,14 @@ function transaksi($decode)
                 }
                 $barang['qty'] -= (int)$i['qty'];
 
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
                     gagal("Update stok gagal");
                 }
             }
 
             if ($decode['ket'] == "hutang") {
                 $total = 0;
-                $dbh = db('transaksi', $decode['db']);
+                $dbh = db('transaksi', $dbs);
                 $dbh->select('*');
                 if (array_key_exists('lokasi', $decode)) {
                     $dbh->where('lokasi', $decode['lokasi']);
@@ -789,23 +819,24 @@ function transaksi($decode)
             $i['uang'] = $decode['uang'];
             $i['tgl'] = $tgl;
 
-            if (!db($decode['tabel'], $decode['db'])->where('id', $i['id'])->update($i)) {
+            if (!db($decode['tabel'], $dbs)->where('id', $i['id'])->update($i)) {
                 gagal("Update hutang gagal");
             }
 
-            $message = base_url('cetak/nota/' . $decode['db'] . '/' . $i['no_nota'] . "/" . $decode['uang']);
+            $message = base_url('cetak/nota/' . $dbs . '/' . $i['no_nota'] . "/" . $decode['uang']);
         }
+
         if ($decode['ket'] == "update pesanan") {
 
             if ($i['is_update'] == "true" || $i['is_update'] == "new") {
                 if ($i['is_update'] == "true") {
-                    $data_old = db('transaksi', $decode['db'])->where('id', $i['id'])->get()->getRowArray();
+                    $data_old = db('transaksi', $dbs)->where('id', $i['id'])->get()->getRowArray();
 
                     if (!$data_old) {
                         gagal('Id transaksi not found');
                     }
                 }
-                $barang = db('barang', $decode['db'])->where('id', ($i['is_update'] == "new" ? $i['id'] : $i['barang_id']))->get()->getRowArray();
+                $barang = db('barang', $dbs)->where('id', ($i['is_update'] == "new" ? $i['id'] : $i['barang_id']))->get()->getRowArray();
 
                 if (!$barang) {
                     gagal('Id barang not found');
@@ -816,7 +847,7 @@ function transaksi($decode)
                     $exp = explode(",", $barang['link']);
 
                     foreach ($exp as $x) {
-                        $brng = db('barang', $decode['db'])->where('id', $x)->get()->getRowArray();
+                        $brng = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
 
                         if (!$brng) {
                             gagal("Id link barang kosong");
@@ -844,7 +875,7 @@ function transaksi($decode)
                             }
                         }
 
-                        if (!db('barang', $decode['db'])->where('id', $brng['id'])->update($brng)) {
+                        if (!db('barang', $dbs)->where('id', $brng['id'])->update($brng)) {
                             gagal("Update stok gagal");
                         }
                     }
@@ -872,7 +903,7 @@ function transaksi($decode)
                         }
                     }
 
-                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                    if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
                         gagal("Update stok gagal");
                     }
                 }
@@ -902,7 +933,7 @@ function transaksi($decode)
                         $new['lokasi'] = $decode['lokasi'];
                     }
 
-                    if (!db('transaksi', $decode['db'])->insert($new)) {
+                    if (!db('transaksi', $dbs)->insert($new)) {
                         gagal("Insert new data gagal");
                     }
                 } else {
@@ -910,7 +941,7 @@ function transaksi($decode)
                         'petugas' => $decode['petugas'],
                         'qty' => $i['qty']
                     ];
-                    if (!db('transaksi', $decode['db'])->where('id', $i['id'])->update($update)) {
+                    if (!db('transaksi', $dbs)->where('id', $i['id'])->update($update)) {
                         gagal("Update transaksi gagal");
                     }
                 }
