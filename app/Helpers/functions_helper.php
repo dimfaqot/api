@@ -737,11 +737,9 @@ function transaksi($decode)
                 $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
             }
-
+            sukses($input);
             // insert data
-            if (!db($decode['tabel'], $dbs)->insert($input)) {
-                $message = $input["barang"] . " gagal";
-            } else {
+            if (db($decode['tabel'], $dbs)->insert($input)) {
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                     $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
                     if (!$iot) {
@@ -753,12 +751,14 @@ function transaksi($decode)
                         $message = "Update iot gagal";
                     }
                 }
+            } else {
+                $message = $input["barang"] . " gagal";
             }
 
             // cari barang update qty
             $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
 
-            if ($barang['link'] !== '' && $barang['tipe'] == "Mix") {
+            if ($i['link'] !== '' && $i['tipe'] == "Mix") {
                 if (!$barang) {
                     $message = "Id " . $i['barang'] . " not found";
                 }
@@ -784,7 +784,7 @@ function transaksi($decode)
             }
 
             // update_qty
-            if ($barang['tipe'] == "Count") {
+            if ($i['tipe'] == "Count" && $i['link'] == "") {
                 if (!$barang) {
                     $message = "Id " . $i['barang'] . " not found";
                 }
@@ -950,8 +950,6 @@ function transaksi($decode)
                     }
                 }
             }
-
-            $message = "Sukses";
         }
     }
 
