@@ -99,12 +99,13 @@ class Playground extends BaseController
             $res = [];
 
             foreach ($decode['datas'] as $i) {
-                $i['waktu'] = "00:00";
+                $temp = ['id' => $i, 'waktu' => "00:00"];
+
                 $q = db('transaksi', 'playground')->where('id', $i['id'])->get()->getRowArray();
                 if ($q) {
-                    $i['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
+                    $temp['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
                 }
-                $res[] = $i;
+                $res[] = $temp;
             }
 
             sukses("Sukses", $res);
