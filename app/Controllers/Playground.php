@@ -99,7 +99,7 @@ class Playground extends BaseController
             $res = [];
 
             foreach ($decode['datas'] as $i) {
-                $temp = ['id' => $i, 'waktu' => "00:00"];
+                $temp = ['id' => $i, 'waktu' => "00:00", 'roleplay' => 'Open', 'barang' => ''];
 
                 $q = db('transaksi', 'playground')->where('id', $i)->get()->getRowArray();
                 if ($q) {
