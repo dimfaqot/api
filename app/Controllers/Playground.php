@@ -106,6 +106,7 @@ class Playground extends BaseController
                     $temp['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
                     $temp['roleplay'] = $i['roleplay'];
                     $temp['divisi'] = $i['jenis'];
+                    $temp['barang'] = $i['barang'];
                 }
                 $res[] = $temp;
             }
