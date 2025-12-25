@@ -52,6 +52,7 @@ class Playground extends BaseController
                         $i['diskons'] = $diskons;
                         $transaksi = db('transaksi', $decode['db'])->where('metode', 'Hutang')->where('barang_id', $i['id'])->orderBy('tgl', 'DESC')->get()->getRowArray();
                         if ($transaksi) {
+                            $i['transaksi_id'] = $transaksi['id'];
                             $i['qty'] = $transaksi['qty'];
                             $i['total'] = $transaksi['total'];
                             $i['diskon'] = $transaksi['diskon'];
@@ -66,6 +67,7 @@ class Playground extends BaseController
                             $i['roleplay'] = $transaksi['roleplay'];
                             $i['waktu'] = $this->hitungWaktu($transaksi['start'], $transaksi['end'], $transaksi['qty']);
                         } else {
+                            $i['transaksi_id'] = '';
                             $i['qty'] = '';
                             $i['total'] = '';
                             $i['diskon'] = '';
