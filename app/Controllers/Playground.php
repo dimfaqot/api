@@ -95,6 +95,20 @@ class Playground extends BaseController
         if ($decode['order'] == "Transaksi") {
             transaksi($decode);
         }
+        if ($decode['order'] == "Update Waktu") {
+            $res = [];
+
+            foreach ($decode['datas'] as $i) {
+                $i['waktu'] = "00:00";
+                $q = db('transaksi', strtolower($i['divisi']))->where('id', $i['id'])->get()->getRowArray();
+                if ($q) {
+                    $i['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
+                }
+                $res[] = $i;
+            }
+
+            sukses("Sukses", $res);
+        }
     }
 
     function hitungWaktu(int $start, int $end, int $qty): string
