@@ -100,7 +100,7 @@ class Playground extends BaseController
 
             foreach ($decode['datas'] as $i) {
                 $i['waktu'] = "00:00";
-                $q = db('transaksi', strtolower($i['divisi']))->where('id', $i['id'])->get()->getRowArray();
+                $q = db('transaksi', 'playground')->where('id', $i['id'])->get()->getRowArray();
                 if ($q) {
                     $i['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
                 }
