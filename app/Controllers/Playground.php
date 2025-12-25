@@ -104,6 +104,8 @@ class Playground extends BaseController
                 $q = db('transaksi', 'playground')->where('id', $i)->get()->getRowArray();
                 if ($q) {
                     $temp['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
+                    $temp['roleplay'] = $i['roleplay'];
+                    $temp['divisi'] = $i['jenis'];
                 }
                 $res[] = $temp;
             }
