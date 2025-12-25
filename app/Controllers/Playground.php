@@ -95,7 +95,7 @@ class Playground extends BaseController
         if ($decode['order'] == "Transaksi") {
             transaksi($decode);
         }
-        if ($decode['order'] == "Update Waktu") {
+        if ($decode['order'] == "Update waktu") {
             $res = [];
 
             foreach ($decode['datas'] as $i) {
