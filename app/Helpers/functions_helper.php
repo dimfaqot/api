@@ -957,9 +957,21 @@ function transaksi($decode)
 
     $db->transComplete();
 
-    return $db->transStatus()
-        ? sukses("Sukses", $message)
-        : gagal("Gagal");
+    if ($db->transStatus()) {
+        // transaksi sukses
+        if ($decode['db'] === "playground") {
+            return true;
+        } else {
+            return sukses("Sukses", $message);
+        }
+    } else {
+        // transaksi gagal
+        if ($decode['db'] === "playground") {
+            return $message;
+        } else {
+            return gagal("Sukses", $message);
+        }
+    }
 }
 
 
