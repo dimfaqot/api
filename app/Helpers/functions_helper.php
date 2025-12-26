@@ -744,14 +744,15 @@ function transaksi($decode)
                 gagal("Input " . $input["barang"] . " gagal");
             } else {
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
-                    if (!$iot) {
-                        gagal("Id iot not found");
-                    }
-
-                    $iot['status'] = 1;
-                    if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
-                        gagal("Update iot gagal");
+                    if ($i['metode'] !== "Wl") {
+                        $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
+                        if (!$iot) {
+                            gagal("Id iot not found");
+                        }
+                        $iot['status'] = 1;
+                        if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
+                            gagal("Update iot gagal");
+                        }
                     }
                 }
             }
