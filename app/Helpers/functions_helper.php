@@ -685,7 +685,7 @@ function transaksi($decode)
     $message = "";
 
     $tgl = time();
-
+    $is_wl = "";
 
     foreach ($decode['datas'] as $i) {
         if ($decode['db'] == "playground") {
@@ -734,25 +734,30 @@ function transaksi($decode)
             if ($decode['ket'] == "hutang") {
                 $input['user_id'] = $decode['penghutang']['id'];
                 $input['nama'] = $decode['penghutang']['nama'];
-                $input['metode'] = "Hutang";
+                $input['metode'] = (in_array('metode', $i) ? $i['metode'] : "Hutang");
             } else {
                 $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
             }
 
             // insert data
-            if (!db($decode['tabel'], $dbs)->insert($input)) {
+            $dbin = \Config\Database::connect($dbs);
+            $dbi = $dbin->table($decode['tabel']);
+            if (!$dbi->insert($input)) {
                 gagal("Input " . $input["barang"] . " gagal");
             } else {
+                $id_transaksi = $dbin->insertID();
+
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                     if ($i['metode'] !== "Wl") {
+                        $is_wl = ($is_wl !== "" ? "Wl" : "");
                         $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
                         }
                         $iot['status'] = 1;
                         $iot['end'] = $input['end'];
-                        $iot['transaksi_id'] = $i['id'];
+                        $iot['transaksi_id'] = $id_transaksi;
                         if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
                             gagal("Update iot gagal");
                         }
@@ -964,7 +969,7 @@ function transaksi($decode)
     if ($db->transStatus()) {
         // transaksi sukses
         if ($decode['db'] === "playground") {
-            return true;
+            return $is_wl;
         } else {
             return sukses($message);
         }
