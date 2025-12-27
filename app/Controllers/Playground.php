@@ -104,7 +104,7 @@ class Playground extends BaseController
             }
 
             $res = [
-                'data' => [],
+                'data' => ['identitas' => ['total' => 0]],
                 'total' => 0,
                 'range' => $range,
                 'sub_menu' => [] //jml hari bulan ini
@@ -122,7 +122,8 @@ class Playground extends BaseController
                     $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
-                        $res['data']['identitas'] = ['nama' => $d['nama'], 'no_nota' => $n];
+                        $res['data']['identitas'] = ['nama' => $d['nama'], 'no_nota' => $n, 'tgl' => $d['tgl']];
+                        $res['data']['identitas']['total'] += (int)$d['biaya'];
                         $res['data']['data'][] = $d;
                         $res['total'] += (int)$d['biaya'];
                     }
