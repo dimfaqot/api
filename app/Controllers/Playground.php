@@ -52,7 +52,7 @@ class Playground extends BaseController
                 if ((int)$i['start'] <= time()) {
                     $i['metode'] = "Hutang";
                     if (db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
-                        $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
+                        $iot = db('iot', 'playground')->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
                         if ($iot) {
                             $iot['status'] = 1;
                             $iot['tgl'] = $i['start'];
