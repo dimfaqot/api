@@ -93,7 +93,7 @@ class Playground extends BaseController
             $range = today($decode);
             $notas = [];
             foreach ($decode['divisions'] as $i) {
-                $db = (strtolower($i) == "Ps" || strtolower($i) == "Billiard" ? "playground" : $i);
+                $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
                 $temp_notas = db('transaksi', $db)->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end'])->groupBy('no_nota')->get()->getResultArray();
 
                 foreach ($temp_notas as $tn) {
@@ -112,7 +112,7 @@ class Playground extends BaseController
 
             foreach ($decode['divisions'] as $i) {
                 foreach ($notas as $n) {
-                    $db = (strtolower($i) == "Ps" || strtolower($i) == "Billiard" ? "playground" : $i);
+                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
                     $data = db('transaksi', $db)->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
