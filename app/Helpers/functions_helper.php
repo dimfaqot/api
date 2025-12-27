@@ -752,6 +752,7 @@ function transaksi($decode)
                         }
                         $iot['status'] = 1;
                         $iot['end'] = $input['end'];
+                        $iot['transaksi_id'] = $i['id'];
                         if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
                             gagal("Update iot gagal");
                         }
