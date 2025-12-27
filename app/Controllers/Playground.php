@@ -48,14 +48,14 @@ class Playground extends BaseController
             }
 
             $wl = db('transaksi', 'playground')->where('metode', "Wl")->get()->getResultArray();
-            sukses($wl);
             foreach ($wl as $i) {
-                if ((int)$i['start'] >= time()) {
+                if ((int)$i['start'] <= time()) {
                     $i['metode'] = "Hutang";
                     if (db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
                         $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
                         if ($iot) {
                             $iot['status'] = 1;
+                            $iot['tgl'] = $i['start'];
                             $iot['end'] = $i['end'];
                             db('iot', 'playground')->where('id', $iot['id'])->update($iot);
                         }
