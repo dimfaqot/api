@@ -734,7 +734,7 @@ function transaksi($decode)
             if ($decode['ket'] == "hutang") {
                 $input['user_id'] = $decode['penghutang']['id'];
                 $input['nama'] = $decode['penghutang']['nama'];
-                $input['metode'] = $i['metode'];
+                $input['metode'] = "Hutang";
             } else {
                 $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
