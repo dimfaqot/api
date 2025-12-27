@@ -113,7 +113,13 @@ class Playground extends BaseController
             foreach ($decode['divisions'] as $i) {
                 foreach ($notas as $n) {
                     $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
-                    $data = db('transaksi', $db)->where('no_nota', $n)->get()->getResultArray();
+
+                    $dbb = db('transaksi', $db);
+                    if ($i['Ps'] || $i['Billiard']) {
+                        $dbb->where('jenis', $i);
+                    }
+
+                    $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         $res['data'][] = $d;
