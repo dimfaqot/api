@@ -51,13 +51,13 @@ class Playground extends BaseController
             foreach ($wl as $i) {
                 if ((int)$i['start'] <= time()) {
                     $i['metode'] = "Hutang";
+                    $i['tgl'] = $i['start'];
                     if (db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
                         $iot = db('iot', 'playground')->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
-                        sukses($iot);
                         if ($iot) {
                             $iot['status'] = 1;
-                            $iot['tgl'] = $i['start'];
                             $iot['end'] = $i['end'];
+                            sukses($iot);
                             db('iot', 'playground')->where('id', $iot['id'])->update($iot);
                         }
                     }
