@@ -104,13 +104,12 @@ class Playground extends BaseController
             }
 
             $res = [
-                'data' => ['identitas' => ['total' => 0]],
+                'data' => ['identitas' => ['total' => 0, 'nama' => '', 'no_nota' => '', 'tgl' => 0]],
                 'total' => 0,
                 'range' => $range,
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
-            sukses($res['data']['identitas']['total']);
 
             foreach ($decode['divisions'] as $i) {
                 foreach ($notas as $n) {
