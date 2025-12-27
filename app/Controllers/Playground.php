@@ -62,7 +62,7 @@ class Playground extends BaseController
                     if ($iot) {
                         $iot['status'] = 1;
                         $iot['end'] = $i['end'];
-                        $iot['transaksi_id'] = $i['transaksi_id'];
+                        $iot['transaksi_id'] = $i['id'];
                         if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
                             gagal("Lampu wl gagal nyala");
                         }
