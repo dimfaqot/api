@@ -434,7 +434,7 @@ function next_invoice($decode)
     $nota = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
     if ($decode['ket'] == "hutang") {
-        $nota = random_str(10);
+        $nota = time() . random_str(5);
     }
 
     return $nota;

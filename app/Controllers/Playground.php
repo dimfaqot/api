@@ -22,7 +22,7 @@ class Playground extends BaseController
             sukses("Ok", $data, options($decode));
         }
 
-        if ($decode['order'] == "Transaksi") {;
+        if ($decode['order'] == "Transaksi") {
             $message = transaksi($decode);
             if ($message === true) {
                 sukses(sukses("Ok",  $this->get_data($decode)));
@@ -87,6 +87,42 @@ class Playground extends BaseController
             } else {
                 return gagal("Gagal", []);
             }
+        }
+
+        if ($decode['order'] == "Bayar") {
+            $range = today($decode);
+            $notas = [];
+            foreach ($decode['divisions'] as $i) {
+                $db = (strtolower($i) == "Ps" || strtolower($i) == "Billiard" ? "playground" : $i);
+                $temp_notas = db('transaksi', $db)->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end'])->groupBy('no_nota')->get()->getResultArray();
+
+                foreach ($temp_notas as $tn) {
+                    if (!in_array($tn['no_nota'], $notas)) {
+                        $notas[] = $tn['no_nota'];
+                    }
+                }
+            }
+
+            $res = [
+                'data' => [],
+                'total' => 0,
+                'range' => $range,
+                'sub_menu' => [] //jml hari bulan ini
+            ];
+
+            foreach ($decode['divisions'] as $i) {
+                foreach ($notas as $n) {
+                    $db = (strtolower($i) == "Ps" || strtolower($i) == "Billiard" ? "playground" : $i);
+                    $data = db('transaksi', $db)->where('no_nota', $n)->get()->getResultArray();
+                    foreach ($data as $d) {
+                        $d['divisi'] = $i;
+                        $res['data'][] = $d;
+                        $res['total'] += (int)$d['biaya'];
+                    }
+                }
+            }
+
+            sukses("Ok", $res);
         }
     }
 
