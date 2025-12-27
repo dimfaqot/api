@@ -104,12 +104,13 @@ class Playground extends BaseController
             }
 
             $res = [
-                'data' => ['identitas' => ['total' => 0, 'nama' => '', 'no_nota' => '', 'tgl' => 0]],
+                'data' => ['identitas' => ['total' => 0]],
                 'total' => 0,
                 'range' => $range,
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
+            sukses($res['data']['identitas']['total']);
 
             foreach ($decode['divisions'] as $i) {
                 foreach ($notas as $n) {
@@ -123,7 +124,9 @@ class Playground extends BaseController
                     $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
-                        $res['data']['identitas'] = ['nama' => $d['nama'], 'no_nota' => $n, 'tgl' => $d['tgl']];
+                        $res['data']['identitas']['nama'] = $d['nama'];
+                        $res['data']['identitas']['tgl'] = $d['tgl'];
+                        $res['data']['identitas']['no_nota'] = $d['no_nota'];
                         $res['data']['identitas']['total'] += (int)$d['biaya'];
                         $res['data']['data'][] = $d;
                         $res['total'] += (int)$d['biaya'];
