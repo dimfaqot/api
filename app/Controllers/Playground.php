@@ -65,6 +65,16 @@ class Playground extends BaseController
                         if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
                             gagal("Lampu wl gagal nyala");
                         }
+
+                        $temp = [
+                            'id' => $i['id'],
+                            'waktu' => $this->hitungWaktu($i['start'], $i['end'], $i['qty']),
+                            'roleplay' => $i['roleplay'],
+                            'divisi' => $i['jenis'],
+                            'barang' => $i['barang']
+                        ];
+
+                        $res[] = $temp;
                     }
                 }
             }
