@@ -965,14 +965,14 @@ function transaksi($decode)
         if ($decode['db'] === "playground") {
             return true;
         } else {
-            return sukses("Sukses", $message);
+            return sukses($message);
         }
     } else {
         // transaksi gagal
         if ($decode['db'] === "playground") {
             return $message;
         } else {
-            return gagal("Sukses", $message);
+            return gagal($message);
         }
     }
 }

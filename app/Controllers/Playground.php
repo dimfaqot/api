@@ -47,21 +47,34 @@ class Playground extends BaseController
                 $res[] = $temp;
             }
 
+            $db = \Config\Database::connect();
+            $db->transStart();
             $wl = db('transaksi', 'playground')->where('metode', "Wl")->get()->getResultArray();
             foreach ($wl as $i) {
                 if ((int)$i['start'] <= time()) {
                     $i['metode'] = "Hutang";
                     $i['tgl'] = $i['start'];
-                    if (db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
-                        $iot = db('iot', 'playground')->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
-                        if ($iot) {
-                            $iot['status'] = 1;
-                            $iot['end'] = $i['end'];
-                            sukses($iot);
-                            db('iot', 'playground')->where('id', $iot['id'])->update($iot);
+                    if (!db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
+                        gagal('Wl gagal dimulai');
+                    }
+
+                    $iot = db('iot', 'playground')->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
+                    if ($iot) {
+                        $iot['status'] = 1;
+                        $iot['end'] = $i['end'];
+                        if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
+                            gagal("Lampu wl gagal nyala");
                         }
                     }
                 }
+            }
+
+            $db->transComplete();
+
+            if ($db->transStatus()) {
+                return sukses("Sukses");
+            } else {
+                return gagal("Gagal");
             }
 
             sukses("Sukses", $res);
