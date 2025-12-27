@@ -110,7 +110,7 @@ class Playground extends BaseController
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
-            sukses($res);
+            sukses($res['data']['identitas']['total']);
 
             foreach ($decode['divisions'] as $i) {
                 foreach ($notas as $n) {
