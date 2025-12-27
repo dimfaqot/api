@@ -72,12 +72,10 @@ class Playground extends BaseController
             $db->transComplete();
 
             if ($db->transStatus()) {
-                return sukses("Sukses");
+                return sukses("Sukses", $res);
             } else {
-                return gagal("Gagal");
+                return gagal("Gagal", []);
             }
-
-            sukses("Sukses", $res);
         }
     }
 
