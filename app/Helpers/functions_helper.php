@@ -711,7 +711,8 @@ function transaksi($decode)
 
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $input['start'] = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
-                $input['end'] = ($input['qty'] == 0 ? 0 : $tgl + (int)$input['qty'] * (60 * 60));
+                $end = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
+                $input['end'] = ($input['qty'] == 0 ? 0 : $end + (int)$input['qty'] * (60 * 60));
                 $input['is_over'] = 0;
                 $input['roleplay'] = $i['roleplay'];
             }
@@ -750,6 +751,7 @@ function transaksi($decode)
                             gagal("Id iot not found");
                         }
                         $iot['status'] = 1;
+                        $iot['end'] = $input['end'];
                         if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
                             gagal("Update iot gagal");
                         }
