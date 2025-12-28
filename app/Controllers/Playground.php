@@ -109,6 +109,10 @@ class Playground extends BaseController
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
+            foreach (options(['kategori' => "Metode", "format" => "array"]) as $i) {
+                $res[$i] = 0;
+            }
+
             foreach ($notas as $n) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
