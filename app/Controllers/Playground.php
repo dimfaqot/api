@@ -172,6 +172,7 @@ class Playground extends BaseController
                 'tahuns' => $tahun,
                 'bulans' => $bulan,
                 'Hutang' => 0,
+                "total" => 0,
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
