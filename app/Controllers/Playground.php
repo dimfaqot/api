@@ -125,7 +125,7 @@ class Playground extends BaseController
                         $d['divisi'] = $i;
                         $temp['identitas'] = ['nama' => $d['nama'], 'tgl' => $d['tgl'], 'no_nota' => $d['no_nota']];
                         $temp['data'][] = $d;
-                        $temp['total'] += array_sum(array_column($d, 'biaya'));
+                        $temp['total'] += (int)array_sum(array_column($d, 'biaya'));
                         $res['total'] += (int)$d['biaya'];
                     }
                 }
