@@ -132,6 +132,7 @@ class Playground extends BaseController
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
                             'user_id' => $d['user_id'],
+                            'no_nota' => $n,
                             'wa' => ''
                         ];
                         $wa = db('user')->where('id', $d['user_id'])->get()->getRowArray();
@@ -198,7 +199,7 @@ class Playground extends BaseController
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
-                            'user_id' => $d['user_id'],
+                            'user_id' => $u,
                             'wa' => ''
                         ];
                         $wa = db('user')->where('id', $u)->get()->getRowArray();
