@@ -75,6 +75,8 @@ class Playground extends BaseController
                         $temp['total'] += (int)$d['biaya'];
                     }
                 }
+
+                $data[] = $temp;
             }
 
 
@@ -342,17 +344,27 @@ class Playground extends BaseController
         $durasiDetik = $now - $start;
         $durasiMenit = $durasiDetik / 60;
 
+        // jika masih bermain < 1 menit
+        if ($durasiMenit < 1) {
+            return 1000;
+        }
+
         // tarif per menit (float)
         $tarifPerMenit = $tarifPerJam / 60;
         $biaya = $durasiMenit * $tarifPerMenit;
 
-        // jika durasi < 120 menit → minimal bayar 2 jam
-        if ($durasiMenit < 120) {
-            return 2 * $tarifPerJam;
+        // jika tepat 60 menit → harus persis tarif per jam
+        if (floor($durasiMenit) == 60) {
+            $biaya = $tarifPerJam;
         }
 
-        // bulatkan ke atas jika tidak bulat
-        return (int)ceil($biaya);
+        // jika durasi < 120 menit → minimal bayar 2 jam
+        if ($durasiMenit < 120) {
+            $biaya = 2 * $tarifPerJam;
+        }
+
+        // bulatkan ke atas ke ribuan
+        return (int)ceil($biaya / 1000) * 1000;
     }
 
     function is_pelajar()
