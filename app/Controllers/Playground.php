@@ -131,8 +131,14 @@ class Playground extends BaseController
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
-                            'no_nota' => $d['no_nota']
+                            'user_id' => $d['user_id'],
+                            'wa' => ''
                         ];
+                        $wa = db('user')->where('id', $d['user_id'])->get()->getRowArray();
+                        if ($wa) {
+                            $temp['identitas']['wa'] = $wa['wa'];
+                        }
+
                         $temp['data'][] = $d;
 
                         // jumlahkan biaya langsung
