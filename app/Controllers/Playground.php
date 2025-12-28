@@ -111,7 +111,7 @@ class Playground extends BaseController
             ];
 
             foreach ($notas as $n) {
-                $temp = ['total' => 0];
+                $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
                     $db = ($i == "Ps" || $i == "Billiard" ? "playground" : strtolower($i));
 
