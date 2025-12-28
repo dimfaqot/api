@@ -62,6 +62,9 @@ class Playground extends BaseController
                     $q = $dbb->get()->getResultArray();
                     foreach ($q as $d) {
                         $d['divisi'] = $i;
+                        if ($i == "Ps" || $i == "Billiard") {
+                            $i['biaya'] = $this->hitung_biaya($d);
+                        }
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
