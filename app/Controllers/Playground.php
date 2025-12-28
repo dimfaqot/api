@@ -110,8 +110,9 @@ class Playground extends BaseController
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
-            foreach ($decode['divisions'] as $i) {
-                foreach ($notas as $n) {
+            foreach ($notas as $n) {
+                $temp = [];
+                foreach ($decode['divisions'] as $i) {
                     $db = ($i == "Ps" || $i == "Billiard" ? "playground" : strtolower($i));
 
                     $dbb = db('transaksi', $db);
@@ -122,14 +123,15 @@ class Playground extends BaseController
                     $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
-                        $res['data']['identitas']['nama'] = $d['nama'];
-                        $res['data']['identitas']['tgl'] = $d['tgl'];
-                        $res['data']['identitas']['no_nota'] = $d['no_nota'];
-                        $res['data']['identitas']['total'] += (int)$d['biaya'];
-                        $res['data']['data'][] = $d;
+                        $temp['identitas']['nama'] = $d['nama'];
+                        $temp['identitas']['tgl'] = $d['tgl'];
+                        $temp['identitas']['no_nota'] = $d['no_nota'];
+                        $temp['identitas']['total'] += (int)$d['biaya'];
+                        $temp[] = $d;
                         $res['total'] += (int)$d['biaya'];
                     }
                 }
+                $res[] = $temp;
             }
 
             sukses("Ok", $res);
