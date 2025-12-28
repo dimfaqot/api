@@ -153,16 +153,12 @@ class Playground extends BaseController
             sukses("Ok", $res);
         }
         if ($decode['order'] == "Data hutang") {
-            $tahun = tahuns($decode);
-            $bulan = bulans();
 
             $users = [];
             foreach ($decode['divisions'] as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
                 $temp_users = db('transaksi', $db)
                     ->where('metode', "Hutang")
-                    ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-                    ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                     ->groupBy("user_id")
                     ->get()
                     ->getResultArray();
@@ -176,9 +172,6 @@ class Playground extends BaseController
 
             $res = [
                 'data' => [],
-                'tahuns' => $tahun,
-                'bulans' => $bulan,
-                'Hutang' => 0,
                 "total" => 0,
                 'sub_menu' => [] //jml hari bulan ini
             ];
