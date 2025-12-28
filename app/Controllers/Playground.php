@@ -123,10 +123,16 @@ class Playground extends BaseController
                     $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
-                        $temp['identitas'] = ['nama' => $d['nama'], 'tgl' => $d['tgl'], 'no_nota' => $d['no_nota']];
+                        $temp['identitas'] = [
+                            'nama'    => $d['nama'],
+                            'tgl'     => $d['tgl'],
+                            'no_nota' => $d['no_nota']
+                        ];
                         $temp['data'][] = $d;
-                        $temp['total'] += (int)array_sum(array_column($d, 'biaya'));
-                        $res['total'] += (int)$d['biaya'];
+
+                        // jumlahkan biaya langsung
+                        $temp['total'] += (int)$d['biaya'];
+                        $res['total']  += (int)$d['biaya'];
                     }
                 }
                 $res['data'][] = $temp;
