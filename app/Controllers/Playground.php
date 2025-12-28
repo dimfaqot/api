@@ -145,6 +145,72 @@ class Playground extends BaseController
 
             sukses("Ok", $res);
         }
+        if ($decode['order'] == "Data hutang") {
+            $tahun = tahuns($decode);
+            $bulan = bulans();
+
+            $users = [];
+            foreach ($decode['divisions'] as $i) {
+                $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
+                $temp_users = db('transaksi', $db)
+                    ->where('metode', "Hutang")
+                    ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                    ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                    ->groupBy("user_id")
+                    ->get()
+                    ->getResultArray();
+
+                foreach ($temp_users as $us) {
+                    if (!in_array($us['user_id'], $users)) {
+                        $users[] = $us['user_id'];
+                    }
+                }
+            }
+
+            $res = [
+                'data' => [],
+                'tahuns' => $tahun,
+                'bulans' => $bulan,
+                'Hutang' => 0,
+                'sub_menu' => [] //jml hari bulan ini
+            ];
+
+            foreach ($users as $u) {
+                $temp = ['data' => [], 'total' => 0, 'identitas' => []];
+                foreach ($decode['divisions'] as $i) {
+                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : strtolower($i));
+
+                    $dbb = db('transaksi', $db);
+                    if ($i == "Ps" || $i == "Billiard") {
+                        $dbb->where('jenis', $i);
+                    }
+
+                    $data = $dbb->where('user_id', $u)->get()->getResultArray();
+                    foreach ($data as $d) {
+                        $d['divisi'] = $i;
+                        $temp['identitas'] = [
+                            'nama'    => $d['nama'],
+                            'tgl'     => $d['tgl'],
+                            'user_id' => $d['user_id'],
+                            'wa' => ''
+                        ];
+                        $wa = db('user')->where('id', $u)->get()->getRowArray();
+                        if ($wa) {
+                            $temp['identitas']['wa'] = $wa['wa'];
+                        }
+
+                        $temp['data'][] = $d;
+
+                        // jumlahkan biaya langsung
+                        $temp['total'] += (int)$d['biaya'];
+                        $res['total']  += (int)$d['biaya'];
+                    }
+                }
+                $res['data'][] = $temp;
+            }
+
+            sukses("Ok", $res);
+        }
     }
 
     function get_data($decode)
