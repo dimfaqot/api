@@ -105,7 +105,6 @@ class Playground extends BaseController
 
             $res = [
                 'data' => [],
-                'total' => 0,
                 'range' => $range,
                 'sub_menu' => [] //jml hari bulan ini
             ];
@@ -132,7 +131,7 @@ class Playground extends BaseController
 
                         // jumlahkan biaya langsung
                         $temp['total'] += (int)$d['biaya'];
-                        $res['total']  += (int)$d['biaya'];
+                        $res[$d['metode']]  += (int)$d['biaya'];
                     }
                 }
                 $res['data'][] = $temp;
