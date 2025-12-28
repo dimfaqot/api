@@ -33,19 +33,50 @@ class Playground extends BaseController
 
         if ($decode['order'] == "Update waktu") {
             $res = [];
-
+            $data = [];
             foreach ($decode['datas'] as $i) {
                 $temp = ['id' => $i, 'waktu' => "00:00", 'roleplay' => 'Open', 'barang' => ''];
 
                 $q = db('transaksi', 'playground')->where('id', $i)->get()->getRowArray();
                 if ($q) {
-                    $temp['waktu'] = $this->hitungWaktu($q['start'], $q['end'], $q['qty']);
+                    $temp['waktu'] = $this->hitung_waktu($q['start'], $q['end'], $q['qty']);
                     $temp['roleplay'] = $q['roleplay'];
                     $temp['divisi'] = $q['jenis'];
                     $temp['barang'] = $q['barang'];
+                    $temp['no_nota'] = $q['no_nota'];
+                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] : $this->hitung_biaya($q));
                 }
                 $res[] = $temp;
             }
+
+            foreach ($res as $r) {
+                $temp = ['data' => [], 'total' => 0, 'identitas' => []];
+                foreach ($decode['divisions'] as $i) {
+                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
+
+                    $q = db('transaksi', $db)->where('no_nota', $r['no_nota'])->get()->getResultArray();
+                    foreach ($q as $d) {
+                        $d['divisi'] = $i;
+                        $temp['identitas'] = [
+                            'nama'    => $d['nama'],
+                            'tgl'     => $d['tgl'],
+                            'user_id' => $d['user_id'],
+                            'no_nota' => $r['no_nota'],
+                            'wa' => ''
+                        ];
+                        $wa = db('user')->where('id', $d['user_id'])->get()->getRowArray();
+                        if ($wa) {
+                            $temp['identitas']['wa'] = $wa['wa'];
+                        }
+
+                        $temp['data'][] = $d;
+
+                        // jumlahkan biaya langsung
+                        $temp['total'] += (int)$d['biaya'];
+                    }
+                }
+            }
+
 
             $db = \Config\Database::connect();
             $db->transStart();
@@ -69,7 +100,7 @@ class Playground extends BaseController
 
                         $temp = [
                             'id' => $i['id'],
-                            'waktu' => $this->hitungWaktu($i['start'], $i['end'], $i['qty']),
+                            'waktu' => $this->hitung_waktu($i['start'], $i['end'], $i['qty']),
                             'roleplay' => $i['roleplay'],
                             'divisi' => $i['jenis'],
                             'barang' => $i['barang']
@@ -83,7 +114,7 @@ class Playground extends BaseController
             $db->transComplete();
 
             if ($db->transStatus()) {
-                return sukses("Sukses", $res);
+                return sukses("Sukses", $res, $data);
             } else {
                 return gagal("Gagal", []);
             }
@@ -253,7 +284,7 @@ class Playground extends BaseController
                         $i['end'] = $transaksi['end'];
                         $i['is_over'] = $transaksi['is_over'];
                         $i['roleplay'] = $transaksi['roleplay'];
-                        $i['waktu'] = $this->hitungWaktu($transaksi['start'], $transaksi['end'], $transaksi['qty']);
+                        $i['waktu'] = $this->hitung_waktu($transaksi['start'], $transaksi['end'], $transaksi['qty']);
                     } else {
                         $i['transaksi_id'] = '';
                         $i['qty'] = '';
@@ -280,7 +311,7 @@ class Playground extends BaseController
         return $data;
     }
 
-    function hitungWaktu(int $start, int $end, int $qty): string
+    function hitung_waktu(int $start, int $end, int $qty): string
     {
         if ($qty > 0) {
             // sisa waktu
@@ -301,6 +332,27 @@ class Playground extends BaseController
             // format dua digit jam:menit
             return sprintf("%02d:%02d", $hours, $minutes);
         }
+    }
+    function hitung_biaya($q)
+    {
+        $tarifPerJam = $q['harga'] - $q['diskon']; // harga per jam setelah diskon
+        $start       = $q['start'];                // unix timestamp
+
+        $now = time();
+        $durasiDetik = $now - $start;
+        $durasiMenit = $durasiDetik / 60;
+
+        // tarif per menit (float)
+        $tarifPerMenit = $tarifPerJam / 60;
+        $biaya = $durasiMenit * $tarifPerMenit;
+
+        // jika durasi < 120 menit → minimal bayar 2 jam
+        if ($durasiMenit < 120) {
+            return 2 * $tarifPerJam;
+        }
+
+        // bulatkan ke atas jika tidak bulat
+        return (int)ceil($biaya);
     }
 
     function is_pelajar()
