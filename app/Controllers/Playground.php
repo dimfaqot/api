@@ -63,7 +63,10 @@ class Playground extends BaseController
                     foreach ($q as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            $i['biaya'] = $this->hitung_biaya($d);
+                            if ($d['qty'] == 0) {
+                                $d['biaya'] = $this->hitung_biaya($d);
+                            }
+                            $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
@@ -169,6 +172,12 @@ class Playground extends BaseController
                     $data = $dbb->where('no_nota', $n)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
+                        if ($i == "Ps" || $i == "Billiard") {
+                            if ($d['qty'] == 0) {
+                                $d['biaya'] = $this->hitung_biaya($d);
+                            }
+                            $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
+                        }
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
@@ -230,6 +239,12 @@ class Playground extends BaseController
                     $data = $dbb->where('user_id', $u)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
+                        if ($i == "Ps" || $i == "Billiard") {
+                            if ($d['qty'] == 0) {
+                                $d['biaya'] = $this->hitung_biaya($d);
+                            }
+                            $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
+                        }
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
                             'tgl'     => $d['tgl'],
