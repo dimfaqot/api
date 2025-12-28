@@ -106,6 +106,8 @@ class Playground extends BaseController
             $res = [
                 'data' => [],
                 'range' => $range,
+                'Wl' => 0,
+                'Hutang' => 0,
                 'sub_menu' => [] //jml hari bulan ini
             ];
 
