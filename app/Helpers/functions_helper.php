@@ -689,7 +689,7 @@ function transaksi($decode)
 
     foreach ($decode['datas'] as $i) {
         if ($decode['db'] == "playground") {
-            $dbs = ($i['divisi'] == "Kantin" || $i['divisi'] == "Barber" ? strtolower($i['divisi']) : "playground");
+            $dbs = ($i['divisi'] == "Kantin" || $i['divisi'] == "Barber" ? strtolower($i['divisi']) : $decode['db']);
         }
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
@@ -751,14 +751,14 @@ function transaksi($decode)
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                     if ($i['metode'] !== "Wl") {
                         $is_wl = ($is_wl !== "" ? "Wl" : "");
-                        $iot = db('iot', 'playground')->where('id', $i['iot_id'])->get()->getRowArray();
+                        $iot = db('iot', $decode['db'])->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
                         }
                         $iot['status'] = 1;
                         $iot['end'] = $input['end'];
                         $iot['transaksi_id'] = $id_transaksi;
-                        if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
+                        if (!db('iot', $decode['db'])->where('id', $iot['id'])->update($iot)) {
                             gagal("Update iot gagal");
                         }
                     }

@@ -37,7 +37,7 @@ class Playground extends BaseController
             foreach ($decode['datas'] as $i) {
                 $temp = ['id' => $i, 'waktu' => "00:00", 'roleplay' => 'Open', 'barang' => ''];
 
-                $q = db('transaksi', 'playground')->where('id', $i)->get()->getRowArray();
+                $q = db('transaksi', $decode['db'])->where('id', $i)->get()->getRowArray();
                 if ($q) {
                     $temp['waktu'] = $this->hitung_waktu($q['start'], $q['end'], $q['qty']);
                     $temp['roleplay'] = $q['roleplay'];
@@ -93,21 +93,21 @@ class Playground extends BaseController
 
             $db = \Config\Database::connect();
             $db->transStart();
-            $wl = db('transaksi', 'playground')->where('metode', "Wl")->get()->getResultArray();
+            $wl = db('transaksi', $decode['db'])->where('metode', "Wl")->get()->getResultArray();
             foreach ($wl as $i) {
                 if ((int)$i['start'] <= time()) {
                     $i['metode'] = "Hutang";
                     $i['tgl'] = $i['start'];
-                    if (!db('transaksi', 'playground')->where('id', $i['id'])->update($i)) {
+                    if (!db('transaksi', $decode['db'])->where('id', $i['id'])->update($i)) {
                         gagal('Wl gagal dimulai');
                     }
 
-                    $iot = db('iot', 'playground')->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
+                    $iot = db('iot', $decode['db'])->select('iot.id as id')->join('games', 'iot.id=games.iot_id')->where('games.id', $i['barang_id'])->get()->getRowArray();
                     if ($iot) {
                         $iot['status'] = 1;
                         $iot['end'] = $i['end'];
                         $iot['transaksi_id'] = $i['id'];
-                        if (!db('iot', 'playground')->where('id', $iot['id'])->update($iot)) {
+                        if (!db('iot', $decode['db'])->where('id', $iot['id'])->update($iot)) {
                             gagal("Lampu wl gagal nyala");
                         }
 
@@ -267,6 +267,17 @@ class Playground extends BaseController
             }
 
             sukses("Ok", $res);
+        }
+        if ($decode['order'] == "lampu") {
+            $q = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id')->join('iot', 'games.iot_id=iot.id')->where('game.id', $$decode['id'])->get()->getRowArray();
+            if ($q) {
+                $update = ['status' => 0, 'end' => 0, 'transaksi_id' => 0];
+                if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
+                    gagal("Update iot gagal");
+                } else {
+                    sukses("Sukses");
+                }
+            }
         }
     }
 
