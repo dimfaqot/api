@@ -279,7 +279,7 @@ class Playground extends BaseController
             if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
                 gagal("Update iot gagal");
             }
-            sukses("Sukses");
+            sukses("Sukses", $this->get_data($decode));
         }
     }
 
