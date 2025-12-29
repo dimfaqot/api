@@ -281,6 +281,39 @@ class Playground extends BaseController
             }
             sukses("Sukses", $this->get_data($decode));
         }
+
+        if ($decode['order'] == "jam") {
+            $db = \Config\Database::connect();
+            $db->transStart();
+            $transaksi = db('transaksi', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            if (!$transaksi) {
+                gagal("Id transaksi not found");
+            }
+
+            $transaksi['qty'] += (int)$decode['jam'];
+            $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
+
+            if (!db('transaksi', $decode['db'])->where('id', $decode['id'])->update($transaksi)) {
+                gagal("Update transaksi gagal");
+            }
+
+            $q = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id')->join('iot', 'games.iot_id=iot.id')->where('games.id', $transaksi['barang_id'])->get()->getRowArray();
+
+            if (!$q) {
+                gagal("Id games not found");
+            }
+
+            $update = ['status' => 1, 'end' => $transaksi['end'], 'transaksi_id' => $transaksi['id']];
+
+            if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
+                gagal("Update iot gagal");
+            }
+
+            $db->transComplete();
+            $db->transStatus()
+                ? sukses("Sukses", $this->get_data($decode))
+                : gagal("Gagal");
+        }
     }
 
     function get_data($decode)
