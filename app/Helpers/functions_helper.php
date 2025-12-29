@@ -935,7 +935,7 @@ function transaksi($decode)
                         "total" => $i['total'],
                         "diskon" => $i['diskon'],
                         "biaya" => $i['biaya'],
-                        "karyawan" => $i['karyawan'],
+                        "karyawan" => '',
                         "tipe" => $i['tipe'],
                         "link" => $i['link'],
                         "metode" => 'Hutang',
@@ -946,6 +946,9 @@ function transaksi($decode)
 
                     if (array_key_exists('lokasi', $decode)) {
                         $new['lokasi'] = $decode['lokasi'];
+                    }
+                    if (array_key_exists('karyawan', $decode)) {
+                        $new['karyawan'] = $decode['karyawan'];
                     }
 
                     if (!db('transaksi', $dbs)->insert($new)) {
