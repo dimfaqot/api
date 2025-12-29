@@ -270,13 +270,16 @@ class Playground extends BaseController
         }
         if ($decode['order'] == "lampu") {
             $q = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id')->join('iot', 'games.iot_id=iot.id')->where('games.id', $decode['id'])->get()->getRowArray();
-            if ($q) {
-                $update = ['status' => 0, 'end' => 0, 'transaksi_id' => 0];
-                if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
-                    gagal("Update iot gagal");
-                } else {
-                    sukses("Sukses");
-                }
+
+            if (!$q) {
+                gagal("Id games not found");
+            }
+
+            $update = ['status' => 0, 'end' => 0, 'transaksi_id' => 0];
+            if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
+                gagal("Update iot gagal");
+            } else {
+                sukses("Sukses");
             }
         }
     }
