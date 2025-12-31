@@ -291,9 +291,45 @@ class Playground extends BaseController
                 gagal("Id transaksi not found");
             }
 
+            $q_diskon = db('diskon', $decode['db'])->where('game_id', $transaksi['barang_id'])->get()->getResultArray();
+            if ($q_diskon) {
+                gagal("Diskon not found");
+            }
+            $val_diskon = array_column($q_diskon, 'diskon', 'nama');
+
+            $weekdays = 0;
+            $pelajar = 0;
+            $girls = 0;
+
+            if (($transaksi['harga'] * $transaksi['qty']) !== $transaksi['biaya']) {
+                if (is_weekdays()) {
+                    $weekdays = $val_diskon['Weekdays'];
+                    $sisa_diskon = $transaksi['dikson'] - ($weekdays * $transaksi['qty']);
+                    if ($sisa_diskon == ($transaksi['harga'] - $weekdays)) {
+                        $girls = $val_diskon['Girls'];
+                    } else if ($sisa_diskon == $val_diskon['Pelajar'] * $transaksi['qty']) {
+                        $pelajar = $val_diskon['Pelajar'];
+                    } else if ($sisa_diskon == (($val_diskon['Pelajar'] * $transaksi['qty']) + (($transaksi['harga'] - $weekdays) * $transaksi['qty']))) {
+                        $pelajar = $val_diskon['Pelajar'];
+                        $girls = $val_diskon['Girls'];
+                    }
+                } else {
+                    if ($transaksi['diskon'] == $transaksi['harga']) {
+                        $girls = $val_diskon['Girls'];
+                    } else if ($transaksi['diskon'] == ($val_diskon['Pelajar'] * $transaksi['qty'])) {
+                        $pelajar = $val_diskon['Pelajar'];
+                    } else if ($transaksi['diskon'] == (($val_diskon['Pelajar'] * $transaksi['qty']) + ($transaksi['qty'] * $transaksi['harga']))) {
+                        $pelajar = $val_diskon['Pelajar'];
+                        $girls = $val_diskon['Girls'];
+                    }
+                }
+            }
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
-
+            $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
+            $transaksi['diskon'] = ($weekdays * (int)$decode['jam']) + ($pelajar * (int)$decode['jam']) + $girls;
+            $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
+            sukses($transaksi);
             if (!db('transaksi', $decode['db'])->where('id', $decode['id'])->update($transaksi)) {
                 gagal("Update transaksi gagal");
             }
