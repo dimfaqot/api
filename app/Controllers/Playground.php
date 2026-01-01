@@ -297,9 +297,9 @@ class Playground extends BaseController
             if (!$q_diskon) {
                 gagal("Diskon not found");
             }
-            $diskonWeekdays = in_array("Weekdays", $decs_diskons ? $q_diskon[array_search('Weekdays', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
-            $diskonPelajar = in_array("Pelajar", $decs_diskons ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
-            $diskonGirls = in_array("Girls", $decs_diskons ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
+            $diskonWeekdays = (in_array("Weekdays", $decs_diskons) ? $q_diskon[array_search('Weekdays', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
+            $diskonPelajar = (in_array("Pelajar", $decs_diskons) ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
+            $diskonGirls = (in_array("Girls", $decs_diskons) ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
 
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
