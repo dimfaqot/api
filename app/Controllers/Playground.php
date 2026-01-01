@@ -42,7 +42,7 @@ class Playground extends BaseController
                     $temp['barang'] = $q['barang'];
                     $temp['no_nota'] = $q['no_nota'];
                     $temp['barang_id'] = $q['barang_id'];
-                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] : $this->hitung_biaya($q));
+                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] : $this->hitung_biaya($q, $decode['db']));
                 }
                 $res[] = $temp;
             }
@@ -62,7 +62,7 @@ class Playground extends BaseController
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
                             if ($d['qty'] == 0) {
-                                $d['biaya'] = $this->hitung_biaya($d);
+                                $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
@@ -172,7 +172,7 @@ class Playground extends BaseController
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
                             if ($d['qty'] == 0) {
-                                $d['biaya'] = $this->hitung_biaya($d);
+                                $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
@@ -239,7 +239,7 @@ class Playground extends BaseController
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
                             if ($d['qty'] == 0) {
-                                $d['biaya'] = $this->hitung_biaya($d);
+                                $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
@@ -287,28 +287,12 @@ class Playground extends BaseController
             if (!$transaksi) {
                 gagal("Id transaksi not found");
             }
-            $decs_diskons = explode(",", $transaksi['desc_diskons']);
 
-            $q_diskon = db('diskon', $decode['db'])->where('game_id', $transaksi['barang_id'])->get()->getResultArray();
-
-            if (!$q_diskon) {
-                gagal("Diskon not found");
-            }
-            $arr_diskons = [];
-            foreach ($q_diskon as $i) {
-                if (in_array($i['nama'], $decs_diskons)) {
-                    $arr_diskons[$i['nama']] = (int)$i['diskon'];
-                } else {
-                    $arr_diskons[$i['nama']] = 0;
-                }
-            }
-
-            $harga = (in_array("Girls", $decs_diskons) ? $transaksi['harga'] - $arr_diskons['Weekdays'] : $transaksi['harga']);
-
+            $diskon = $this->diskon($transaksi, $decode);
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
-            $transaksi['diskon'] = ($arr_diskons['Weekdays'] * $transaksi['qty']) + ($arr_diskons['Pelajar'] * $transaksi['qty']) + (in_array("Girls", $decs_diskons) ? $harga : 0);
+            $transaksi['diskon'] = $diskon;
             $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
 
             if (!db('transaksi', $decode['db'])->where('id', $decode['id'])->update($transaksi)) {
@@ -400,6 +384,28 @@ class Playground extends BaseController
         return $data;
     }
 
+    function diskon($transaksi, $decode)
+    {
+        $decs_diskons = explode(",", $transaksi['desc_diskons']);
+
+        $q_diskon = db('diskon', $decode['db'])->where('game_id', $transaksi['barang_id'])->get()->getResultArray();
+
+        if (!$q_diskon) {
+            gagal("Diskon not found");
+        }
+        $arr_diskons = [];
+        foreach ($q_diskon as $i) {
+            if (in_array($i['nama'], $decs_diskons)) {
+                $arr_diskons[$i['nama']] = (int)$i['diskon'];
+            } else {
+                $arr_diskons[$i['nama']] = 0;
+            }
+        }
+
+        $harga = (in_array("Girls", $decs_diskons) ? $transaksi['harga'] - $arr_diskons['Weekdays'] : $transaksi['harga']);
+        return ($arr_diskons['Weekdays'] * $transaksi['qty']) + ($arr_diskons['Pelajar'] * $transaksi['qty']) + (in_array("Girls", $decs_diskons) ? $harga : 0);
+    }
+
     function hitung_waktu(int $start, int $end, int $qty): string
     {
         if ($qty > 0) {
@@ -422,9 +428,19 @@ class Playground extends BaseController
             return sprintf("%02d:%02d", $hours, $minutes);
         }
     }
-    function hitung_biaya($q)
+    function hitung_biaya($q, $dbs)
     {
-        $tarifPerJam = $q['harga'] - $q['diskon']; // harga per jam setelah diskon
+        $diskon = 0;
+        $desc_diskons = explode(",", $q['desc_diskons']);
+
+        if (in_array("Weekdays", $desc_diskons)) {
+            $q_diskon = db('diskon', $dbs)->where('game_id', $q['barang_id'])->where('nama', 'Weekdays')->get()->getRowArray();
+            if (!$q_diskon) {
+                gagal("Iot not found");
+            }
+            $diskon = (int)$q_diskon['diskon'];
+        }
+        $tarifPerJam = $q['harga'] - $diskon; // harga per jam setelah diskon
         $start       = $q['start'];                // unix timestamp
 
         $now = time();
@@ -432,8 +448,8 @@ class Playground extends BaseController
         $durasiMenit = $durasiDetik / 60;
 
         // jika masih bermain < 1 menit
-        if ($durasiMenit < 1) {
-            return 1000;
+        if ($durasiMenit < 120) {
+            return $tarifPerJam * 2;
         }
 
         // tarif per menit (float)
