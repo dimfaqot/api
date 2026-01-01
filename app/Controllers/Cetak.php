@@ -70,6 +70,18 @@ class Cetak extends BaseController
 
     public function nota($db, $no_nota)
     {
+        $data = [];
+        if ($db == "playground") {
+            $divisions = ['Kantin', 'Barber', 'Billiard', 'Ps'];
+
+            foreach ($divisions as $i) {
+                $dbs = ($i == "Ps" || $i == "Billiard" ? $db : strtolower($i));
+                $q = db('transaksi', $dbs)->where('no_nota', $no_nota)->get()->getResultArray();
+                foreach ($q as $row) {
+                    $data[] = $row;
+                }
+            }
+        }
         $data = db('transaksi', $db)->where('no_nota', $no_nota)->whereNotIn('metode', ['Hutang'])->get()->getResultArray();
         if (!$data) {
             gagal("No. nota tidak ditemukan");
