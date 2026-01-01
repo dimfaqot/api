@@ -136,12 +136,7 @@ class Playground extends BaseController
             $notas = [];
             foreach ($decode['divisions'] as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
-                $dbb = db('transaksi', $db);
-                $dbb->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end']);
-                if ($i == "Ps" || $i == "Billiard") {
-                    $dbb->where('is_over', 0);
-                }
-                $temp_notas = $dbb->groupBy('no_nota')->get()->getResultArray();
+                $temp_notas = db('transaksi', $db)->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end'])->groupBy('no_nota')->get()->getResultArray();
 
                 foreach ($temp_notas as $tn) {
                     if (!in_array($tn['no_nota'], $notas)) {
