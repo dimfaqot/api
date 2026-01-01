@@ -24,11 +24,8 @@ class Playground extends BaseController
 
         if ($decode['order'] == "Transaksi") {
             $message = transaksi($decode);
-            if ($message == "Wl" || $message == "") {
-                sukses("Sukses", ($message == "Wl" ? $this->get_data($decode) : null));
-            } else {
-                gagal($message);
-            }
+
+            sukses("Sukses", ($message == "Wl" ? $this->get_data($decode) : $message));
         }
 
         if ($decode['order'] == "Update waktu") {

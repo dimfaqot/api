@@ -978,12 +978,7 @@ function transaksi($decode)
             return sukses($message);
         }
     } else {
-        // transaksi gagal
-        if ($decode['db'] === "playground") {
-            return $message;
-        } else {
-            return gagal($message);
-        }
+        return gagal($message);
     }
 }
 
