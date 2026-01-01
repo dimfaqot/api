@@ -838,6 +838,12 @@ function transaksi($decode)
 
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $update['is_over'] = 1;
+                if ($i['roleplay'] == "Open") {
+                    $update['end'] = $tgl;
+                    $update['total'] = $i['total'];
+                    $update['qty'] = ceil(($i['start'] - $tgl) / 60);
+                    $update['biaya'] = $i['biaya'];
+                }
 
                 $iot = db('iot', $decode['db'])->where('transaksi_id', $i['id'])->get()->getRowArray();
 
