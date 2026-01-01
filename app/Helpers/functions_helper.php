@@ -829,13 +829,13 @@ function transaksi($decode)
         }
 
         if ($decode['ket'] == "bayar hutang" || $decode['ket'] == "bayar transaksi") {
-
-            $i['no_nota'] = $nota;
-            $i['metode'] = $decode['metode'];
-            $i['uang'] = $decode['uang'];
-            $i['tgl'] = $tgl;
-
-            if (!db($decode['tabel'], $dbs)->where('id', $i['id'])->update($i)) {
+            $update = [
+                'no_nota' => $nota,
+                'metode' => $decode['metode'],
+                'uang' => $decode['uang'],
+                'tgl' => $tgl
+            ];
+            if (!db($decode['tabel'], $dbs)->where('id', $i['id'])->update($update)) {
                 gagal("Update hutang gagal");
             }
 
