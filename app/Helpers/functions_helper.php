@@ -989,7 +989,8 @@ function transaksi($decode)
     if ($db->transStatus()) {
         // transaksi sukses
         if ($decode['db'] === "playground") {
-            return $is_wl;
+            $msg = ($decode['ket'] == "wl" ? $is_wl : $message);
+            return $msg;
         } else {
             return sukses($message);
         }
