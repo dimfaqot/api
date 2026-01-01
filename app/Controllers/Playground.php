@@ -305,11 +305,11 @@ class Playground extends BaseController
                     $arr_diskons[$i['nama']] = 0;
                 }
             }
-            sukses($arr_diskons);
+
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
-            $transaksi['diskon'] = ($arr_diskons['Weekdays'] * $transaksi['qty']) + ($arr_diskons['Pelajar'] * $transaksi['qty']) + ($transaksi['harga'] - $arr_diskons['Girls']);
+            $transaksi['diskon'] = ($arr_diskons['Weekdays'] * $transaksi['qty']) + ($arr_diskons['Pelajar'] * $transaksi['qty']) + ($arr_diskons['Girls'] > 0 ? $transaksi['harga'] - $arr_diskons['Girls'] : 0);
             $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
 
             if (!db('transaksi', $decode['db'])->where('id', $decode['id'])->update($transaksi)) {
