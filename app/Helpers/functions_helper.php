@@ -835,6 +835,22 @@ function transaksi($decode)
                 'uang' => $decode['uang'],
                 'tgl' => $tgl
             ];
+
+            if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
+                $update['is_over'] = 1;
+
+                $iot = db('iot', $decode['db'])->where('transaksi_id', $i['id'])->get()->getRowArray();
+
+                if ($iot) {
+                    $iot['status'] = 0;
+                    $iot['end'] = 0;
+                    $iot['transaksi_id'] = 0;
+
+                    if (!db('iot', $decode['db'])->where('id', $iot['id'])->update($iot)) {
+                        gagal("Update iot gagal");
+                    }
+                }
+            }
             if (!db($decode['tabel'], $dbs)->where('id', $i['id'])->update($update)) {
                 gagal("Update hutang gagal");
             }
