@@ -297,14 +297,19 @@ class Playground extends BaseController
             if (!$q_diskon) {
                 gagal("Diskon not found");
             }
-            $diskonWeekdays = (in_array("Weekdays", $decs_diskons) ? $q_diskon[array_search('Weekdays', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
-            $diskonPelajar = (in_array("Pelajar", $decs_diskons) ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
-            $diskonGirls = (in_array("Girls", $decs_diskons) ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
+            $arr_diskons = [];
+            foreach ($q_diskon as $i) {
+                if (in_array($i['nama'], $decs_diskons)) {
+                    $arr_diskons[$i['nama']] = (int)$i['diskon'];
+                } else {
+                    $arr_diskons[$i['nama']] = 0;
+                }
+            }
 
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
-            $transaksi['diskon'] = ($diskonWeekdays * $transaksi['qty']) + ($diskonPelajar * $transaksi['qty']) + ($diskonGirls > 0 ? $transaksi['harga'] - $diskonGirls : $transaksi['harga']);
+            $transaksi['diskon'] = ($arr_diskons['Weekdays'] * $transaksi['qty']) + ($arr_diskons['Pelajar'] * $transaksi['qty']) + ($transaksi['harga'] - $arr_diskons['Girls']);
             $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
 
             if (!db('transaksi', $decode['db'])->where('id', $decode['id'])->update($transaksi)) {
