@@ -823,8 +823,6 @@ function transaksi($decode)
                 }
 
                 $message = '<div>TOTAL HUTANG</div><h5>' . angka($total) . '</h5>';
-            } else {
-                $message = "Sukses";
             }
         }
 
