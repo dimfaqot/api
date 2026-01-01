@@ -293,6 +293,7 @@ class Playground extends BaseController
             $decs_diskons = explode($transaksi['desc_diskons'], ",");
 
             $q_diskon = db('diskon', $decode['db'])->where('game_id', $transaksi['barang_id'])->get()->getResultArray();
+            sukses($transaksi, $q_diskon);
             if ($q_diskon) {
                 gagal("Diskon not found");
             }
