@@ -840,7 +840,7 @@ function transaksi($decode)
                 $update['is_over'] = 1;
                 if ($i['roleplay'] == "Open") {
                     $update['end'] = $tgl;
-                    $update['total'] = $i['total'];
+                    $update['total'] = $i['biaya'];
                     $update['qty'] = ceil(($i['start'] - $tgl) / 60);
                     $update['biaya'] = $i['biaya'];
                 }
@@ -861,7 +861,7 @@ function transaksi($decode)
                 gagal("Update hutang gagal");
             }
 
-            $message = base_url('cetak/nota/' . $dbs . '/' . $i['no_nota'] . "/" . $decode['uang']);
+            $message = base_url('cetak/nota/' . $dbs . '/' . $update['no_nota'] . "/" . $decode['uang']);
         }
 
         if ($decode['ket'] == "update pesanan") {
