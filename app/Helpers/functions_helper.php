@@ -411,7 +411,7 @@ function next_invoice($decode)
     $prefix = "$year-$month-";
 
     // Cari no_nota terakhir berdasarkan bulan ini
-    $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', ["Hutang"])
+    $lastNota = db('transaksi', $decode['db'])->whereNotIn('metode', ["Hutang", "Wl"])
         ->orderBy('tgl', 'DESC')
         ->get()
         ->getRowArray();
@@ -426,7 +426,7 @@ function next_invoice($decode)
 
     $nextNumber = 1;
     if ($lastNota) {
-        $parts = explode('/', $lastNota['no_nota']);
+        $parts = explode('-', $lastNota['no_nota']);
         $lastNumber = end($parts);
         $nextNumber = (int)$lastNumber + 1;
     }
