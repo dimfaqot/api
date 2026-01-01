@@ -305,7 +305,7 @@ class Playground extends BaseController
                     $arr_diskons[$i['nama']] = 0;
                 }
             }
-
+            sukses($arr_diskons);
             $transaksi['qty'] += (int)$decode['jam'];
             $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
