@@ -301,7 +301,7 @@ class Playground extends BaseController
             $diskonGirls = in_array("Girls", $decs_diskons ? $q_diskon[array_search('Pelajar', array_column($q_diskon, 'nama'))]['diskon'] ?? 0 : 0);
 
             $transaksi['qty'] += (int)$decode['jam'];
-            $transaksi['end'] += ((int)$transaksi['qty'] * 60 * 60);
+            $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
             $transaksi['diskon'] = ($diskonWeekdays * $transaksi['qty']) + ($diskonPelajar * $transaksi['qty']) + ($diskonGirls > 0 ? $transaksi['harga'] - $diskonGirls : $transaksi['harga']);
             $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
