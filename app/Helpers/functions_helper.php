@@ -828,9 +828,9 @@ function transaksi($decode)
             }
         }
 
-        if ($decode['ket'] == "bayar hutang") {
+        if ($decode['ket'] == "bayar hutang" || $decode['ket'] == "bayar transaksi") {
 
-            $i['no_nota'] = next_invoice($decode);
+            $i['no_nota'] = $nota;
             $i['metode'] = $decode['metode'];
             $i['uang'] = $decode['uang'];
             $i['tgl'] = $tgl;
