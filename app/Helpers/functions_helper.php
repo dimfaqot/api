@@ -705,7 +705,7 @@ function transaksi($decode)
                 "biaya" => $i['biaya'],
                 "tipe" => $i['tipe'],
                 "link" => $i['link'],
-                $input['metode'] = $decode['metode'],
+                'metode' => $decode['metode'],
                 "petugas" => $decode['petugas']
             ];
 
