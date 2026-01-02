@@ -290,6 +290,38 @@ class Playground extends BaseController
             }
             sukses("Sukses", $this->get_data($decode));
         }
+        if ($decode['order'] == "booked") {
+            $db = \Config\Database::connect();
+            $db->transStart();
+            $transaksi = db('transaksi', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$transaksi) {
+                gagal("Id transaksi not found");
+            }
+            $game = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id, transaksi_id')->join('iot', 'games.iot_id=iot.id')->where('games.id', $transaksi['barang_id'])->get()->getRowArray();
+            if (!$game) {
+                gagal("Id game not found");
+            }
+            $tgl = time();
+            if ($tgl < $transaksi['start']) {
+                $transaksi['start'] = $tgl;
+                $transaksi['tgl'] = $tgl;
+                $transaksi['end'] = ($transaksi['roleplay'] == "Open" ? 0 : (int)$transaksi['jam'] * (60 * 60));
+                if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->update($transaksi)) {
+                    gagal("Update transaksi gagal");
+                }
+
+                $update = ['status' => 1, 'end' => $transaksi['end'], 'transaksi_id' => $transaksi['id']];
+                if (!db('iot', $decode['db'])->where('id', $game['iot_id'])->update($update)) {
+                    gagal("Update iot gagal");
+                }
+            }
+
+            $db->transComplete();
+            $db->transStatus()
+                ? sukses("Sukses")
+                : gagal("Gagal");
+        }
 
         if ($decode['order'] == "jam") {
             $db = \Config\Database::connect();
@@ -301,7 +333,7 @@ class Playground extends BaseController
 
             $diskon = $this->diskon($transaksi, $decode);
             $transaksi['qty'] += (int)$decode['jam'];
-            $transaksi['end'] += ((int)$decode['jam'] * 60 * 60);
+            $transaksi['end'] += (int)$decode['jam'] * (60 * 60);
             $transaksi['total'] = (int)$transaksi['harga'] * $transaksi['qty'];
             $transaksi['diskon'] = $diskon;
             $transaksi['biaya'] = (int)$transaksi['total'] - (int)$transaksi['diskon'];
