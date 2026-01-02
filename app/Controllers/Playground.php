@@ -306,7 +306,7 @@ class Playground extends BaseController
             if ($tgl < $transaksi['start']) {
                 $transaksi['start'] = $tgl;
                 $transaksi['tgl'] = $tgl;
-                $transaksi['end'] = ($transaksi['roleplay'] == "Open" ? 0 : (int)$transaksi['jam'] * (60 * 60));
+                $transaksi['end'] = ($transaksi['roleplay'] == "Open" ? 0 : (int)$transaksi['qty'] * (60 * 60));
                 if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->update($transaksi)) {
                     gagal("Update transaksi gagal");
                 }
