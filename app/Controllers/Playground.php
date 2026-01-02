@@ -40,6 +40,8 @@ class Playground extends BaseController
                     $temp['barang'] = $q['barang'];
                     $temp['no_nota'] = $q['no_nota'];
                     $temp['barang_id'] = $q['barang_id'];
+                    $temp['metode'] = $q['metode'];
+                    $temp['nama'] = $q['nama'];
                     $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] - $q['dp'] : $this->hitung_biaya($q, $decode['db']));
                 }
                 $res[] = $temp;
