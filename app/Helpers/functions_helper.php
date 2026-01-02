@@ -705,6 +705,7 @@ function transaksi($decode)
                 "biaya" => $i['biaya'],
                 "tipe" => $i['tipe'],
                 "link" => $i['link'],
+                $input['metode'] = $decode['metode'],
                 "petugas" => $decode['petugas']
             ];
 
@@ -715,7 +716,6 @@ function transaksi($decode)
 
 
                 $input['is_over'] = 0;
-                $input['metode'] = ($i['metode'] == "Wl" ? "Wl" : $decode['metode']);
                 $input['roleplay'] = $i['roleplay'];
                 $input['desc_diskons'] = $i['desc_diskons'];
                 $input['dp'] = ($i['metode'] == "Wl" ? $i['dp'] : 0);
@@ -738,9 +738,7 @@ function transaksi($decode)
             if ($decode['ket'] == "hutang") {
                 $input['user_id'] = $decode['penghutang']['id'];
                 $input['nama'] = $decode['penghutang']['nama'];
-                $input['metode'] = (in_array('metode', $i) ? $i['metode'] : "Hutang");
             } else {
-                $input['metode'] = $decode['metode'];
                 $input['uang'] = $decode['uang'];
             }
 
@@ -753,7 +751,7 @@ function transaksi($decode)
                 $id_transaksi = $dbin->insertID();
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    if ($i['metode'] !== "Wl") {
+                    if ($decode['metode'] !== "Wl") {
                         $iot = db('iot', $decode['db'])->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
