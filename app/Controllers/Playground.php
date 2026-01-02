@@ -325,6 +325,20 @@ class Playground extends BaseController
                 ? sukses("Sukses")
                 : gagal("Gagal");
         }
+        if ($decode['order'] == "delete wl") {
+
+            $transaksi = db('transaksi', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$transaksi) {
+                gagal("Id transaksi not found");
+            }
+
+            if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->delete()) {
+                gagal("Delete wl gagal");
+            }
+
+            sukses("Sukses");
+        }
 
         if ($decode['order'] == "jam") {
             $db = \Config\Database::connect();
