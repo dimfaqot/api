@@ -40,7 +40,7 @@ class Playground extends BaseController
                     $temp['barang'] = $q['barang'];
                     $temp['no_nota'] = $q['no_nota'];
                     $temp['barang_id'] = $q['barang_id'];
-                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] : $this->hitung_biaya($q, $decode['db']));
+                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] - $q['dp'] : $this->hitung_biaya($q, $decode['db']));
                 }
                 $res[] = $temp;
             }
@@ -59,8 +59,10 @@ class Playground extends BaseController
                     foreach ($q as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            if ($d['qty'] == 0) {
+                            if ($d['roleplay'] == "Open") {
                                 $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
+                            } else {
+                                $d['biaya'] -= (int)$d['dp'];
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
@@ -169,8 +171,10 @@ class Playground extends BaseController
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            if ($d['qty'] == 0) {
+                            if ($d['roleplay'] == "Open") {
                                 $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
+                            } else {
+                                $d['biaya'] -= (int)$d['dp'];
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
@@ -236,8 +240,10 @@ class Playground extends BaseController
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            if ($d['qty'] == 0) {
+                            if ($d['roleplay'] == "Open") {
                                 $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
+                            } else {
+                                $d['biaya'] -= (int)$d['dp'];
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }

@@ -990,7 +990,7 @@ function transaksi($decode)
 
     $db->transComplete();
     $db->transStatus()
-        ? sukses($message)
+        ? sukses("Sukses", $message)
         : gagal("Gagal");
 }
 
