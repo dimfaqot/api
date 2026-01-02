@@ -711,11 +711,14 @@ function transaksi($decode)
 
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $input['start'] = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
-                $end = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
-                $input['end'] = ($input['qty'] == 0 ? 0 : $end + (int)$input['qty'] * (60 * 60));
+
+                $input['end'] = ($i['qty'] > 0 ? $input['start'] + (int)$i['qty'] * (60 * 60) : 0);
+
+
                 $input['is_over'] = 0;
                 $input['roleplay'] = $i['roleplay'];
                 $input['desc_diskons'] = $i['desc_diskons'];
+                $input['dp'] = ($i['metode'] == "Wl" ? $i['dp'] : 0);
             }
 
             $message = base_url('cetak/nota/' . $dbs . "/" . $input['no_nota']);
@@ -750,8 +753,9 @@ function transaksi($decode)
                 $id_transaksi = $dbin->insertID();
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    if ($i['metode'] !== "Wl") {
-                        $is_wl = ($is_wl !== "" ? "Wl" : "");
+                    if ($i['metode'] == "Wl") {
+                        $is_wl = "Wl";
+                    } else {
                         $iot = db('iot', $decode['db'])->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
@@ -993,7 +997,7 @@ function transaksi($decode)
     if ($db->transStatus()) {
         // transaksi sukses
         if ($decode['db'] === "playground") {
-            $msg = ($decode['ket'] == "wl" ? $is_wl : $message);
+            $msg = ($is_wl == "" ?  $message : $is_wl);
             return $msg;
         } else {
             return sukses($message);
