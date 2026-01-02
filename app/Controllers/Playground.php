@@ -496,9 +496,10 @@ class Playground extends BaseController
         if (in_array("Weekdays", $desc_diskons)) {
             $q_diskon = db('diskon', $dbs)->where('game_id', $q['barang_id'])->where('nama', 'Weekdays')->get()->getRowArray();
             if (!$q_diskon) {
-                gagal("Iot not found");
+                $diskon += 0;
+            } else {
+                $diskon += (int)$q_diskon['diskon'];
             }
-            $diskon += (int)$q_diskon['diskon'];
         }
 
         $tarifPerJam = $q['harga'] - $diskon; // harga per jam setelah diskon
