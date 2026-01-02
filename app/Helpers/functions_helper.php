@@ -685,7 +685,6 @@ function transaksi($decode)
     $message = "";
 
     $tgl = time();
-    $is_wl = "";
 
     foreach ($decode['datas'] as $i) {
         if ($decode['db'] == "playground") {
@@ -754,9 +753,7 @@ function transaksi($decode)
                 $id_transaksi = $dbin->insertID();
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    if ($i['metode'] == "Wl") {
-                        $is_wl = "Wl";
-                    } else {
+                    if ($i['metode'] !== "Wl") {
                         $iot = db('iot', $decode['db'])->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
