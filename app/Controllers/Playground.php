@@ -435,7 +435,7 @@ class Playground extends BaseController
     }
     function hitung_biaya($q, $dbs)
     {
-        $diskon = 0;
+        $diskon = (int)$q['dp'];
         $desc_diskons = explode(",", $q['desc_diskons']);
 
         if (in_array("Weekdays", $desc_diskons)) {
@@ -443,8 +443,9 @@ class Playground extends BaseController
             if (!$q_diskon) {
                 gagal("Iot not found");
             }
-            $diskon = (int)$q_diskon['diskon'];
+            $diskon += (int)$q_diskon['diskon'];
         }
+
         $tarifPerJam = $q['harga'] - $diskon; // harga per jam setelah diskon
         $start       = $q['start'];                // unix timestamp
 
