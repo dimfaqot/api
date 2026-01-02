@@ -716,6 +716,7 @@ function transaksi($decode)
 
 
                 $input['is_over'] = 0;
+                $input['metode'] = ($i['metode'] == "Wl" ? "Wl" : $decode['metode']);
                 $input['roleplay'] = $i['roleplay'];
                 $input['desc_diskons'] = $i['desc_diskons'];
                 $input['dp'] = ($i['metode'] == "Wl" ? $i['dp'] : 0);
@@ -993,18 +994,9 @@ function transaksi($decode)
     }
 
     $db->transComplete();
-
-    if ($db->transStatus()) {
-        // transaksi sukses
-        if ($decode['db'] === "playground") {
-            $msg = ($is_wl == "" ?  $message : $is_wl);
-            return $msg;
-        } else {
-            return sukses($message);
-        }
-    } else {
-        return gagal($message);
-    }
+    $db->transStatus()
+        ? sukses($message)
+        : gagal("Gagal");
 }
 
 
