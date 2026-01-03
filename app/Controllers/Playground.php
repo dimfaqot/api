@@ -91,7 +91,7 @@ class Playground extends BaseController
                 $data[] = $temp;
             }
 
-
+            // wl dimulai otomatis
             $db = \Config\Database::connect();
             $db->transStart();
             $wl = db('transaksi', $decode['db'])->where('metode', "Wl")->get()->getResultArray();
@@ -556,29 +556,24 @@ class Playground extends BaseController
     }
     function hitung_biaya($q, $dbs)
     {
-        $diskon = (int)$q['dp'];
+        $weekdays = 0;
         $desc_diskons = explode(",", $q['desc_diskons']);
 
         if (in_array("Weekdays", $desc_diskons)) {
             $q_diskon = db('diskon', $dbs)->where('game_id', $q['barang_id'])->where('nama', 'Weekdays')->get()->getRowArray();
-            if (!$q_diskon) {
-                $diskon += 0;
-            } else {
-                $diskon += (int)$q_diskon['diskon'];
+            if ($q_diskon) {
+                $weekdays = $q_diskon['diskon'];
             }
         }
 
-        $tarifPerJam = $q['harga'] - $diskon; // harga per jam setelah diskon
+        $tarifPerJam = $q['harga'] - $weekdays; // harga per jam setelah diskon
         $start       = $q['start'];                // unix timestamp
 
         $now = time();
         $durasiDetik = $now - $start;
         $durasiMenit = $durasiDetik / 60;
 
-        // jika masih bermain < 1 menit
-        if ($durasiMenit < 120) {
-            return $tarifPerJam * 2;
-        }
+
 
         // tarif per menit (float)
         $tarifPerMenit = $tarifPerJam / 60;
@@ -595,7 +590,7 @@ class Playground extends BaseController
         }
 
         // bulatkan ke atas ke ribuan
-        return (int)ceil($biaya / 1000) * 1000;
+        return (int)ceil(($biaya - $q['dp']) / 1000) * 1000;
     }
 
     function is_pelajar()
