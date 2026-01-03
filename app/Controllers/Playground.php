@@ -335,7 +335,7 @@ class Playground extends BaseController
                 $update = [
                     'tgl' => time(),
                     'metode' => $decode['metode'],
-                    'uang' => $decode['metode'],
+                    'uang' => $decode['uang'],
                     'no_nota' => $nota,
                     'petugas' => $decode['petugas']
                 ];
