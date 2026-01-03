@@ -363,7 +363,7 @@ class Playground extends BaseController
 
             $data['is_over'] = 1;
             if ($transaksi['roleplay'] == "Open") {
-                $data['qty'] = ceil(($transaksi['start'] - time()) / 60);
+                $data['qty'] = ceil((time() - $transaksi['start']) / 60);
                 $data['end'] = time();
                 $data['biaya'] = $this->hitung_biaya($transaksi, $decode['db']) + (int)$transaksi['dp'];
                 $data['total'] = $transaksi['biaya'];
