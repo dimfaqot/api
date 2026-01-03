@@ -836,7 +836,7 @@ function transaksi($decode)
 
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $update['is_over'] = 1;
-                $update['biaya'] = $i['biaya'] + ($decode['ket'] == "bayar transaksi" ? $i['dp'] : 0);
+                $update['biaya'] = (int)$i['biaya'] + ($decode['ket'] == "bayar transaksi" ? (int)$i['dp'] : 0);
                 if ($i['roleplay'] == "Open") {
                     $update['total'] = $update['biaya'];
                     $update['end'] = $tgl;

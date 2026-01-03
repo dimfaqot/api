@@ -43,7 +43,7 @@ class Playground extends BaseController
                     $temp['start'] = $q['start'];
                     $temp['metode'] = $q['metode'];
                     $temp['nama'] = $q['nama'];
-                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? $q['biaya'] - $q['dp'] : $this->hitung_biaya($q, $decode['db']));
+                    $temp['biaya'] = ($q['roleplay'] == "Paket" || $q['roleplay'] == "Normal" ? (int)$q['biaya'] - (int)$q['dp'] : $this->hitung_biaya($q, $decode['db']));
                 }
                 $res[] = $temp;
             }
@@ -365,7 +365,7 @@ class Playground extends BaseController
             if ($transaksi['roleplay'] == "Open") {
                 $transaksi['qty'] = ceil(($transaksi['start'] - time()) / 60);
                 $transaksi['end'] = time();
-                $transaksi['biaya'] = $this->hitung_biaya($transaksi, $decode['db'] + $transaksi['dp']);
+                $transaksi['biaya'] = $this->hitung_biaya($transaksi, $decode['db'] + (int)$transaksi['dp']);
                 $transaksi['total'] = $transaksi['biaya'];
             }
 
