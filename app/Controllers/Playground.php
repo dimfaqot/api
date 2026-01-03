@@ -163,7 +163,7 @@ class Playground extends BaseController
             foreach ($notas as $n) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : strtolower($i));
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : strtolower($i));
 
                     $dbb = db('transaksi', $db);
                     if ($i == "Ps" || $i == "Billiard") {
@@ -235,7 +235,7 @@ class Playground extends BaseController
             foreach ($users as $u) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : strtolower($i));
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : strtolower($i));
 
                     $dbb = db('transaksi', $db);
                     if ($i == "Ps" || $i == "Billiard") {
@@ -317,6 +317,31 @@ class Playground extends BaseController
                 $update = ['status' => 1, 'end' => $transaksi['end'], 'transaksi_id' => $transaksi['id']];
                 if (!db('iot', $decode['db'])->where('id', $game['iot_id'])->update($update)) {
                     gagal("Update iot gagal");
+                }
+            }
+
+            $db->transComplete();
+            $db->transStatus()
+                ? sukses("Sukses")
+                : gagal("Gagal");
+        }
+        if ($decode['order'] == "bayar hutang user") {
+            $nota = next_invoice($decode);
+            $db = \Config\Database::connect();
+            $db->transStart();
+
+            foreach ($decode['datas'] as $i) {
+                $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : strtolower($i));
+                $update = [
+                    'tgl' => time(),
+                    'metode' => $decode['metode'],
+                    'uang' => $decode['metode'],
+                    'no_nota' => $nota,
+                    'petugas' => $decode['petugas']
+                ];
+
+                if (!$dbb->where('id', $i['id'])->update($update)) {
+                    gagal($i['barang'] . " gagal");
                 }
             }
 
