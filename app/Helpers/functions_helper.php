@@ -997,21 +997,26 @@ function transaksi($decode)
 
 function is_weekdays(): bool
 {
-    date_default_timezone_set('Asia/Jakarta'); // pastikan timezone
+    date_default_timezone_set('Asia/Jakarta');
+    $day    = (int)date('N'); // 1=Senin, ..., 7=Minggu
+    $hour   = (int)date('H');
+    $minute = (int)date('i');
 
-    $now = time();
-
-    // Ambil Minggu terakhir jam 22:00
-    $sundayStart = strtotime('last sunday 22:00');
-
-    // Ambil Kamis minggu ini jam 20:00
-    $thursdayEnd = strtotime('thursday 20:00');
-
-    // Jika sekarang sebelum Minggu jam 22:00, berarti kita masih di minggu ini
-    // jadi adjust supaya start = Minggu minggu ini
-    if ($now < $sundayStart) {
-        $sundayStart = strtotime('sunday 22:00');
+    // Minggu mulai 20:01 → TRUE
+    if ($day == 7 && ($hour > 20 || ($hour == 20 && $minute >= 1))) {
+        return true;
     }
 
-    return ($now >= $sundayStart && $now <= $thursdayEnd);
+    // Senin, Selasa, Rabu → selalu TRUE
+    if ($day >= 1 && $day <= 3) {
+        return true;
+    }
+
+    // Kamis sampai 20:00 → TRUE
+    if ($day == 4 && ($hour < 20 || ($hour == 20 && $minute == 0))) {
+        return true;
+    }
+
+    // Selain itu → FALSE
+    return false;
 }
