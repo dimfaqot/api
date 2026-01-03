@@ -340,7 +340,7 @@ class Playground extends BaseController
                     'petugas' => $decode['petugas']
                 ];
 
-                if (!$dbb->where('id', $i['id'])->update($update)) {
+                if (!db('transaksi', $dbb)->where('id', $i['id'])->update($update)) {
                     gagal($i['barang'] . " gagal");
                 }
             }
