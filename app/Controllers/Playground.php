@@ -361,16 +361,14 @@ class Playground extends BaseController
                 }
             }
 
-            $transaksi['is_over'] = 1;
+            $data['is_over'] = 1;
             if ($transaksi['roleplay'] == "Open") {
-                $transaksi['qty'] = ceil(($transaksi['start'] - time()) / 60);
-                $transaksi['end'] = time();
-                $transaksi['biaya'] = $this->hitung_biaya($transaksi, $decode['db']) + (int)$transaksi['dp'];
-                $transaksi['total'] = $transaksi['biaya'];
+                $data['qty'] = ceil(($transaksi['start'] - time()) / 60);
+                $data['end'] = time();
+                $data['biaya'] = $this->hitung_biaya($transaksi, $decode['db']) + (int)$transaksi['dp'];
+                $data['total'] = $transaksi['biaya'];
             }
-
-            $transaksi['is_over'] = 1;
-            if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->delete()) {
+            if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->update($data)) {
                 gagal("Delete wl gagal");
             }
 
