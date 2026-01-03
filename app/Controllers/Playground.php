@@ -347,7 +347,7 @@ class Playground extends BaseController
 
             $db->transComplete();
             $db->transStatus()
-                ? sukses("Sukses")
+                ? sukses("Sukses", base_url('cetak/nota/' . $decode['db'] . "/" . $nota) . "/" . $decode['uang'])
                 : gagal("Gagal");
         }
         if ($decode['order'] == "delete wl") {

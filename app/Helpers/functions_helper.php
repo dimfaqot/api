@@ -721,7 +721,7 @@ function transaksi($decode)
                 $input['dp'] = ($i['metode'] == "Wl" ? $i['dp'] : 0);
             }
 
-            $message = base_url('cetak/nota/' . $dbs . "/" . $input['no_nota']);
+            $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
 
             if ($decode['uang'] !== "") {
                 $message .= "/" . $decode['uang'];
@@ -859,7 +859,7 @@ function transaksi($decode)
                 gagal("Update hutang gagal");
             }
 
-            $message = base_url('cetak/nota/' . $dbs . '/' . $update['no_nota'] . "/" . $decode['uang']);
+            $message = base_url('cetak/nota/' . $decode['db'] . '/' . $update['no_nota'] . "/" . $decode['uang']);
         }
 
         if ($decode['ket'] == "update pesanan") {
