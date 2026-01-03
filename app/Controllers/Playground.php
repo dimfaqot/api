@@ -133,7 +133,7 @@ class Playground extends BaseController
                 return gagal("Gagal", []);
             }
         }
-
+        // menu bayar
         if ($decode['order'] == "Bayar") {
             $range = today($decode);
             $notas = [];
@@ -210,8 +210,11 @@ class Playground extends BaseController
             $users = [];
             foreach ($decode['divisions'] as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
-                $temp_users = db('transaksi', $db)
-                    ->where('metode', "Hutang")
+                $dbb = db('transaksi', $db);
+                if ($i == "Ps" || $i == "Billiard") {
+                    $dbb->where('is_over', 1);
+                }
+                $temp_users = $dbb->where('metode', "Hutang")
                     ->groupBy("user_id")
                     ->get()
                     ->getResultArray();
@@ -243,12 +246,7 @@ class Playground extends BaseController
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            if ($d['roleplay'] == "Open") {
-                                $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
-                            } else {
-                                $d['biaya'] -= (int)$d['dp'];
-                            }
-                            $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
+                            $d['biaya'] -= $d['dp'];
                         }
                         $temp['identitas'] = [
                             'nama'    => $d['nama'],
@@ -293,6 +291,7 @@ class Playground extends BaseController
             }
             sukses("Sukses", $this->get_data($decode));
         }
+        // play dari wl
         if ($decode['order'] == "booked") {
             $db = \Config\Database::connect();
             $db->transStart();
@@ -308,6 +307,7 @@ class Playground extends BaseController
             $tgl = time();
             if ($tgl < $transaksi['start']) {
                 $transaksi['start'] = $tgl;
+                $transaksi['metode'] = "Hutang";
                 $transaksi['tgl'] = $tgl;
                 $transaksi['end'] = ($transaksi['roleplay'] == "Open" ? 0 : (int)$transaksi['qty'] * (60 * 60));
                 if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->update($transaksi)) {
@@ -338,6 +338,46 @@ class Playground extends BaseController
             }
 
             sukses("Sukses");
+        }
+        if ($decode['order'] == "tetap hutang") {
+            $db = \Config\Database::connect();
+            $db->transStart();
+            $transaksi = db('transaksi', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$transaksi) {
+                gagal("Id transaksi not found");
+            }
+            $q = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id, status')->join('iot', 'games.iot_id=iot.id')->where('games.id', $transaksi['barang_id'])->get()->getRowArray();
+
+            if (!$q) {
+                gagal("Id games not found");
+            }
+
+            if ($q['status'] == 1) {
+                $update = ['status' => 0, 'end' => 0, 'transaksi_id' => 0];
+
+                if (!db('iot', $decode['db'])->where('id', $q['iot_id'])->update($update)) {
+                    gagal("Update iot gagal");
+                }
+            }
+
+            $transaksi['is_over'] = 1;
+            if ($transaksi['roleplay'] == "Open") {
+                $transaksi['qty'] = ceil(($transaksi['start'] - time()) / 60);
+                $transaksi['end'] = time();
+                $transaksi['biaya'] = $this->hitung_biaya($transaksi, $decode['db'] + $transaksi['dp']);
+                $transaksi['total'] = $transaksi['biaya'];
+            }
+
+            $transaksi['is_over'] = 1;
+            if (!db('transaksi', $decode['db'])->where('id', $transaksi['id'])->delete()) {
+                gagal("Delete wl gagal");
+            }
+
+            $db->transComplete();
+            $db->transStatus()
+                ? sukses("Sukses")
+                : gagal("Gagal");
         }
 
         if ($decode['order'] == "jam") {
