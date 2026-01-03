@@ -339,6 +339,9 @@ class Playground extends BaseController
                     'no_nota' => $nota,
                     'petugas' => $decode['petugas']
                 ];
+                if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
+                    $update['biaya'] += (int)$i['dp'];
+                }
 
                 if (!db('transaksi', $dbb)->where('id', $i['id'])->update($update)) {
                     gagal($i['barang'] . " gagal");
