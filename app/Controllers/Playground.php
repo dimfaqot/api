@@ -459,7 +459,7 @@ class Playground extends BaseController
     {
 
         $data = [];
-        foreach ($decode['divisions'] as $d) {
+        foreach (options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]) as $d) {
 
             if ($d == "Kantin" || $d == "Barber") {
                 $data[$d] = db('barang', strtolower($d))->orderBy('barang', 'ASC')->get()->getResultArray();

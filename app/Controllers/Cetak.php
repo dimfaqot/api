@@ -72,7 +72,7 @@ class Cetak extends BaseController
     {
         $data = [];
         if ($db == "playground") {
-            $divisions = ['Kantin', 'Barber', 'Billiard', 'Ps'];
+            $divisions = options(['db' => $db, 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
             foreach ($divisions as $i) {
                 $dbs = ($i == "Ps" || $i == "Billiard" ? $db : strtolower($i));
