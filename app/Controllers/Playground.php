@@ -331,7 +331,7 @@ class Playground extends BaseController
             $db->transStart();
             $updates = [];
             foreach ($decode['datas'] as $i) {
-                $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : strtolower($i));
+                $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : strtolower($i['divisi']));
                 $update = [
                     'tgl' => time(),
                     'metode' => $decode['metode'],
