@@ -141,7 +141,14 @@ function clear($text)
 function options($decode)
 {
 
-    $q = db('options')->where('db', $decode['db'])->where("kategori", $decode['kategori'])->orderBy("value", "ASC")->get()->getResultArray();
+    $db = db('options');
+    $db->where('db', $decode['db'])->where("kategori", $decode['kategori']);
+    if (array_key_exists("order_by", $decode)) {
+        $db->orderBy($decode['order_by'], 'ASC');
+    } else {
+        $db->orderBy("value", "ASC");
+    }
+    $q = $db->get()->getResultArray();
 
     $data = [];
     foreach ($q as $i) {
@@ -341,9 +348,7 @@ function get_data($decode)
             $db->where('metode', 'Hutang');
             $db->orderBy('nama', 'ASC');
         }
-        if (array_key_exists("order_by", $decode)) {
-            $db->orderBy($decode['order_by'], 'ASC');
-        }
+
         $db->orderBy('tgl', 'ASC');
         $data = $db->get()->getResultArray();
 
