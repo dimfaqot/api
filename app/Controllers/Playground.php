@@ -216,8 +216,14 @@ class Playground extends BaseController
             $users = [];
             foreach ($decode['divisions'] as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
-
-                $temp_users = db('transaksi', $db)->whereNotIn('no_nota', $skip_nota)->groupBy("user_id")->get()->getResultArray();
+                $dbb = db('transaksi', $db);
+                if ($i == "Ps" || $i == "Billiard") {
+                    $dbb->where('is_over', 1);
+                }
+                $temp_users = $dbb->where('metode', "Hutang")
+                    ->groupBy("user_id")
+                    ->get()
+                    ->getResultArray();
 
                 foreach ($temp_users as $us) {
                     if (!in_array($us['user_id'], $users)) {
@@ -242,7 +248,7 @@ class Playground extends BaseController
                         $dbb->where('jenis', $i);
                     }
 
-                    $data = $dbb->where('user_id', $u)->get()->getResultArray();
+                    $data = $dbb->whereNotIn('no_nota', $skip_nota)->where('user_id', $u)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
