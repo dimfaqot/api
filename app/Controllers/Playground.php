@@ -19,7 +19,7 @@ class Playground extends BaseController
         if ($decode['order'] == "Show") {
             $data = $this->get_data($decode);
 
-            sukses("Ok", $data, options($decode));
+            sukses("Ok", $data, options($decode),  options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array']));
         }
 
         if ($decode['order'] == "Transaksi") {
@@ -51,7 +51,7 @@ class Playground extends BaseController
             foreach ($res as $r) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
 
                     $dbb = db('transaksi', $db);
                     $dbb->where('no_nota', $r['no_nota']);
@@ -138,7 +138,7 @@ class Playground extends BaseController
             $range = today($decode);
             $notas = [];
             foreach ($decode['divisions'] as $i) {
-                $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
+                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
                 $temp_notas = db('transaksi', $db)->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end'])->groupBy('no_nota')->get()->getResultArray();
 
                 foreach ($temp_notas as $tn) {
@@ -217,7 +217,7 @@ class Playground extends BaseController
 
             $users = [];
             foreach ($decode['divisions'] as $i) {
-                $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
+                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
                 $temp_users = db('transaksi', $db)->where('metode', "Hutang")
                     ->groupBy("user_id")
                     ->get()

@@ -687,7 +687,7 @@ function transaksi($decode)
     $tgl = time();
 
     foreach ($decode['datas'] as $i) {
-        if ($decode['db'] == "playground") {
+        if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
             $dbs = ($i['divisi'] == "Kantin" || $i['divisi'] == "Barber" ? strtolower($i['divisi']) : $decode['db']);
         }
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
