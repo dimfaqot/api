@@ -192,7 +192,7 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
-    public array $kantin = [
+    public array $playground_kantin = [
         'DSN'          => '',
         'hostname'     => 'localhost',
         'username'     => 'root',
@@ -212,7 +212,7 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
-    public array $barber = [
+    public array $playground_barber = [
         'DSN'          => '',
         'hostname'     => 'localhost',
         'username'     => 'root',
@@ -412,13 +412,13 @@ class Database extends Config
             $this->cafe['username'] = getenv('db_username_cafe');
             $this->cafe['password'] = getenv('db_pass_cafe');
 
-            $this->kantin['database'] = getenv('db_name_kantin');
-            $this->kantin['username'] = getenv('db_username_kantin');
-            $this->kantin['password'] = getenv('db_pass_kantin');
+            $this->playground_kantin['database'] = getenv('db_name_playground_kantin');
+            $this->playground_kantin['username'] = getenv('db_username_playground_kantin');
+            $this->playground_kantin['password'] = getenv('db_pass_playground_kantin');
 
-            $this->barber['database'] = getenv('db_name_barber');
-            $this->barber['username'] = getenv('db_username_barber');
-            $this->barber['password'] = getenv('db_pass_barber');
+            $this->playground_barber['database'] = getenv('db_name_playground_barber');
+            $this->playground_barber['username'] = getenv('db_username_playground_barber');
+            $this->playground_barber['password'] = getenv('db_pass_playground_barber');
         }
     }
 }
