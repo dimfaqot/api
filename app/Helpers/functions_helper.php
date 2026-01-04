@@ -705,12 +705,12 @@ function transaksi($decode)
                 "biaya" => $i['biaya'],
                 "tipe" => $i['tipe'],
                 "link" => $i['link'],
-                'metode' => $decode['metode'],
                 "petugas" => $decode['petugas']
             ];
 
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $input['start'] = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
+                $input['metode'] = ($i['metode'] == "Wl" ? $i['metode'] : $decode['metode']);
 
                 $input['end'] = ($i['roleplay'] == "Open" ? 0 : $input['start'] + ((int)$i['qty'] * (60 * 60)));
 
@@ -751,7 +751,7 @@ function transaksi($decode)
                 $id_transaksi = $dbin->insertID();
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    if ($decode['metode'] !== "Wl") {
+                    if ($i['metode'] !== "Wl") {
                         $iot = db('iot', $decode['db'])->where('id', $i['iot_id'])->get()->getRowArray();
                         if (!$iot) {
                             gagal("Id iot not found");
