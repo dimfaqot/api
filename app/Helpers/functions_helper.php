@@ -822,7 +822,7 @@ function transaksi($decode)
                     $total = array_sum(array_column($hutangs, 'biaya'));
                 }
 
-                $message = '<div>TOTAL HUTANG</div><h5>' . angka($total) . '</h5>';
+                $message = '<div>Total hutang ' . $decode['penghutang']['nama'] . '</div><h5>' . angka($total) . '</h5>';
             }
         }
 
