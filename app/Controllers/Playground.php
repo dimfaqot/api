@@ -51,7 +51,7 @@ class Playground extends BaseController
             foreach ($res as $r) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . $i);
 
                     $dbb = db('transaksi', $db);
                     $dbb->where('no_nota', $r['no_nota']);
@@ -138,7 +138,7 @@ class Playground extends BaseController
             $range = today($decode);
             $notas = [];
             foreach ($decode['divisions'] as $i) {
-                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
+                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . $i);
                 $temp_notas = db('transaksi', $db)->select("no_nota")->where('tgl >=', $range['start'])->where('tgl <=', $range['end'])->groupBy('no_nota')->get()->getResultArray();
 
                 foreach ($temp_notas as $tn) {
@@ -163,7 +163,7 @@ class Playground extends BaseController
             foreach ($notas as $n) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : strtolower($i));
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
 
                     $dbb = db('transaksi', $db);
                     if ($i == "Ps" || $i == "Billiard") {
@@ -217,7 +217,7 @@ class Playground extends BaseController
 
             $users = [];
             foreach ($decode['divisions'] as $i) {
-                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $i);
+                $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . $i);
                 $temp_users = db('transaksi', $db)->where('metode', "Hutang")
                     ->groupBy("user_id")
                     ->get()
@@ -239,7 +239,7 @@ class Playground extends BaseController
             foreach ($users as $u) {
                 $temp = ['data' => [], 'total' => 0, 'identitas' => []];
                 foreach ($decode['divisions'] as $i) {
-                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : strtolower($i));
+                    $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
 
                     $dbb = db('transaksi', $db);
                     if ($i == "Ps" || $i == "Billiard") {
@@ -340,7 +340,7 @@ class Playground extends BaseController
             $db->transStart();
 
             foreach ($decode['datas'] as $i) {
-                $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : strtolower($i['divisi']));
+                $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i['divisi']));
                 $update = [
                     'tgl' => time(),
                     'metode' => $decode['metode'],
@@ -462,7 +462,7 @@ class Playground extends BaseController
         foreach (options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]) as $d) {
 
             if ($d == "Kantin" || $d == "Barber") {
-                $data[$d] = db('barang', strtolower($d))->orderBy('barang', 'ASC')->get()->getResultArray();
+                $data[$d] = db('barang', $decode["db"] . "_" . strtolower($d))->orderBy('barang', 'ASC')->get()->getResultArray();
             } else {
                 $q = db('games', $decode['db'])->select('games.id as id, iot.id as iot_id,game,games.nama as nama,harga,room,ket,status')->join('iot', 'games.iot_id=iot.id')->where('game', $d)->orderBy('games.id', 'ASC')->get()->getResultArray();
                 $val = [];
