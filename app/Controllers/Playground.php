@@ -210,17 +210,15 @@ class Playground extends BaseController
             $skip_nota = []; // skip nota kare is_over = 0
             $nota = db('transaksi', $decode['db'])->where('metode', "Hutang")->where('is_over', 1)->get()->getResultArray();
             foreach ($nota as $i) {
-                $skip_nota[] = $i['no_nota'];
+                if (!in_array($i['no_nota'], $skip_nota)) {
+                    $skip_nota[] = $i['no_nota'];
+                }
             }
 
             $users = [];
             foreach ($decode['divisions'] as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? "playground" : $i);
-                $dbb = db('transaksi', $db);
-                if ($i == "Ps" || $i == "Billiard") {
-                    $dbb->where('is_over', 1);
-                }
-                $temp_users = $dbb->where('metode', "Hutang")
+                $temp_users = db('transaksi', $db)->where('metode', "Hutang")
                     ->groupBy("user_id")
                     ->get()
                     ->getResultArray();
@@ -247,8 +245,11 @@ class Playground extends BaseController
                     if ($i == "Ps" || $i == "Billiard") {
                         $dbb->where('jenis', $i);
                     }
+                    if (count($skip_nota) > 0) {
+                        $dbb->whereNotIn('no_nota', $skip_nota);
+                    }
 
-                    $data = $dbb->whereNotIn('no_nota', $skip_nota)->where('user_id', $u)->get()->getResultArray();
+                    $data = $dbb->where('user_id', $u)->get()->getResultArray();
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
