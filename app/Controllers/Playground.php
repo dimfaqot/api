@@ -329,7 +329,7 @@ class Playground extends BaseController
             $nota = next_invoice($decode);
             $db = \Config\Database::connect();
             $db->transStart();
-
+            $updates = [];
             foreach ($decode['datas'] as $i) {
                 $dbb = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : strtolower($i));
                 $update = [
@@ -339,20 +339,22 @@ class Playground extends BaseController
                     'no_nota' => $nota,
                     'petugas' => $decode['petugas']
                 ];
-                if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    $update['biaya'] += (int)$i['dp'];
-                }
+                $updates[] = $update;
+                // if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
+                //     $update['biaya'] += (int)$i['dp'];
+                // }
 
-                if (!db('transaksi', $dbb)->where('id', $i['id'])->update($update)) {
-                    gagal($i['barang'] . " gagal");
-                }
+                // if (!db('transaksi', $dbb)->where('id', $i['id'])->update($update)) {
+                //     gagal($i['barang'] . " gagal");
+                // }
             }
-
+            sukses($updates);
             $db->transComplete();
             $db->transStatus()
                 ? sukses("Sukses", base_url('cetak/nota/' . $decode['db'] . "/" . $nota) . "/" . $decode['uang'])
                 : gagal("Gagal");
         }
+
         if ($decode['order'] == "delete wl") {
 
             $transaksi = db('transaksi', $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
