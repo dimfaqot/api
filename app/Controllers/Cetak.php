@@ -81,8 +81,10 @@ class Cetak extends BaseController
                     $data[] = $row;
                 }
             }
+        } else {
+
+            $data = db('transaksi', $db)->where('no_nota', $no_nota)->whereNotIn('metode', ['Hutang'])->get()->getResultArray();
         }
-        $data = db('transaksi', $db)->where('no_nota', $no_nota)->whereNotIn('metode', ['Hutang'])->get()->getResultArray();
         if (!$data) {
             gagal("No. nota tidak ditemukan");
         }
