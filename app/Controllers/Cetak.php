@@ -76,7 +76,11 @@ class Cetak extends BaseController
 
             foreach ($divisions as $i) {
                 $dbs = ($i == "Ps" || $i == "Billiard" ? $db : strtolower($i));
-                $q = db('transaksi', $dbs)->where('no_nota', $no_nota)->get()->getResultArray();
+                $dbt = db('transaksi', $dbs);
+                if ($i == "Ps" || $i == "Billiard") {
+                    $dbt->where('jenis', $i);
+                }
+                $q = $dbt->where('no_nota', $no_nota)->get()->getResultArray();
                 foreach ($q as $row) {
                     $data[] = $row;
                 }
