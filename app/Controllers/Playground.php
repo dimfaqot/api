@@ -208,7 +208,7 @@ class Playground extends BaseController
         if ($decode['order'] == "Data hutang") {
 
             $skip_nota = []; // skip nota kare is_over = 0
-            $nota = db('transaksi', $decode['db'])->where('metode', "Hutang")->where('is_over', 1)->get()->getResultArray();
+            $nota = db('transaksi', $decode['db'])->where('metode', "Hutang")->where('is_over', 0)->get()->getResultArray();
             foreach ($nota as $i) {
                 if (!in_array($i['no_nota'], $skip_nota)) {
                     $skip_nota[] = $i['no_nota'];
