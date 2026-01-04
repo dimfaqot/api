@@ -20,7 +20,7 @@ class Barang extends BaseController
         if ($decode['order'] == "Show") {
 
             $status_qty = db('settings')->where('db', $decode['db'])->where('nama', 'qty')->get()->getRowArray();
-            sukses('Ok', $this->data($decode), $status_qty['value'], options($decode));
+            sukses('Ok', $this->data($decode), $status_qty['value'], options($decode), options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]));
         }
 
         if ($decode['order'] == "Add") {
@@ -93,7 +93,8 @@ class Barang extends BaseController
 
     function data($decode)
     {
-        $db = db($decode['tabel'], $decode['db']);
+        $dbb = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['kategori']) : $decode['db']);
+        $db = db($decode['tabel'], $dbb);
         if (array_key_exists('lokasi', $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
