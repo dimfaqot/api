@@ -273,7 +273,9 @@ class Playground extends BaseController
                         $res['total']  += (int)$d['biaya'];
                     }
                 }
-                $res['data'][] = $temp;
+                if (count($temp['data']) > 0) {
+                    $res['data'][] = $temp;
+                }
             }
 
             sukses("Ok", $res);
