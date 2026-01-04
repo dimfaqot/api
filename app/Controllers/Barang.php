@@ -21,7 +21,7 @@ class Barang extends BaseController
 
             $status_qty = db('settings')->where('db', $decode['db'])->where('nama', 'qty')->get()->getRowArray();
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
-            $divisi = array_values(array_diff($divisi, ["Kantin", "Billiard"]));
+            $divisi = array_values(array_diff($divisi, ["Ps", "Billiard"]));
             sukses('Ok', $this->data($decode), $status_qty['value'], options($decode), $divisi);
         }
 
