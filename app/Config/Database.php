@@ -233,6 +233,27 @@ class Database extends Config
         'numberNative' => false,
     ];
 
+    public array $playbox_kantin = [
+        'DSN'          => '',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'bkw',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => true,
+        'charset'      => 'utf8',
+        'DBCollat'     => 'utf8_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
+
 
     //    /**
     //     * Sample database connection for SQLite3.
@@ -419,6 +440,10 @@ class Database extends Config
             $this->playground_barber['database'] = getenv('db_name_playground_barber');
             $this->playground_barber['username'] = getenv('db_username_playground_barber');
             $this->playground_barber['password'] = getenv('db_pass_playground_barber');
+
+            $this->playbox_kantin['database'] = getenv('db_name_playbox_kantin');
+            $this->playbox_kantin['username'] = getenv('db_username_playbox_kantin');
+            $this->playbox_kantin['password'] = getenv('db_pass_playbox_kantin');
         }
     }
 }
