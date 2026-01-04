@@ -15,7 +15,7 @@ class Barang extends BaseController
         $decode = decode_jwt($jwt);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
-        $decode['db'] = ($decode['db'] == "playground" ? strtolower($decode['divisi']) : $decode['db']);
+        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
         if ($decode['order'] == "Show") {
 
@@ -47,19 +47,19 @@ class Barang extends BaseController
             }
 
             // Cek duplikat
-            if (db($decode['tabel'], $decode['db'])->where('barang', $input['barang'])->countAllResults() > 0) {
+            if (db($decode['tabel'], $decode['sub_db'])->where('barang', $input['barang'])->countAllResults() > 0) {
                 gagal('Barang existed');
             }
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input)
+            db($decode['tabel'], $decode['sub_db'])->insert($input)
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
 
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) {
                 gagal("Id not found");
@@ -83,7 +83,7 @@ class Barang extends BaseController
             }
 
             // Simpan data
-            db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)
+            db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->update($q)
                 ? sukses('Sukses', $this->data($decode))
                 : gagal('Gagal');
         }
@@ -95,8 +95,8 @@ class Barang extends BaseController
 
     function data($decode)
     {
-        $dbb = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['kategori']) : $decode['db']);
-        $db = db($decode['tabel'], $dbb);
+
+        $db = db($decode['tabel'], $decode['sub_db']);
         if (array_key_exists('lokasi', $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
