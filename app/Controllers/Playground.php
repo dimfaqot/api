@@ -341,14 +341,14 @@ class Playground extends BaseController
                 ];
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
-                    $update['biaya'] += (int)$i['dp'];
+                    $update['biaya'] = (int)$i['biaya'] + (int)$i['dp'];
                 }
 
                 if (!db('transaksi', $dbb)->where('id', $i['id'])->update($update)) {
                     gagal($i['barang'] . " gagal");
                 }
             }
-            sukses($updates);
+
             $db->transComplete();
             $db->transStatus()
                 ? sukses("Sukses", base_url('cetak/nota/' . $decode['db'] . "/" . $nota) . "/" . $decode['uang'])
