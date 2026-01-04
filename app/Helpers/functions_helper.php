@@ -712,7 +712,7 @@ function transaksi($decode)
             if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
                 $input['start'] = ($i['metode'] == "Wl" ? $i['start'] : $tgl);
 
-                $input['end'] = ($i['roleplay'] > "Open" ? $input['start'] + (int)$i['qty'] * (60 * 60) : 0);
+                $input['end'] = ($i['roleplay'] == "Open" ? 0 : $input['start'] + ((int)$i['qty'] * (60 * 60)));
 
 
                 $input['is_over'] = 0;
