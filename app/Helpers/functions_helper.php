@@ -341,6 +341,9 @@ function get_data($decode)
             $db->where('metode', 'Hutang');
             $db->orderBy('nama', 'ASC');
         }
+        if (array_key_exists("order_by", $decode)) {
+            $db->orderBy($decode['order_by'], 'ASC');
+        }
         $db->orderBy('tgl', 'ASC');
         $data = $db->get()->getResultArray();
 

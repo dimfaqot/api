@@ -19,7 +19,7 @@ class Playground extends BaseController
         if ($decode['order'] == "Show") {
             $data = $this->get_data($decode);
 
-            sukses("Ok", $data, options($decode),  options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array']));
+            sukses("Ok", $data, options($decode),  options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]));
         }
 
         if ($decode['order'] == "Transaksi") {
