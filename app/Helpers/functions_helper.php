@@ -329,7 +329,7 @@ function get_data($decode)
 
         $sub_menu = options($decode);
 
-        $db = db('options', $decode['sub_db']);
+        $db = db('options');
         $db->select('*');
         if ($decode['jenis'] !== "All") {
             $db->where('jenis', $decode['jenis']);
