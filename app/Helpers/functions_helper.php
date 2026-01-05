@@ -500,20 +500,21 @@ function angka_to_int($uang)
 
 function delete($decode, $roles = [])
 {
+    $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
     if (count($roles) > 0) {
 
         if (!in_array($decode['admin'], $roles)) {
             gagal("Role not allowed");
         }
     }
-    $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+    $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
 
     if (!$q) {
         gagal("Id not found");
     }
 
     // Simpan data
-    db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()
+    db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->delete()
         ? sukses('Sukses')
         : gagal('Gagal');
 }
