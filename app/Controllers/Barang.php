@@ -78,7 +78,7 @@ class Barang extends BaseController
                 $q['qty'] = $decode['qty'];
             }
 
-            if ((db($decode['tabel'], $decode['db'])->whereNotIn('id', [$q['id']]))->where("barang", $q['barang'])->get()->getRowArray()) {
+            if ((db($decode['tabel'], $decode['sub_db'])->whereNotIn('id', [$q['id']]))->where("barang", $q['barang'])->get()->getRowArray()) {
                 gagal("Barang existed");
             }
 
