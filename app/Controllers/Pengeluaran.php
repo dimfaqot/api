@@ -16,12 +16,13 @@ class Pengeluaran extends BaseController
         $decode['tahun'] = date('Y');
         $decode['bulan'] = date('n');
         $decode['jenis'] = "All";
+        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-
-            sukses("Ok",  get_data($decode), tahuns($decode), bulans());
+            $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+            sukses("Ok",  get_data($decode), tahuns($decode), bulans(), $divisi);
         }
 
 
