@@ -358,9 +358,6 @@ function get_data($decode)
             $db = db($decode['tabel'], $decode['sub_db']);
         }
         $db->select('*');
-        if ($decode['jenis'] !== "All") {
-            $db->where('jenis', $decode['jenis']);
-        }
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }

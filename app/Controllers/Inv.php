@@ -13,7 +13,6 @@ class Inv extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['jenis'] = "All";
         $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
         check($decode, $decode['admin'], ['Root', 'Advisor']);
@@ -38,7 +37,7 @@ class Inv extends BaseController
             $total = angka_to_int(clear($decode['total']));
             $biaya = angka_to_int(clear($decode['biaya']));
             $pj = upper_first(clear($decode['pj']));
-            sukses($jenis);
+
             $db = \Config\Database::connect();
             $db->transStart();
 
