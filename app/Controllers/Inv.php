@@ -38,7 +38,7 @@ class Inv extends BaseController
             $total = angka_to_int(clear($decode['total']));
             $biaya = angka_to_int(clear($decode['biaya']));
             $pj = upper_first(clear($decode['pj']));
-
+            sukses($jenis);
             $db = \Config\Database::connect();
             $db->transStart();
 
