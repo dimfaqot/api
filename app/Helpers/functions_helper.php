@@ -533,13 +533,9 @@ function cari_barang($decode)
         $db->whereIn('jenis', $decode['filters']);
     }
 
-    $data = $db->like("barang", $text, "both")->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
-    $datas = [];
-    if (array_key_exists('is_datas', $decode)) {
-        $datas = db('barang', $decode['db'])->whereIn('jenis', $decode['filters'])->orderBy('barang', 'ASC')->get()->getResultArray();
-    }
+    $data = $db->like("barang", $text, "both")->where('jenis', $decode['jenis'])->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
 
-    sukses("Ok", $data, $datas);
+    sukses("Ok", $data);
 }
 
 function cari_user($decode)
