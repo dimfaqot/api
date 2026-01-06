@@ -89,7 +89,6 @@ class Pengeluaran extends BaseController
         }
         if ($decode['order'] == "Edit") {
 
-            $barang_id = clear($decode['barang_id']);
             $harga = angka_to_int(clear($decode['harga']));
             $qty = angka_to_int(clear($decode['qty']));
             $diskon = angka_to_int(clear($decode['diskon']));
