@@ -22,7 +22,9 @@ class Pengeluaran extends BaseController
 
         if ($decode['order'] == "Show") {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
-            sukses("Ok",  get_data($decode), tahuns($decode), bulans(), $divisi);
+            $tahuns = count(tahuns($decode)) == 0 ? [date("Y")] : tahuns($decode);
+
+            sukses("Ok",  get_data($decode), $tahuns, bulans(), $divisi);
         }
 
 
