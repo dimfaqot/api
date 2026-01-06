@@ -13,8 +13,13 @@ class Inv extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
-
+        $decode = decode_jwt($jwt);
+        $decode['sub_db'] = $decode['db'];
+        if ($decode['db'] == "playground" || $decode['db'] !== "playbox") {
+            if ($decode['divisi'] !== "Billiard" || $decode['divisi'] !== "Ps") {
+                $decode['sub_menu'] = $decode['db'] . "_" . strtolower($decode['divisi']);
+            }
+        }
         check($decode, $decode['admin'], ['Root', 'Advisor']);
 
         if ($decode['order'] == "Show") {

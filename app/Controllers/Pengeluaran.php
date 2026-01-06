@@ -13,14 +13,7 @@ class Pengeluaran extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['sub_db'] = $decode['db'];
-        if ($decode['db'] == "playground" || $decode['db'] !== "playbox") {
-            if ($decode['divisi'] !== "Billiard" || $decode['divisi'] !== "Ps") {
-                $decode['sub_menu'] = $decode['db'] . "_" . strtolower($decode['divisi']);
-            }
-        }
-
-        sukses($decode['sub_db']);
+        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
@@ -28,8 +21,12 @@ class Pengeluaran extends BaseController
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
             $decode['divisions'] = $divisi;
 
-            $barangs = db('barang', $decode['sub_db'])->orderBy('barang', 'ASC')->get()->getResultArray();
-
+            $barangs = [];
+            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+                $barangs = db('barang', $decode['sub_db'])->orderBy('barang', 'ASC')->get()->getResultArray();
+            } else {
+                $barangs = db('barang', $decode['db'])->orderBy('barang', 'ASC')->get()->getResultArray();
+            }
             $tahuns = count(tahuns($decode)) == 0 ? [["tahun" => date("Y")]] : tahuns($decode);
             sukses("Ok",  get_data($decode), $tahuns, bulans(), array_values(array_diff($divisi, ["Ps", "Billiard"])), $barangs);
         }
