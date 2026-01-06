@@ -20,7 +20,7 @@ class Pengeluaran extends BaseController
 
         if ($decode['order'] == "Show") {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
-            $decode['divisions'] = $divisi;
+            $decode['divisi'] = $divisi;
 
             $barangs = [];
             if ($decode['db'] == "playground" || $decode['db'] == "playbox") {

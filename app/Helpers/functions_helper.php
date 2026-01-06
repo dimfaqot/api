@@ -119,7 +119,7 @@ function tahuns($decode)
 {
     $result = [];
     if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-        foreach ($decode['divisions'] as $i) {
+        foreach ($decode['divisi'] as $i) {
             $dbb = ($i == "Billiard" || $i == "Ps" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
             $db = db('transaksi', $dbb);
             if (array_key_exists('lokasi', $decode)) {
