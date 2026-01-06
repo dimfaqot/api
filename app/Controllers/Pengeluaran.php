@@ -24,7 +24,7 @@ class Pengeluaran extends BaseController
 
             $barangs = [];
             if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-                $barangs = db('barang', $decode['db'] . "_" . strtolower($decode['divisi']))->orderBy('barang', 'ASC')->get()->getResultArray();
+                $barangs = db('barang', $decode['sub_db'])->orderBy('barang', 'ASC')->get()->getResultArray();
             } else {
                 $barangs = db('barang', $decode['db'])->orderBy('barang', 'ASC')->get()->getResultArray();
             }
