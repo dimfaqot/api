@@ -17,10 +17,10 @@ class Inv extends BaseController
         $decode['sub_db'] = $decode['db'];
         if ($decode['db'] == "playground" || $decode['db'] !== "playbox") {
             if ($decode['divisi'] !== "Billiard" && $decode['divisi'] !== "Ps") {
-                $decode['sub_menu'] = $decode['db'] . "_" . strtolower($decode['divisi']);
+                $decode['sub_db'] = $decode['db'] . "_" . strtolower($decode['divisi']);
             }
         }
-        sukses($decode['sub_db'], db('pengeluaran', $decode['sub_db'])->get()->getResultArray());
+
         check($decode, $decode['admin'], ['Root', 'Advisor']);
 
         if ($decode['order'] == "Show") {
