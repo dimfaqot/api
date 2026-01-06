@@ -34,12 +34,14 @@ class Pengeluaran extends BaseController
             $harga = angka_to_int(clear($decode['harga']));
             $qty = angka_to_int(clear($decode['qty']));
             $diskon = angka_to_int(clear($decode['diskon']));
+            $total = angka_to_int(clear($decode['total']));
+            $biaya = angka_to_int(clear($decode['biaya']));
             $pj = upper_first(clear($decode['pj']));
 
             $db = \Config\Database::connect();
             $db->transStart();
 
-            if ($diskon > ($harga * $qty)) {
+            if ($diskon > $biaya) {
                 gagal("Diskon over");
             }
             $barang = db('barang', $decode['db'])->where('id', $barang_id)->get()->getRowArray();
@@ -56,9 +58,9 @@ class Pengeluaran extends BaseController
                 'barang_id' => $barang['id'],
                 'harga'       => $harga,
                 'qty'       => $qty,
-                'total'       => $harga * $qty,
+                'total'       => $total,
                 'diskon'       => $diskon,
-                'biaya'       => ($harga * $qty) - $diskon,
+                'biaya'       => $biaya,
                 'pj'       => $pj,
                 'petugas'       => upper_first(clear($decode['petugas'])),
                 'updated_at'       => time()
