@@ -13,7 +13,7 @@ class Pengeluaran extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
+        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? ($decode['divisi'] == "Billiard" || $decode['divisi'] == "Ps" ? $decode['db'] : $decode['db'] . "_" . strtolower($decode['divisi'])) : $decode['db']);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
