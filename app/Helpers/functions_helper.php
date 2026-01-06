@@ -352,11 +352,8 @@ function get_data($decode)
 
         $sub_menu = options($decode);
 
-        $db = db($decode['tabel'], $decode['db']);
+        $db = db($decode['tabel'], $decode['sub_db']);
 
-        if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-            $db = db($decode['tabel'], $decode['sub_db']);
-        }
         $db->select('*');
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
