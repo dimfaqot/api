@@ -49,7 +49,7 @@ class Pengeluaran extends BaseController
             if ($diskon > $biaya) {
                 gagal("Diskon over");
             }
-            $barang = db('barang', $decode['db'])->where('id', $barang_id)->get()->getRowArray();
+            $barang = db('barang', $decode['sub_db'])->where('id', $barang_id)->get()->getRowArray();
 
             if (!$barang) {
                 gagal("Barang not found");
@@ -78,13 +78,13 @@ class Pengeluaran extends BaseController
 
             if ($barang['tipe'] == "Count") {
                 $barang['qty'] += (int)$input['qty'];
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
                     gagal("Update qty gagal");
                 }
             }
 
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input);
+            db($decode['tabel'], $decode['sub_db'])->insert($input);
 
             $db->transComplete();
 
@@ -105,12 +105,12 @@ class Pengeluaran extends BaseController
             $db->transStart();
 
             // Ambil data lama dari pengeluaran
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
             if ($diskon > $biaya) return gagal("Diskon over");
 
-            $barang    = db('barang', $decode['db'])->where('id', $q['barang_id'])->get()->getRowArray();
+            $barang    = db('barang', $decode['sub_db'])->where('id', $q['barang_id'])->get()->getRowArray();
             if (!$barang)    return gagal("Barang not found");
 
             // Update stok jika qty berubah
@@ -121,7 +121,7 @@ class Pengeluaran extends BaseController
                     $barang['qty'] -= (int)$q['qty'] - (int)$qty;
                 }
 
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
                     return gagal("Update qty gagal");
                 }
             }
@@ -140,7 +140,7 @@ class Pengeluaran extends BaseController
 
 
             // Simpan data
-            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
+            if (!db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update gagal");
             }
 
@@ -163,11 +163,11 @@ class Pengeluaran extends BaseController
             $db->transStart();
 
             // Ambil data lama dari pengeluaran
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
 
-            $barang    = db('barang', $decode['db'])->where('id', $q['barang_id'])->get()->getRowArray();
+            $barang    = db('barang', $decode['sub_db'])->where('id', $q['barang_id'])->get()->getRowArray();
             if (!$barang)    return gagal("Barang not found");
 
             // Update stok jika qty berubah
@@ -177,12 +177,12 @@ class Pengeluaran extends BaseController
                     gagal("Barang minus");
                 }
 
-                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
                     return gagal("Update qty gagal");
                 }
             }
 
-            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->delete()) {
+            if (!db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->delete()) {
                 gagal("Delete gagal");
             }
 
