@@ -532,6 +532,11 @@ function cari_barang($decode)
     if (array_key_exists('filters', $decode)) {
         $db->whereIn('jenis', $decode['filters']);
     }
+    if (array_key_exists('jenis', $decode)) {
+        if ($decode['jenis'] !== "") {
+            $db->whereIn('jenis', $decode['jenis']);
+        }
+    }
 
     $data = $db->like("barang", $text, "both")->where('jenis', $decode['jenis'])->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
 
