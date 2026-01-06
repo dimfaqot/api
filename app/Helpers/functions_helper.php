@@ -534,7 +534,7 @@ function cari_barang($decode)
     }
     if (array_key_exists('jenis', $decode)) {
         if ($decode['jenis'] !== "") {
-            $db->whereIn('jenis', $decode['jenis']);
+            $db->where('jenis', $decode['jenis']);
         }
     }
 
