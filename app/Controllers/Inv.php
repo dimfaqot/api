@@ -20,7 +20,7 @@ class Inv extends BaseController
                 $decode['sub_menu'] = $decode['db'] . "_" . strtolower($decode['divisi']);
             }
         }
-        sukses($decode);
+
         check($decode, $decode['admin'], ['Root', 'Advisor']);
 
         if ($decode['order'] == "Show") {
