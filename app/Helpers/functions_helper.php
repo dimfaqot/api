@@ -356,31 +356,30 @@ function get_data($decode)
 
         if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
             $db = db($decode['tabel'], $decode['sub_db']);
-        } else {
-            $db->select('*');
-            if ($decode['jenis'] !== "All") {
-                $db->where('jenis', $decode['jenis']);
-            }
-            if (array_key_exists("lokasi", $decode)) {
-                $db->where('lokasi', $decode['lokasi']);
-            }
-
-            if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-                $db->whereIn('jenis', $sub_menu);
-            }
-            // $db->where('db', $decode['db']);
-            $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
-            if ($decode['order'] == "hutang") {
-                $db->where('metode', 'Hutang');
-                $db->orderBy('nama', 'ASC');
-            }
-
-            $db->orderBy('tgl', 'ASC');
-            $data = $db->get()->getResultArray();
-
-            $total = array_sum(array_column($data, 'biaya'));
         }
+        $db->select('*');
+        if ($decode['jenis'] !== "All") {
+            $db->where('jenis', $decode['jenis']);
+        }
+        if (array_key_exists("lokasi", $decode)) {
+            $db->where('lokasi', $decode['lokasi']);
+        }
+
+        if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
+            $db->whereIn('jenis', $sub_menu);
+        }
+        // $db->where('db', $decode['db']);
+        $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
+        if ($decode['order'] == "hutang") {
+            $db->where('metode', 'Hutang');
+            $db->orderBy('nama', 'ASC');
+        }
+
+        $db->orderBy('tgl', 'ASC');
+        $data = $db->get()->getResultArray();
+
+        $total = array_sum(array_column($data, 'biaya'));
     }
 
     $res = ['data' => $data, 'total' => $total, 'sub_menu' => $sub_menu];
