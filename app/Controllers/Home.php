@@ -16,6 +16,8 @@ class Home extends BaseController
         check($decode);
 
         if ($decode['order'] == 'Menu') {
+            $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+            $decode['divisions'] = $divisi;
             sukses("Ok", tahuns($decode), bulans());
         } else {
             if ($decode['jenis'] == "Unlock") {
