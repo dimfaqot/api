@@ -16,7 +16,7 @@ class Inv extends BaseController
         $decode = decode_jwt($jwt);
         $decode['sub_db'] = $decode['db'];
         if ($decode['db'] == "playground" || $decode['db'] !== "playbox") {
-            if ($decode['divisi'] !== "Billiard" || $decode['divisi'] !== "Ps") {
+            if ($decode['divisi'] !== "Billiard" && $decode['divisi'] !== "Ps") {
                 $decode['sub_menu'] = $decode['db'] . "_" . strtolower($decode['divisi']);
             }
         }
