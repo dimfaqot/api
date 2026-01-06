@@ -130,9 +130,9 @@ function tahuns($decode)
             $db->orderBy("tahun", "ASC");
 
             $query = $db->get();
-            $$tem_results = $query->getResultArray();
+            $item_results = $query->getResultArray();
 
-            foreach ($$tem_results as $t) {
+            foreach ($item_results as $t) {
                 if (!in_array($t['tahun'], $result)) {
                     $result[] = $t;
                 }
