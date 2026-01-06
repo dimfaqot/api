@@ -89,11 +89,13 @@ class Pengeluaran extends BaseController
         }
         if ($decode['order'] == "Edit") {
 
-            $harga = angka_to_int($decode['harga']);
-
-            $total = angka_to_int($decode['harga']) * angka_to_int($decode['qty']);
-            $diskon = angka_to_int($decode['diskon']);
-            $biaya = $total - $diskon;
+            $barang_id = clear($decode['barang_id']);
+            $harga = angka_to_int(clear($decode['harga']));
+            $qty = angka_to_int(clear($decode['qty']));
+            $diskon = angka_to_int(clear($decode['diskon']));
+            $total = angka_to_int(clear($decode['total']));
+            $biaya = angka_to_int(clear($decode['biaya']));
+            $pj = upper_first(clear($decode['pj']));
 
             $db = \Config\Database::connect();
             $db->transStart();
@@ -102,27 +104,17 @@ class Pengeluaran extends BaseController
             $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
-            if ($diskon > $total) return gagal("Diskon over");
+            if ($diskon > $biaya) return gagal("Diskon over");
 
             $barang    = db('barang', $decode['db'])->where('id', $q['barang_id'])->get()->getRowArray();
             if (!$barang)    return gagal("Barang not found");
 
             // Update stok jika qty berubah
             if ($barang['tipe'] == "Count" && array_key_exists("qty", $decode)) {
-                $qty = angka_to_int($decode['qty']);
+                $barang['qty'] += (int)$q['qty'] - (int)$qty;
 
-                if ((int)$q['qty'] !== $qty) {
-                    if ($q['qty'] < $qty) {
-                        $barang['qty'] += ($qty - $q['qty']);
-                    } elseif ($q['qty'] > $qty) {
-                        $barang['qty'] -= ($q['qty'] - $qty);
-                        if ((int)$barang['qty'] < 0) {
-                            gagal("Barang minus");
-                        }
-                    }
-                    if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
-                        return gagal("Update qty gagal");
-                    }
+                if (!db('barang', $decode['db'])->where('id', $barang['id'])->update($barang)) {
+                    return gagal("Update qty gagal");
                 }
             }
 
