@@ -29,6 +29,8 @@ class Inv extends BaseController
 
 
             $tahuns = count(tahuns($decode)) == 0 ? [["tahun" => date("Y")]] : tahuns($decode);
+
+            sukses($decode['sub_db']);
             sukses("Ok",  get_data($decode), $tahuns, bulans(), $divisi);
         }
 
