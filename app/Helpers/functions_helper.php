@@ -117,16 +117,39 @@ function rekapTahunan($dbs, $tahun, $lokasi)
 
 function tahuns($decode)
 {
-    $db = db('transaksi', $decode['db']);
-    if (array_key_exists('lokasi', $decode)) {
-        $db->where('lokasi', $decode['lokasi']);
-    }
-    $db->select("YEAR(FROM_UNIXTIME(tgl)) AS tahun");
-    $db->groupBy("tahun");
-    $db->orderBy("tahun", "ASC");
+    $result = [];
+    if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+        foreach ($decode['divisi'] as $i) {
+            $dbb = ($i == "Billiard" || $i == "Ps" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
+            $db = db('transaksi', $dbb);
+            if (array_key_exists('lokasi', $decode)) {
+                $db->where('lokasi', $decode['lokasi']);
+            }
+            $db->select("YEAR(FROM_UNIXTIME(tgl)) AS tahun");
+            $db->groupBy("tahun");
+            $db->orderBy("tahun", "ASC");
 
-    $query = $db->get();
-    $results = $query->getResultArray();
+            $query = $db->get();
+            $$tem_results = $query->getResultArray();
+
+            foreach ($$tem_results as $t) {
+                if (!in_array($t['tahun'], $result)) {
+                    $result[] = $t;
+                }
+            }
+        }
+    } else {
+        $db = db('transaksi', $decode['db']);
+        if (array_key_exists('lokasi', $decode)) {
+            $db->where('lokasi', $decode['lokasi']);
+        }
+        $db->select("YEAR(FROM_UNIXTIME(tgl)) AS tahun");
+        $db->groupBy("tahun");
+        $db->orderBy("tahun", "ASC");
+
+        $query = $db->get();
+        $results = $query->getResultArray();
+    }
     return $results;
 }
 
@@ -329,30 +352,35 @@ function get_data($decode)
 
         $sub_menu = options($decode);
 
-        $db = db($decode['tabel'], $decode['sub_db']);
-        $db->select('*');
-        if ($decode['jenis'] !== "All") {
-            $db->where('jenis', $decode['jenis']);
-        }
-        if (array_key_exists("lokasi", $decode)) {
-            $db->where('lokasi', $decode['lokasi']);
-        }
+        $db = db($decode['tabel'], $decode['db']);
 
-        if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            $db->whereIn('jenis', $sub_menu);
-        }
-        // $db->where('db', $decode['db']);
-        $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
-        if ($decode['order'] == "hutang") {
-            $db->where('metode', 'Hutang');
-            $db->orderBy('nama', 'ASC');
-        }
+        if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+            $db = db($decode['tabel'], strtolower($decode['divisi']));
+        } else {
+            $db->select('*');
+            if ($decode['jenis'] !== "All") {
+                $db->where('jenis', $decode['jenis']);
+            }
+            if (array_key_exists("lokasi", $decode)) {
+                $db->where('lokasi', $decode['lokasi']);
+            }
 
-        $db->orderBy('tgl', 'ASC');
-        $data = $db->get()->getResultArray();
+            if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
+                $db->whereIn('jenis', $sub_menu);
+            }
+            // $db->where('db', $decode['db']);
+            $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
+            if ($decode['order'] == "hutang") {
+                $db->where('metode', 'Hutang');
+                $db->orderBy('nama', 'ASC');
+            }
 
-        $total = array_sum(array_column($data, 'biaya'));
+            $db->orderBy('tgl', 'ASC');
+            $data = $db->get()->getResultArray();
+
+            $total = array_sum(array_column($data, 'biaya'));
+        }
     }
 
     $res = ['data' => $data, 'total' => $total, 'sub_menu' => $sub_menu];
