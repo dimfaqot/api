@@ -23,8 +23,8 @@ class Pengeluaran extends BaseController
         if ($decode['order'] == "Show") {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
             $tahuns = count(tahuns($decode)) == 0 ? [date("Y")] : tahuns($decode);
-
-            sukses("Ok",  get_data($decode), $tahuns, bulans(), $divisi);
+            $barangs = db('barang', $decode['db'])->orderBy('barang')->get()->getResultArray();
+            sukses("Ok",  get_data($decode), $tahuns, bulans(), $divisi, $barangs);
         }
 
 
@@ -191,10 +191,6 @@ class Pengeluaran extends BaseController
             return $db->transStatus()
                 ? sukses("Sukses", get_data($decode))
                 : gagal("Gagal");
-        }
-
-        if ($decode['order'] == "Cari Barang") {
-            cari_barang($decode);
         }
     }
 }
