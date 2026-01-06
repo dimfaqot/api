@@ -148,9 +148,9 @@ function tahuns($decode)
         $db->orderBy("tahun", "ASC");
 
         $query = $db->get();
-        $results = $query->getResultArray();
+        $result = $query->getResultArray();
     }
-    return $results;
+    return $result;
 }
 
 function clear($text)
