@@ -13,41 +13,54 @@ class Inv extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['tahun'] = date('Y');
-        $decode['bulan'] = date('n');
+        $decode['jenis'] = "All";
+        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
-        check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
+        check($decode, $decode['admin'], ['Root', 'Advisor']);
 
         if ($decode['order'] == "Show") {
-            $decode['jenis'] = "All";
-            sukses("Ok",  get_data($decode), tahuns($decode), bulans());
+            $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+            $decode['divisions'] = $divisi;
+
+
+            $tahuns = count(tahuns($decode)) == 0 ? [["tahun" => date("Y")]] : tahuns($decode);
+            sukses("Ok",  get_data($decode), $tahuns, bulans(), array_values(array_diff($divisi, ["Ps", "Billiard"])));
         }
 
 
         if ($decode['order'] == "Add") {
+
+            $barang_id = clear($decode['barang_id']);
             $harga = angka_to_int(clear($decode['harga']));
             $qty = angka_to_int(clear($decode['qty']));
             $diskon = angka_to_int(clear($decode['diskon']));
+            $total = angka_to_int(clear($decode['total']));
+            $biaya = angka_to_int(clear($decode['biaya']));
             $pj = upper_first(clear($decode['pj']));
 
             $db = \Config\Database::connect();
             $db->transStart();
 
-            if ($diskon > ($harga * $qty)) {
+            if ($diskon > $biaya) {
                 gagal("Diskon over");
+            }
+            $barang = db('barang', $decode['sub_db'])->where('id', $barang_id)->get()->getRowArray();
+
+            if (!$barang) {
+                gagal("Barang not found");
             }
 
             $input = [
 
                 'tgl' => time(),
-                'jenis' => upper_first(clear($decode['jenis'])),
-                'barang' => upper_first(clear($decode['barang'])),
-                'barang_id' => 0,
+                'jenis' => $barang['jenis'],
+                'barang' => $barang['barang'],
+                'barang_id' => $barang['id'],
                 'harga'       => $harga,
                 'qty'       => $qty,
-                'total'       => $harga * $qty,
+                'total'       => $total,
                 'diskon'       => $diskon,
-                'biaya'       => ($harga * $qty) - $diskon,
+                'biaya'       => $biaya,
                 'pj'       => $pj,
                 'petugas'       => upper_first(clear($decode['petugas'])),
                 'updated_at'       => time()
@@ -58,35 +71,59 @@ class Inv extends BaseController
                 $input['lokasi'] = $decode['lokasi'];
             }
 
+            if ($barang['tipe'] == "Count") {
+                $barang['qty'] += (int)$input['qty'];
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
+                    gagal("Update qty gagal");
+                }
+            }
+
             // Simpan data  
-            db($decode['tabel'], $decode['db'])->insert($input);
-            $decode['jenis'] = "All";
+            db($decode['tabel'], $decode['sub_db'])->insert($input);
+
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses("Sukses",  get_data($decode), tahuns($decode), bulans())
+                ? sukses('Sukses', get_data($decode))
                 : gagal('Gagal');
         }
         if ($decode['order'] == "Edit") {
 
-            $harga = angka_to_int($decode['harga']);
-            $qty = angka_to_int($decode['qty']);
-            $total = angka_to_int($decode['harga']) * angka_to_int($decode['qty']);
-            $diskon = angka_to_int($decode['diskon']);
-            $biaya = $total - $diskon;
+            $harga = angka_to_int(clear($decode['harga']));
+            $qty = angka_to_int(clear($decode['qty']));
+            $diskon = angka_to_int(clear($decode['diskon']));
+            $total = angka_to_int(clear($decode['total']));
+            $biaya = angka_to_int(clear($decode['biaya']));
+            $pj = upper_first(clear($decode['pj']));
 
             $db = \Config\Database::connect();
             $db->transStart();
 
-            // Ambil data lama
-            $q = db($decode['tabel'], $decode['db'])->where('id', $decode['id'])->get()->getRowArray();
+            // Ambil data lama dari pengeluaran
+            $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
 
             if (!$q) return gagal("Id not found");
-            if ($diskon > $total) return gagal("Diskon over");
+            if ($diskon > $biaya) return gagal("Diskon over");
 
-            $q['jenis'] = upper_first(clear($decode['jenis']));
-            $q['barang'] = upper_first(clear($decode['barang']));
-            $q['barang_id'] = 0;
+            $barang    = db('barang', $decode['sub_db'])->where('id', $q['barang_id'])->get()->getRowArray();
+            if (!$barang)    return gagal("Barang not found");
+
+            // Update stok jika qty berubah
+            if ($barang['tipe'] == "Count" && array_key_exists("qty", $decode)) {
+                if ($qty > $q['qty']) {
+                    $barang['qty'] += (int)$qty - (int)$q['qty'];
+                } elseif ($qty < $q['qty']) {
+                    $barang['qty'] -= (int)$q['qty'] - (int)$qty;
+                }
+
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
+                    return gagal("Update qty gagal");
+                }
+            }
+
+            $q['jenis'] = $barang['jenis'];
+            $q['barang'] = $barang['barang'];
+            $q['barang_id'] = $barang['id'];
             $q['harga'] = $harga;
             $q['qty'] = $qty;
             $q['total'] = $total;
@@ -98,19 +135,59 @@ class Inv extends BaseController
 
 
             // Simpan data
-            if (!db($decode['tabel'], $decode['db'])->where('id', $q['id'])->update($q)) {
+            if (!db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update gagal");
             }
-            $decode['jenis'] = "All";
+
             $db->transComplete();
 
             return $db->transStatus()
-                ? sukses("Sukses",  get_data($decode), tahuns($decode), bulans())
+                ? sukses("Sukses", get_data($decode))
                 : gagal("Gagal");
         }
 
         if ($decode['order'] == "Delete") {
-            delete($decode, ['Advisor', 'Root']);
+
+            $roles = ['Root', 'Advisor'];
+
+            if (!in_array($decode['admin'], $roles)) {
+                gagal("Role not allowed");
+            }
+
+            $db = \Config\Database::connect();
+            $db->transStart();
+
+            // Ambil data lama dari pengeluaran
+            $q = db($decode['tabel'], $decode['sub_db'])->where('id', $decode['id'])->get()->getRowArray();
+
+            if (!$q) return gagal("Id not found");
+
+            $barang    = db('barang', $decode['sub_db'])->where('id', $q['barang_id'])->get()->getRowArray();
+            if (!$barang)    return gagal("Barang not found");
+
+            // Update stok jika qty berubah
+            if ($barang['tipe'] == "Count") {
+                $barang['qty'] -= (int) $q['qty'];
+                if ((int)$barang['qty'] < 0) {
+                    gagal("Barang minus");
+                }
+
+                if (!db('barang', $decode['sub_db'])->where('id', $barang['id'])->update($barang)) {
+                    return gagal("Update qty gagal");
+                }
+            }
+
+            if (!db($decode['tabel'], $decode['sub_db'])->where('id', $q['id'])->delete()) {
+                gagal("Delete gagal");
+            }
+
+
+
+            $db->transComplete();
+
+            return $db->transStatus()
+                ? sukses("Sukses", get_data($decode))
+                : gagal("Gagal");
         }
     }
 }
