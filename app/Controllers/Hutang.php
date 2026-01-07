@@ -102,7 +102,7 @@ class Hutang extends BaseController
             $data['data'] = $i['data'];
             $data['biaya'] = $i['total'];
             unset($data["total"]);
-            $temp_res[] = [$i, 'data' => $data];
+            $temp_res[] = $data;
         }
 
         $data['data'] = $temp_res;
