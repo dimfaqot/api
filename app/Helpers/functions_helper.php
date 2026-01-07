@@ -647,7 +647,7 @@ function get_hutang($decode)
 {
     $range = today($decode);
 
-    $db = db($decode['tabel'], $decode['sub_db']);
+    $db = db($decode['tabel'], $decode['db']);
     $data = [];
     $db->select("
         user_id,
@@ -671,7 +671,7 @@ function get_hutang($decode)
         if ($q) {
             $i['wa'] = $q['wa'];
         }
-        $dbv = db('transaksi', $decode['sub_db'])->select('*');
+        $dbv = db('transaksi', $decode['db'])->select('*');
         if ($decode['filter'] == "by user") {
             $dbv->where('user_id', $i['user_id']);
         }
