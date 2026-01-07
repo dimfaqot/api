@@ -18,7 +18,7 @@ class Hutang extends BaseController
 
         if ($decode['order'] == "Show") {
             $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $this->data($decode) : get_hutang($decode));
-            sukses('Ok', $data);
+            sukses('Ok', get_hutang($decode));
         }
     }
     function data($decode)
