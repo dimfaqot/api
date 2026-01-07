@@ -559,7 +559,7 @@ function cari_barang($decode)
         }
     }
 
-    $data = $db->like("barang", $text, "both")->where('jenis', $decode['jenis'])->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
+    $data = $db->like("barang", $text, "both")->orderBy('barang', 'ASC')->limit(7)->get()->getResultArray();
 
     sukses("Ok", $data);
 }
