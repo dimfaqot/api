@@ -13,7 +13,6 @@ class Transaksi extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['divisi'] = (in_array('divisi', $decode) ? $decode['divisi'] : "");
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
