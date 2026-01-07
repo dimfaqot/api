@@ -70,6 +70,20 @@ class Transaksi extends BaseController
         if ($decode['order'] == "Cari User") {
             cari_user($decode);
         }
+        if ($decode['order'] == "pencuci") {
+            $q = db('user')->where('role', 'Admin')->orderBy('nama', 'ASC')->get()->getResultArray();
+
+            $data = [];
+
+            foreach ($q as $i) {
+                $exp = explode(",", $i['db']);
+                if (in_array($decode['db'], $exp)) {
+                    $data[] = $i;
+                }
+            }
+
+            sukses("Sukses", $data);
+        }
         if ($decode['order'] == "Simpan User") {
             $input = [
                 'nama'      => upper_first(clear($decode['nama'])),
