@@ -96,13 +96,15 @@ class Hutang extends BaseController
             }
         }
 
-
-        foreach ($res as $i) {
+        $temp_res = [];
+        foreach ($res['data'] as $i) {
             $data = $i['data'];
             $data['biaya'] = $data['total'];
             unset($data["total"]);
             unset($i["data"]);
-            $res[] = [$i, 'data' => $data];
+            $temp_res[] = [$i, 'data' => $data];
         }
+
+        $data['data'] = $temp_res;
     }
 }
