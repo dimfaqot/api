@@ -105,7 +105,7 @@ class Hutang extends BaseController
             $temp_res[] = $data;
         }
 
-        $data['data'] = $temp_res;
+        $res['data'] = $temp_res;
         return $res;
     }
 }
