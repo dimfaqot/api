@@ -94,8 +94,7 @@ class Hutang extends BaseController
             if (count($temp['data']) > 0) {
                 $res['data'][] = $temp;
             }
-
-            sukses("Ok", $res);
         }
+        return $res;
     }
 }
