@@ -23,7 +23,7 @@ class Hutang extends BaseController
     }
     function data($decode)
     {
-        $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+        $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
         $skip_nota = []; // skip nota kare is_over = 0
         $nota = db('transaksi', $decode['db'])->where('metode', "Hutang")->where('is_over', 0)->get()->getResultArray();
@@ -34,7 +34,7 @@ class Hutang extends BaseController
         }
 
         $users = [];
-        foreach ($divisi as $i) {
+        foreach ($divisions as $i) {
             $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . $i);
             $temp_users = db('transaksi', $db)->where('metode', "Hutang")
                 ->groupBy("user_id")
@@ -56,7 +56,7 @@ class Hutang extends BaseController
 
         foreach ($users as $u) {
             $temp = ['data' => [], 'total' => 0, 'identitas' => []];
-            foreach ($decode['divisions'] as $i) {
+            foreach ($divisions as $i) {
                 $db = ($i == "Ps" || $i == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
 
                 $dbb = db('transaksi', $db);
