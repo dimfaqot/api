@@ -751,6 +751,8 @@ function transaksi($decode)
                 $input['roleplay'] = $i['roleplay'];
                 $input['desc_diskons'] = $i['desc_diskons'];
                 $input['dp'] = ($i['metode'] == "Wl" ? $i['dp'] : 0);
+            } else {
+                $input['metode'] = $decode['metode'];
             }
 
             $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
