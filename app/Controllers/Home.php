@@ -34,14 +34,13 @@ class Home extends BaseController
         // sukses($decode);
         $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
-        $data = [];
+        $data = ['total' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         foreach ($divisions as $dv) {
             $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
             // sukses($decode);
             $tables = ['transaksi', 'pengeluaran'];
-            $total = ['transaksi' => 0, 'pengeluaran' => 0];
             if ($decode['jenis'] == "All") {
                 $temp_data = [];
                 foreach ($tables as $i) {
@@ -58,10 +57,11 @@ class Home extends BaseController
                         ->get()
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
+                    $data['total'] += (int)$tot;
                     $jenis = ($dv == "Billiard" || $dv == "Ps" ? $i : $dv);
                     $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
                 }
-                $data[] = ['divisi' => $jenis, 'data' => $temp_data];
+                $data['data'] = ['divisi' => $jenis, 'data' => $temp_data];
             }
             // if ($decode['jenis'] == "Harian") {
             //     for ($x = 1; $x <= $jumlahHari; $x++) {
@@ -183,8 +183,6 @@ class Home extends BaseController
             // }
         }
 
-        // $res = ['data' => $data, 'total' => $total, 'sub_menu' => $sub_menu];
-        // return $res;
         return $data;
     }
 
