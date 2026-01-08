@@ -37,6 +37,7 @@ class Home extends BaseController
         $data = ['total' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
+        $data['sub_menu'] = $sub_menu;
         foreach ($divisions as $dv) {
             $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
             // sukses($decode);
