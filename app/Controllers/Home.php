@@ -55,7 +55,7 @@ class Home extends BaseController
                         $dbb->where('lokasi', $decode['lokasi']);
                     }
                     if ($dv == "Billiard" || $dv == "Ps") {
-                        $dbb->where('jenis', $dv);
+                        $dbb->where('divisi', $dv);
                     }
                     $res = $dbb->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
                         ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
