@@ -360,7 +360,9 @@ function get_data($decode)
         }
 
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            $db->where('divisi', $decode['divisi']);
+            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+                $db->where('divisi', $decode['divisi']);
+            }
             $db->whereIn('jenis', $sub_menu);
         }
         // $db->where('db', $decode['db']);
