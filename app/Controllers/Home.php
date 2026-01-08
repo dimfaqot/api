@@ -25,7 +25,7 @@ class Home extends BaseController
             } else {
                 $data = (($decode['db'] == "playground" || $decode['db'] == "playbox") && $decode['order'] == "laporan" ? $this->data($decode) : get_data($decode));
                 if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-                    sukses("Ok", $data, $data['total'], $data['sub_menu']);
+                    sukses("Ok", $data);
                 } else {
                     sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
                 }

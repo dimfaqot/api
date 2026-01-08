@@ -59,6 +59,7 @@ class Pengeluaran extends BaseController
                 'tgl' => time(),
                 'jenis' => $barang['jenis'],
                 'barang' => $barang['barang'],
+                'divisi' => $decode['divisi'],
                 'barang_id' => $barang['id'],
                 'harga'       => $harga,
                 'qty'       => $qty,
