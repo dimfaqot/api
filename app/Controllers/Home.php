@@ -46,39 +46,69 @@ class Home extends BaseController
         $data['sub_menu'] = $sub_menu;
         $tables = ['transaksi', 'pengeluaran'];
         if ($decode['order'] == "laporan" && $decode['jenis'] == "Harian") {
-            if ($decode['jenis'] == "Harian") {
-                for ($x = 1; $x <= $jumlahHari; $x++) {
-                    $temp_data = [];
-                    foreach ($divisions as $dv) {
-                        $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+            for ($x = 1; $x <= $jumlahHari; $x++) {
+                $temp_data = [];
+                foreach ($divisions as $dv) {
+                    $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
 
-                        $temp_1 = [];
-                        foreach ($tables as $i) {
-                            $judul = $i == "transaksi" ? "masuk" : "keluar";
-                            $dbb = db($i, $db);
-                            $dbb->select('*');
+                    $temp_1 = [];
+                    foreach ($tables as $i) {
+                        $judul = $i == "transaksi" ? "masuk" : "keluar";
+                        $dbb = db($i, $db);
+                        $dbb->select('*');
 
-                            if (array_key_exists("lokasi", $decode)) {
-                                $dbb->where('lokasi', $decode['lokasi']);
-                            }
-                            if ($dv == "Billiard" || $dv == "Ps") {
-                                $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
-                            }
-                            $res = $dbb->orderBy('tgl', 'ASC')
-                                ->where("DAY(FROM_UNIXTIME(tgl))", $x)
-                                ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-                                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
-                                ->get()
-                                ->getResultArray();
-                            $tot = array_sum(array_column($res, 'biaya'));
-                            $data['total'] += (int)$tot;
-                            $data[$judul] += (int)$tot;
-                            $temp_1[$judul] = $tot;
+                        if (array_key_exists("lokasi", $decode)) {
+                            $dbb->where('lokasi', $decode['lokasi']);
                         }
-                        $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
+                        if ($dv == "Billiard" || $dv == "Ps") {
+                            $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                        }
+                        $res = $dbb->orderBy('tgl', 'ASC')
+                            ->where("DAY(FROM_UNIXTIME(tgl))", $x)
+                            ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $data['total'] += (int)$tot;
+                        $data[$judul] += (int)$tot;
+                        $temp_1[$judul] = $tot;
                     }
-                    $data['data'][] = ['tgl' => $x, 'data' => $temp_data];
+                    $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
                 }
+                $data['data'][] = ['tgl' => $x, 'data' => $temp_data];
+            }
+        } elseif ($decode['order'] == "laporan" && $decode['jenis'] == "Bulanan") {
+            foreach (bulans() as $b) {
+                $temp_data = [];
+                foreach ($divisions as $dv) {
+                    $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+
+                    $temp_1 = [];
+                    foreach ($tables as $i) {
+                        $judul = $i == "transaksi" ? "masuk" : "keluar";
+                        $dbb = db($i, $db);
+                        $dbb->select('*');
+
+                        if (array_key_exists("lokasi", $decode)) {
+                            $dbb->where('lokasi', $decode['lokasi']);
+                        }
+                        if ($dv == "Billiard" || $dv == "Ps") {
+                            $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                        }
+                        $res = $dbb->orderBy('tgl', 'ASC')
+                            ->where("MONTH(FROM_UNIXTIME(tgl))", $b['satuan'])
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $data['total'] += (int)$tot;
+                        $data[$judul] += (int)$tot;
+                        $temp_1[$judul] = $tot;
+                    }
+                    $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
+                }
+                $data['data'][] = ['bulan' => $b['bulan'], 'data' => $temp_data];
             }
         } else {
             foreach ($divisions as $dv) {
