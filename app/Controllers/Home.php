@@ -75,7 +75,7 @@ class Home extends BaseController
                             $data[$judul] += (int)$tot;
                             $temp_1[$judul] = $tot;
                         }
-                        $temp_data = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
+                        $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
                     }
                     $data['data'][] = ['tgl' => $x, 'data' => $temp_data];
                 }
