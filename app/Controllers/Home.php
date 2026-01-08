@@ -23,10 +23,157 @@ class Home extends BaseController
             if ($decode['jenis'] == "Unlock") {
                 $this->unlock($decode);
             } else {
-                $data = get_data($decode);
+                $data = (($decode['db'] == "playground" || $decode['db'] == "playbox") && $decode['order'] == "laporan" ? $this->data($decode) : get_data($decode));
                 sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
             }
         }
+    }
+
+    function data($decode)
+    {
+        $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+
+        $data = [];
+        $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
+        foreach ($divisions as $dv) {
+            $decode['db'] = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+            $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
+            $tables = ['transaksi', 'pengeluaran'];
+            $total = ['transaksi' => 0, 'pengeluaran' => 0];
+            if ($decode['jenis'] == "All") {
+                foreach ($tables as $i) {
+                    $db = db($i, $decode['db']);
+                    $db->select('*');
+                    if (array_key_exists("lokasi", $decode)) {
+                        $db->where('lokasi', $decode['lokasi']);
+                    }
+                    $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                        ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                        ->get()
+                        ->getResultArray();
+                    $tot = array_sum(array_column($res, 'biaya'));
+                    $data[$dv][$i] = ['total' => $tot, 'data' => $res];
+                }
+            }
+            if ($decode['jenis'] == "Harian") {
+                for ($x = 1; $x <= $jumlahHari; $x++) {
+                    $harian = [];
+                    foreach ($tables as $i) {
+                        $db = db($i, $decode['db']);
+                        $db->select('*');
+                        if (array_key_exists("lokasi", $decode)) {
+                            $db->where('lokasi', $decode['lokasi']);
+                        }
+                        $res = $db->orderBy('tgl', 'ASC')
+                            ->where("DAY(FROM_UNIXTIME(tgl))", $x)
+                            ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $total[$i] += $tot;
+                        $harian[] = $tot;
+                    }
+
+                    $data[$dv][] = ['tgl' => $x, 'masuk' => $harian[0], 'keluar' => $harian[1]];
+                }
+            }
+            if ($decode['jenis'] == "Bulanan") {
+                foreach (bulans() as $b) {
+                    $bulanan = [];
+                    foreach ($tables as $i) {
+                        $db = db($i, $decode['db']);
+                        $db->select('*');
+                        if (array_key_exists("lokasi", $decode)) {
+                            $db->where('lokasi', $decode['lokasi']);
+                        }
+                        $res = $db->orderBy('tgl', 'ASC')
+                            ->where("MONTH(FROM_UNIXTIME(tgl))", $b['satuan'])
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $total[$i] += $tot;
+                        $bulanan[] = $tot;
+                    }
+
+                    $data[$dv][] = ['tgl' => $b['bulan'], 'masuk' => $bulanan[0], 'keluar' => $bulanan[1]];
+                }
+            }
+            if ($decode['jenis'] == "Tahunan") {
+                foreach (tahuns($decode) as $t) {
+                    $tahunan = [];
+                    foreach ($tables as $i) {
+                        $db = db($i, $decode['db']);
+                        $db->select('*');
+                        if (array_key_exists("lokasi", $decode)) {
+                            $db->where('lokasi', $decode['lokasi']);
+                        }
+                        $res = $db->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
+                            ->orderBy('tgl', 'ASC')
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $total[$i] += $tot;
+                        $tahunan[] = $tot;
+                    }
+
+                    $data[$dv] = ['tgl' => $t['tahun'], 'masuk' => $tahunan[0], 'keluar' => $tahunan[1]];
+                }
+            }
+            if ($decode['jenis'] == "Backup") {
+                foreach (tahuns($decode) as $t) {
+                    $tahunan = [];
+                    foreach ($tables as $i) {
+                        $db = db($i, $decode['db']);
+                        $db->select('*');
+                        if (array_key_exists("lokasi", $decode)) {
+                            $db->where('lokasi', $decode['lokasi']);
+                        }
+                        $res = $db->orderBy('tgl', 'ASC')
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $total[$i] += $tot;
+                        $tahunan[] = $tot;
+                    }
+
+                    $data[$dv] = ['tgl' => $t['tahun'], 'masuk' => $tahunan[0], 'keluar' => $tahunan[1]];
+
+                    $q = db('backup')->where('db', $decode['db'])->where('tahun', $t['tahun'])->get()->getRowArray();
+
+                    if (!$q) {
+                        $insert = [
+                            'tahun' => $t['tahun'],
+                            'masuk' => $tahunan[0],
+                            'keluar' => $tahunan[1],
+                            'saldo' => $tahunan[0] - $tahunan[1],
+                            'keep' => 1
+                        ];
+                        db('backup')->where('db', $decode['db'])->insert($insert);
+                    } else {
+                        if ($q['keep'] == 0) {
+                            $q['masuk'] = $tahunan[0];
+                            $q['keluar'] = $tahunan[1];
+                            $q['saldo'] = $tahunan[0] - $tahunan[1];
+                            $q['keep'] = 1;
+                            db('backup')->where('db', $decode['db'])->where('id', $q['id'])->update($q);
+                        }
+                    }
+
+                    $backup = db('backup')->where('db', $decode['db'])->select('*')->orderBy('tahun', 'ASC')
+                        ->get()
+                        ->getResultArray();
+                    $tot = array_sum(array_column($backup, 'saldo'));
+
+                    sukses("Ok", $backup, $tot);
+                }
+            }
+        }
+
+        $res = ['data' => $data, 'total' => $total, 'sub_menu' => $sub_menu];
+        return $res;
     }
 
     function unlock($decode)
