@@ -34,7 +34,7 @@ class Home extends BaseController
         // sukses($decode);
         $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
-        $data = ['total' => 0];
+        $data = ['total' => 0, 'masuk' => 0, 'keluar' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         $data['sub_menu'] = $sub_menu;
@@ -59,6 +59,7 @@ class Home extends BaseController
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
                     $data['total'] += (int)$tot;
+                    $data[($i == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
                     $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
                 }
                 $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
