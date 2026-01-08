@@ -13,7 +13,7 @@ class Home extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
-        $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
+
         check($decode);
 
         if ($decode['order'] == 'Menu') {
@@ -24,7 +24,7 @@ class Home extends BaseController
             if ($decode['jenis'] == "Unlock") {
                 $this->unlock($decode);
             } else {
-                $data = (($decode['db'] == "playground" || $decode['db'] == "playbox") && $decode['order'] == "laporan" ? $this->data($decode) : get_data($decode));
+                $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $this->data($decode) : get_data($decode));
                 if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
                     sukses("Ok", $data);
                 } else {
