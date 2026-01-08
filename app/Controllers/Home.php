@@ -92,11 +92,12 @@ class Home extends BaseController
                                 ->getResultArray();
                             $tot = array_sum(array_column($res, 'biaya'));
                             $data['total'] += (int)$tot;
+                            $data[$judul] += (int)$tot;
                             $temp_1[$judul] = $tot;
                         }
                         $temp_data[] = ['tgl' => $x, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
                     }
-                    $data['data'][] = ['divisi' => $dv, $data => $temp_data];
+                    $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
                 }
             }
             // if ($decode['jenis'] == "Harian") {
