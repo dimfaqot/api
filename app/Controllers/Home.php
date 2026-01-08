@@ -39,7 +39,7 @@ class Home extends BaseController
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         foreach ($divisions as $dv) {
             $decode['db'] = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
-            sukses($decode);
+            // sukses($decode);
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
             if ($decode['jenis'] == "All") {
