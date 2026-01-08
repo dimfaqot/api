@@ -20,7 +20,7 @@ class Home extends BaseController
         if ($decode['order'] == 'Menu') {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
             $decode['divisions'] = $divisi;
-            sukses("Ok", tahuns($decode), bulans());
+            sukses("Ok", tahuns($decode), bulans(), $divisi);
         } else {
             if ($decode['jenis'] == "Unlock") {
                 $this->unlock($decode);
