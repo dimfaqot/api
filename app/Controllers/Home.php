@@ -59,10 +59,9 @@ class Home extends BaseController
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
                     $data['total'] += (int)$tot;
-                    $jenis = ($dv == "Billiard" || $dv == "Ps" ? $i : $dv);
                     $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
                 }
-                $data['data'] = ['divisi' => $jenis, 'data' => $temp_data];
+                $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
             }
             // if ($decode['jenis'] == "Harian") {
             //     for ($x = 1; $x <= $jumlahHari; $x++) {
