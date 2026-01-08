@@ -38,22 +38,22 @@ class Home extends BaseController
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         foreach ($divisions as $dv) {
-            $decode['db'] = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+            $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
             // sukses($decode);
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
             if ($decode['jenis'] == "All") {
                 $temp_data = [];
                 foreach ($tables as $i) {
-                    $db = db($i, $decode['db']);
-                    $db->select('*');
+                    $dbb = db($i, $db);
+                    $dbb->select('*');
                     if (array_key_exists("lokasi", $decode)) {
-                        $db->where('lokasi', $decode['lokasi']);
+                        $dbb->where('lokasi', $decode['lokasi']);
                     }
                     if ($dv == "Billiard" || $dv == "Ps") {
-                        $db->where('jenis', $dv);
+                        $dbb->where('jenis', $dv);
                     }
-                    $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                    $res = $dbb->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
                         ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                         ->get()
                         ->getResultArray();
