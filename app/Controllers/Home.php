@@ -96,7 +96,7 @@ class Home extends BaseController
                         }
                         $temp_data[] = ['tgl' => $x, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
                     }
-                    $data[] = ['divisi' => $dv, $data => $temp_data];
+                    $data['data'][] = ['divisi' => $dv, $data => $temp_data];
                 }
             }
             // if ($decode['jenis'] == "Harian") {
