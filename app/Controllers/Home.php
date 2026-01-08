@@ -31,6 +31,7 @@ class Home extends BaseController
 
     function data($decode)
     {
+        sukses($decode);
         $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
         $data = [];
