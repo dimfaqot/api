@@ -32,7 +32,7 @@ class Home extends BaseController
     function data($decode)
     {
         $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
-
+        sukses($divisions);
         $data = [];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         foreach ($divisions as $dv) {
