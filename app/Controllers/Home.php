@@ -31,13 +31,14 @@ class Home extends BaseController
 
     function data($decode)
     {
-        sukses($decode);
+        // sukses($decode);
         $divisions = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
         $data = [];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         foreach ($divisions as $dv) {
             $decode['db'] = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+            sukses($decode);
             $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
