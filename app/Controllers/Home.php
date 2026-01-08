@@ -41,19 +41,25 @@ class Home extends BaseController
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
             if ($decode['jenis'] == "All") {
+                $temp_data = [];
                 foreach ($tables as $i) {
                     $db = db($i, $decode['db']);
                     $db->select('*');
                     if (array_key_exists("lokasi", $decode)) {
                         $db->where('lokasi', $decode['lokasi']);
                     }
+                    if ($dv == "Billiard" || $dv == "Ps") {
+                        $db->where('jenis', $dv);
+                    }
                     $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
                         ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
                         ->get()
                         ->getResultArray();
                     $tot = array_sum(array_column($res, 'biaya'));
-                    $data[$dv][$i] = ['total' => $tot, 'data' => $res];
+                    $jenis = ($dv == "Billiard" || $dv == "Ps" ? $i : $dv);
+                    $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
                 }
+                $data[] = ['divisi' => $jenis, 'data' => $temp_data];
             }
             if ($decode['jenis'] == "Harian") {
                 for ($x = 1; $x <= $jumlahHari; $x++) {
@@ -63,6 +69,9 @@ class Home extends BaseController
                         $db->select('*');
                         if (array_key_exists("lokasi", $decode)) {
                             $db->where('lokasi', $decode['lokasi']);
+                        }
+                        if ($dv == "Billiard" || $dv == "Ps") {
+                            $db->where('jenis', $dv);
                         }
                         $res = $db->orderBy('tgl', 'ASC')
                             ->where("DAY(FROM_UNIXTIME(tgl))", $x)
@@ -75,7 +84,7 @@ class Home extends BaseController
                         $harian[] = $tot;
                     }
 
-                    $data[$dv][] = ['tgl' => $x, 'masuk' => $harian[0], 'keluar' => $harian[1]];
+                    $data[] = ['tgl' => $x, 'masuk' => $harian[0], 'keluar' => $harian[1]];
                 }
             }
             if ($decode['jenis'] == "Bulanan") {
