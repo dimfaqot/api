@@ -361,7 +361,9 @@ function get_data($decode)
 
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
             if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-                $db->where('divisi', $decode['divisi']);
+                if ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard") {
+                    $db->where('divisi', $decode['divisi']);
+                }
             }
             $db->whereIn('jenis', $sub_menu);
         }
