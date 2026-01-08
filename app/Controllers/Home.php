@@ -69,6 +69,34 @@ class Home extends BaseController
                         $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
                     }
                     $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
+                } elseif ($decode['jenis'] == "Harian") {
+                    $temp_data = [];
+                    for ($x = 1; $x <= $jumlahHari; $x++) {
+                        $temp_1 = [];
+                        foreach ($tables as $i) {
+                            $judul = $i == "transaksi" ? "masuk" : "keluar";
+                            $dbb = db($i, $db);
+                            $dbb->select('*');
+
+                            if (array_key_exists("lokasi", $decode)) {
+                                $dbb->where('lokasi', $decode['lokasi']);
+                            }
+                            if ($dv == "Billiard" || $dv == "Ps") {
+                                $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                            }
+                            $res = $dbb->orderBy('tgl', 'ASC')
+                                ->where("DAY(FROM_UNIXTIME(tgl))", $x)
+                                ->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                                ->get()
+                                ->getResultArray();
+                            $tot = array_sum(array_column($res, 'biaya'));
+                            $data['total'] += (int)$tot;
+                            $temp_1[$judul] = $tot;
+                        }
+                        $temp_data[] = ['tgl' => $x, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
+                    }
+                    $data[] = ['divisi' => $dv, $data => $temp_data];
                 }
             }
             // if ($decode['jenis'] == "Harian") {
