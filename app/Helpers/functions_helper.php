@@ -119,6 +119,7 @@ function tahuns($decode)
 {
     $result = [];
     if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+        $temp_result = [];
         foreach ($decode['divisions'] as $i) {
             $dbb = ($i == "Billiard" || $i == "Ps" ? $decode['db'] : $decode['db'] . "_" . strtolower($i));
             $db = db('transaksi', $dbb);
@@ -134,12 +135,15 @@ function tahuns($decode)
 
             $query = $db->get();
             $item_results = $query->getResultArray();
-
             foreach ($item_results as $t) {
-                if (!in_array($t['tahun'], $result)) {
-                    $result[] = $t;
+                if (!in_array($t['tahun'], $temp_result)) {
+                    $temp_result[] = $t['tahun'];
                 }
             }
+        }
+
+        foreach ($temp_result as $i) {
+            $result[] = ['tahun' => $i];
         }
     } else {
         $db = db('transaksi', $decode['db']);
