@@ -98,8 +98,9 @@ class Home extends BaseController
                         if ($dv == "Billiard" || $dv == "Ps") {
                             $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
                         }
+                        $dbb->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun']);
                         $res = $dbb->orderBy('tgl', 'ASC')
-                            ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
+
                             ->get()
                             ->getResultArray();
                         $tot = array_sum(array_column($res, 'biaya'));
