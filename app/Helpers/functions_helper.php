@@ -126,7 +126,7 @@ function tahuns($decode)
                 $db->where('lokasi', $decode['lokasi']);
             }
             if ($i == "Billiard" || $i == "Ps") {
-                $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $i);
+                $db->where(($i == "transaksi" ? "jenis" : "divisi"), $i);
             }
             $db->select("YEAR(FROM_UNIXTIME(tgl)) AS tahun");
             $db->groupBy("tahun");
