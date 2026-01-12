@@ -78,6 +78,39 @@ class Home extends BaseController
                 }
                 $data['data'][] = ['tgl' => $x, 'data' => $temp_data];
             }
+        } elseif ($decode['order'] == "laporan" && $decode['jenis'] == "Tahunan") {
+            $decode['divisions'] = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
+
+            foreach (tahuns($decode) as $t) {
+                $temp_data = [];
+                foreach ($divisions as $dv) {
+                    $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+
+                    $temp_1 = [];
+                    foreach ($tables as $i) {
+                        $judul = $i == "transaksi" ? "masuk" : "keluar";
+                        $dbb = db($i, $db);
+                        $dbb->select('*');
+
+                        if (array_key_exists("lokasi", $decode)) {
+                            $dbb->where('lokasi', $decode['lokasi']);
+                        }
+                        if ($dv == "Billiard" || $dv == "Ps") {
+                            $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                        }
+                        $res = $dbb->orderBy('tgl', 'ASC')
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $t)
+                            ->get()
+                            ->getResultArray();
+                        $tot = array_sum(array_column($res, 'biaya'));
+                        $data['total'] += (int)$tot;
+                        $data[$judul] += (int)$tot;
+                        $temp_1[$judul] = $tot;
+                    }
+                    $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
+                }
+                $data['data'][] = ['tahun' => $t, 'data' => $temp_data];
+            }
         } elseif ($decode['order'] == "laporan" && $decode['jenis'] == "Bulanan") {
             foreach (bulans() as $b) {
                 $temp_data = [];
