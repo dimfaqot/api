@@ -99,7 +99,7 @@ class Home extends BaseController
                             $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
                         }
                         $res = $dbb->orderBy('tgl', 'ASC')
-                            ->where("YEAR(FROM_UNIXTIME(tgl))", $t)
+                            ->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun'])
                             ->get()
                             ->getResultArray();
                         $tot = array_sum(array_column($res, 'biaya'));
@@ -109,7 +109,7 @@ class Home extends BaseController
                     }
                     $temp_data[] = ['divisi' => $dv, 'masuk' => $temp_1['masuk'], 'keluar' => $temp_1['keluar'], 'total' => $temp_1['masuk'] - $temp_1['keluar']];
                 }
-                $data['data'][] = ['tahun' => $t, 'data' => $temp_data];
+                $data['data'][] = ['tahun' => $t['tahun'], 'data' => $temp_data];
             }
         } elseif ($decode['order'] == "laporan" && $decode['jenis'] == "Bulanan") {
             foreach (bulans() as $b) {
