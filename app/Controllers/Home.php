@@ -180,7 +180,6 @@ class Home extends BaseController
             if ($decode['order'] == "hutang") {
                 $decode['divisions'] = $divisions;
                 $data = hutang_playground($decode);
-                $data['sub_menu'] = $divisions;
                 sukses("Ok", $data);
             } else {
                 $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
