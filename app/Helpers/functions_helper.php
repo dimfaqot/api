@@ -1140,6 +1140,5 @@ function hutang_playground($decode)
             $res['data'][] = $temp;
         }
     }
-
-    sukses("Ok", $res);
+    return $res;
 }
