@@ -42,7 +42,9 @@ class Home extends BaseController
 
         $data = ['total' => 0, 'masuk' => 0, 'keluar' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
-
+        if ($decode['order'] !== "laporan") {
+            $sub_menu = options($decode);
+        }
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         $data['sub_menu'] = $sub_menu;
         $tables = ['transaksi', 'pengeluaran'];
@@ -99,7 +101,6 @@ class Home extends BaseController
                         if ($dv == "Billiard" || $dv == "Ps") {
                             $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
                         }
-
                         $dbb->where("YEAR(FROM_UNIXTIME(tgl))", $t['tahun']);
                         $res = $dbb->orderBy('tgl', 'ASC')
 
@@ -146,7 +147,37 @@ class Home extends BaseController
                 }
                 $data['data'][] = ['bulan' => $b['bulan'], 'data' => $temp_data];
             }
+        } elseif ($decode['order'] == "laporan" && $decode['jenis'] == "All") {
+            foreach ($divisions as $dv) {
+                $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
+
+                if ($decode['order'] == "laporan") {
+                    if ($decode['jenis'] == "All") {
+                        $temp_data = [];
+                        foreach ($tables as $i) {
+                            $dbb = db($i, $db);
+                            $dbb->select('*');
+                            if (array_key_exists("lokasi", $decode)) {
+                                $dbb->where('lokasi', $decode['lokasi']);
+                            }
+                            if ($dv == "Billiard" || $dv == "Ps") {
+                                $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                            }
+                            $res = $dbb->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                                ->get()
+                                ->getResultArray();
+                            $tot = array_sum(array_column($res, 'biaya'));
+                            $data['total'] += (int)$tot;
+                            $data[($i == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
+                            $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
+                        }
+                        $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
+                    }
+                }
+            }
         } else {
+            $sub_menu = $divisions;
             $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
             $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
 
