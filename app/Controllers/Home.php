@@ -177,31 +177,35 @@ class Home extends BaseController
                 }
             }
         } else {
-            $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
-            $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
+            if ($decode['order'] == "hutang") {
+                hutang_playground($decode);
+            } else {
+                $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
+                $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
 
-            $dbb = ($decode['jenis'] == "Billiard" || $decode['jenis'] == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($decode['jenis']));
-            $temp_data = [];
+                $dbb = ($decode['jenis'] == "Billiard" || $decode['jenis'] == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($decode['jenis']));
+                $temp_data = [];
 
 
-            $db = db($decode['order'], $dbb);
-            $db->select('*');
-            if (array_key_exists("lokasi", $decode)) {
-                $db->where('lokasi', $decode['lokasi']);
+                $db = db($decode['order'], $dbb);
+                $db->select('*');
+                if (array_key_exists("lokasi", $decode)) {
+                    $db->where('lokasi', $decode['lokasi']);
+                }
+                if ($decode['jenis'] == "Billiard" || $decode['jenis'] == "Ps") {
+                    $db->where(($decode['order'] == "transaksi" ? "jenis" : "divisi"), $decode['jenis']);
+                }
+                $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                    ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                    ->get()
+                    ->getResultArray();
+                $tot = array_sum(array_column($res, 'biaya'));
+                $data['total'] += (int)$tot;
+                $data[($decode['order'] == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
+                $temp_data[] = ['judul' => ($decode['order'] == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
+
+                $data['data'][] = ['divisi' => $decode['db'], 'data' => $temp_data];
             }
-            if ($decode['jenis'] == "Billiard" || $decode['jenis'] == "Ps") {
-                $db->where(($decode['order'] == "transaksi" ? "jenis" : "divisi"), $decode['jenis']);
-            }
-            $res = $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-                ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
-                ->get()
-                ->getResultArray();
-            $tot = array_sum(array_column($res, 'biaya'));
-            $data['total'] += (int)$tot;
-            $data[($decode['order'] == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
-            $temp_data[] = ['judul' => ($decode['order'] == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
-
-            $data['data'][] = ['divisi' => $decode['db'], 'data' => $temp_data];
         }
 
         return $data;
