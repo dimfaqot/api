@@ -42,6 +42,9 @@ class Home extends BaseController
 
         $data = ['total' => 0, 'masuk' => 0, 'keluar' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
+        if ($decode['order'] !== "laporan") {
+            $sub_menu = options($decode);
+        }
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         $data['sub_menu'] = $sub_menu;
         $tables = ['transaksi', 'pengeluaran'];
