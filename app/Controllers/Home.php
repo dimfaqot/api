@@ -43,7 +43,7 @@ class Home extends BaseController
         $data = ['total' => 0, 'masuk' => 0, 'keluar' => 0];
         $sub_menu = ['Harian', 'Bulanan', 'Tahunan'];
         if ($decode['order'] !== "laporan") {
-            $sub_menu = options($decode);
+            $sub_menu = $divisions;
         }
         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $decode['bulan'], $decode['tahun']);
         $data['sub_menu'] = $sub_menu;
@@ -177,7 +177,6 @@ class Home extends BaseController
                 }
             }
         } else {
-            $sub_menu = $divisions;
             $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
             $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
 
