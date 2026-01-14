@@ -178,6 +178,7 @@ class Home extends BaseController
             }
         } else {
             if ($decode['order'] == "hutang") {
+                $decode['divisions'] = $divisions;
                 hutang_playground($decode);
             } else {
                 $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
