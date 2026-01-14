@@ -147,6 +147,7 @@ class Home extends BaseController
                 $data['data'][] = ['bulan' => $b['bulan'], 'data' => $temp_data];
             }
         } else {
+            $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
             $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
 
             $dbb = ($decode['jenis'] == "Billiard" || $decode['jenis'] == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($decode['jenis']));
