@@ -10,6 +10,7 @@ class Cetak extends BaseController
         $decode = decode_jwt($jwt);
 
         if ($decode['order'] == "laporan") {
+
             $rangkuman = [];
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
@@ -37,7 +38,7 @@ class Cetak extends BaseController
             }
 
 
-            $data = get_data($decode);
+            $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? get_data_playground($decode) : get_data($decode));
             // dd($data);
             $profile = profile($decode);
             $set = [
