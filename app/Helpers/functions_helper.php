@@ -370,6 +370,8 @@ function get_data($decode)
             if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
                 if ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard") {
                     $db->where('divisi', $decode['divisi']);
+                } else {
+                    $db->where('jenis', $decode['jenis']);
                 }
             } else {
                 $db->where('jenis', $decode['jenis']);
