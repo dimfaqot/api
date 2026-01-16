@@ -26,7 +26,7 @@ class Home extends BaseController
                 $this->unlock($decode);
             } else {
                 $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? get_data_playground($decode) : get_data($decode));
-                sukses("Ok", $data['data'], $data['total'], $data['sub_menu']);
+                sukses("Ok", $data, $data['total'], $data['sub_menu']);
             }
         }
     }

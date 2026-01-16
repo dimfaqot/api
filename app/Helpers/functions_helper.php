@@ -1270,30 +1270,26 @@ function get_data_playground($decode)
         foreach ($divisions as $dv) {
             $db = ($dv == "Billiard" || $dv == "Ps" ? $decode['db'] : $decode['db'] . '_' . strtolower($dv));
 
-            if ($decode['order'] == "laporan") {
-                if ($decode['jenis'] == "All") {
-                    $temp_data = [];
-                    foreach ($tables as $i) {
-                        $dbb = db($i, $db);
-                        $dbb->select('*');
-                        if (array_key_exists("lokasi", $decode)) {
-                            $dbb->where('lokasi', $decode['lokasi']);
-                        }
-                        if ($dv == "Billiard" || $dv == "Ps") {
-                            $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
-                        }
-                        $res = $dbb->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
-                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
-                            ->get()
-                            ->getResultArray();
-                        $tot = array_sum(array_column($res, 'biaya'));
-                        $data['total'] += (int)$tot;
-                        $data[($i == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
-                        $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
-                    }
-                    $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
+            $temp_data = [];
+            foreach ($tables as $i) {
+                $dbb = db($i, $db);
+                $dbb->select('*');
+                if (array_key_exists("lokasi", $decode)) {
+                    $dbb->where('lokasi', $decode['lokasi']);
                 }
+                if ($dv == "Billiard" || $dv == "Ps") {
+                    $dbb->where(($i == "transaksi" ? "jenis" : "divisi"), $dv);
+                }
+                $res = $dbb->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
+                    ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
+                    ->get()
+                    ->getResultArray();
+                $tot = array_sum(array_column($res, 'biaya'));
+                $data['total'] += (int)$tot;
+                $data[($i == "transaksi" ? "masuk" : "keluar")] += (int)$tot;
+                $temp_data[] = ['judul' => ($i == "transaksi" ? "Masuk" : "Keluar"), 'total' => $tot, 'data' => $res];
             }
+            $data['data'][] = ['divisi' => $dv, 'data' => $temp_data];
         }
     } else {
         if ($decode['order'] == "hutang") {
