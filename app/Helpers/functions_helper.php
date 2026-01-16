@@ -366,19 +366,25 @@ function get_data($decode)
             $db->where('lokasi', $decode['lokasi']);
         }
 
+
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
-                if ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard") {
-                    $db->where('divisi', $decode['divisi']);
+            if (($decode['db'] == "playground" || $decode['db'] == "playbox") && ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard")) {
+                $db->where('divisi', $decode['divisi']);
+            } else {
+                if ($decode['jenis'] == "All") {
+                    $db->whereIn('jenis', $sub_menu);
                 } else {
                     $db->where('jenis', $decode['jenis']);
                 }
+            }
+        } else {
+            if ($decode['jenis'] == "All") {
+                $db->whereIn('jenis', $sub_menu);
             } else {
                 $db->where('jenis', $decode['jenis']);
             }
-        } else {
-            $db->where('jenis', $decode['jenis']);
         }
+
         // $db->where('db', $decode['db']);
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
