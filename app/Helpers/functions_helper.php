@@ -372,11 +372,10 @@ function get_data($decode)
                     $db->where('divisi', $decode['divisi']);
                 }
             } else {
-
-                $db->whereIn('jenis', $sub_menu);
+                $db->where('jenis', $decode['jenis']);
             }
         } else {
-            $db->whereIn('jenis', $sub_menu);
+            $db->where('jenis', $decode['jenis']);
         }
         // $db->where('db', $decode['db']);
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
