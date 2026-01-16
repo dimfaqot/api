@@ -1299,7 +1299,6 @@ function get_data_playground($decode)
         if ($decode['order'] == "hutang") {
             $decode['divisions'] = $divisions;
             $data = hutang_playground($decode);
-            sukses("Ok", $data);
         } else {
             $decode['jenis'] = ($decode['jenis'] == "All" ? $divisions[0] : $decode['jenis']);
             $judul = ($decode['order'] == "transaksi" ? "masuk" : "keluar");
