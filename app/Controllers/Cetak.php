@@ -10,38 +10,73 @@ class Cetak extends BaseController
         $decode = decode_jwt($jwt);
 
         if ($decode['order'] == "laporan") {
-            $rangkuman_decode = $decode;
-            $rangkuman_decode['jenis'] = "Bulanan";
-            $rangkuman = get_data($rangkuman_decode);
+            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+                $rangkuman_decode = $decode;
+                $rangkuman_decode['jenis'] = "Bulanan";
+                $rangkuman = get_data_playground($rangkuman_decode);
 
-            $data = get_data($decode);
+                $data = get_data_playground($decode);
+                dd($data);
+                $profile = profile($decode);
+                $set = [
+                    'mode' => 'utf-8',
+                    'format' => [210, 330],
+                    'orientation' => 'P',
+                    'margin_left' => 5,
+                    'margin_right' => 5,
+                    'margin_top' => 5,
+                    'margin_bottom' => 5
+                ];
 
-            $profile = profile($decode);
-            $set = [
-                'mode' => 'utf-8',
-                'format' => [210, 330],
-                'orientation' => 'P',
-                'margin_left' => 5,
-                'margin_right' => 5,
-                'margin_top' => 5,
-                'margin_bottom' => 5
-            ];
+                $judul1 = "LAPORAN " . strtoupper(($decode['jenis'] == "All" ? "detail" : $decode['jenis'])) . " " . strtoupper($profile['nama']) . " ";
+                $judul2 = ($decode['jenis'] == "All" || $decode['jenis'] == "Harian" || $decode['jenis'] == "Bulanan" ? "BULAN " . strtoupper(bulans($decode['bulan'])['bulan']) . " TAHUN " . $decode['tahun'] : "TAHUN " . $decode['tahun']);
+                $dbs = ($decode['db'] == "nineclean" ? "9clean" : $decode['db']);
+                $img = "https://" . $dbs . ".walisongosragen.com/logo.png";
+                // Dapatkan konten HTML
+                $logo = '<img width="90" src="' . $img . '" alt="KOP"/>';
+                $mpdf = new \Mpdf\Mpdf($set);
+                $html = view('cetak/laporan_playground', ['judul1' => $judul1, 'judul2' => $judul2, 'data' => $data, 'logo' => $logo, 'bulan' => bulans($decode['bulan'])['bulan'], 'order' => $decode['order'], 'jenis' => $decode['jenis'], 'rangkuman' => $rangkuman]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
 
-            $judul1 = "LAPORAN " . strtoupper(($decode['jenis'] == "All" ? "detail" : $decode['jenis'])) . " " . strtoupper($profile['nama']) . " ";
-            $judul2 = ($decode['jenis'] == "All" || $decode['jenis'] == "Harian" || $decode['jenis'] == "Bulanan" ? "BULAN " . strtoupper(bulans($decode['bulan'])['bulan']) . " TAHUN " . $decode['tahun'] : "TAHUN " . $decode['tahun']);
-            $dbs = ($decode['db'] == "nineclean" ? "9clean" : $decode['db']);
-            $img = "https://" . $dbs . ".walisongosragen.com/logo.png";
-            // Dapatkan konten HTML
-            $logo = '<img width="90" src="' . $img . '" alt="KOP"/>';
-            $mpdf = new \Mpdf\Mpdf($set);
-            $html = view('cetak/laporan', ['judul1' => $judul1, 'judul2' => $judul2, 'data' => $data, 'logo' => $logo, 'bulan' => bulans($decode['bulan'])['bulan'], 'order' => $decode['order'], 'jenis' => $decode['jenis'], 'rangkuman' => $rangkuman]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
+                // Setel konten HTML ke mPDF
+                $mpdf->WriteHTML($html);
 
-            // Setel konten HTML ke mPDF
-            $mpdf->WriteHTML($html);
+                // Output PDF ke browser
+                $this->response->setHeader('Content-Type', 'application/pdf');
+                $mpdf->Output($judul1 . $judul2 . '.pdf', 'I');
+            } else {
+                $rangkuman_decode = $decode;
+                $rangkuman_decode['jenis'] = "Bulanan";
+                $rangkuman = get_data($rangkuman_decode);
 
-            // Output PDF ke browser
-            $this->response->setHeader('Content-Type', 'application/pdf');
-            $mpdf->Output($judul1 . $judul2 . '.pdf', 'I');
+                $data = get_data($decode);
+
+                $profile = profile($decode);
+                $set = [
+                    'mode' => 'utf-8',
+                    'format' => [210, 330],
+                    'orientation' => 'P',
+                    'margin_left' => 5,
+                    'margin_right' => 5,
+                    'margin_top' => 5,
+                    'margin_bottom' => 5
+                ];
+
+                $judul1 = "LAPORAN " . strtoupper(($decode['jenis'] == "All" ? "detail" : $decode['jenis'])) . " " . strtoupper($profile['nama']) . " ";
+                $judul2 = ($decode['jenis'] == "All" || $decode['jenis'] == "Harian" || $decode['jenis'] == "Bulanan" ? "BULAN " . strtoupper(bulans($decode['bulan'])['bulan']) . " TAHUN " . $decode['tahun'] : "TAHUN " . $decode['tahun']);
+                $dbs = ($decode['db'] == "nineclean" ? "9clean" : $decode['db']);
+                $img = "https://" . $dbs . ".walisongosragen.com/logo.png";
+                // Dapatkan konten HTML
+                $logo = '<img width="90" src="' . $img . '" alt="KOP"/>';
+                $mpdf = new \Mpdf\Mpdf($set);
+                $html = view('cetak/laporan', ['judul1' => $judul1, 'judul2' => $judul2, 'data' => $data, 'logo' => $logo, 'bulan' => bulans($decode['bulan'])['bulan'], 'order' => $decode['order'], 'jenis' => $decode['jenis'], 'rangkuman' => $rangkuman]); // view('pdf_template') mengacu pada file view yang akan dirender menjadi PDF
+
+                // Setel konten HTML ke mPDF
+                $mpdf->WriteHTML($html);
+
+                // Output PDF ke browser
+                $this->response->setHeader('Content-Type', 'application/pdf');
+                $mpdf->Output($judul1 . $judul2 . '.pdf', 'I');
+            }
         }
     }
 
