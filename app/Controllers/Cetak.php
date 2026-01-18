@@ -15,8 +15,7 @@ class Cetak extends BaseController
 
             $data = get_data($decode);
 
-            dd($data);
-            // dd($data);
+            dd($rangkuman);
             $profile = profile($decode);
             $set = [
                 'mode' => 'utf-8',
