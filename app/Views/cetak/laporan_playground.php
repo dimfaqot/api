@@ -41,7 +41,7 @@
                 <?php $rowspan = count($i['data']); ?>
                 <tr>
                     <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td rowspan="<?= $rowspan; ?> ?>"><?= $i['bulan']; ?></td>
+                    <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
                 </tr>
                 <?php foreach ($i['data'] as $key => $d): ?>
                     <tr>
@@ -59,6 +59,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "All"): ?>
+        <?php $rowspan = count($data['data']); ?>
         <h4>B. PEMASUKAN [<?= angka($data['masuk']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
