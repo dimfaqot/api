@@ -51,8 +51,8 @@
             </tr>
         </table>
     <?php endif; ?>
+    <?php $tot_data = (int)$data['total']['transaksi'] - (int)$data['total']['pengeluaran']; ?>
     <?php if ($jenis == "All"): ?>
-        <?php $tot_data = (int)$data['total']['transaksi'] - (int)$data['total']['pengeluaran']; ?>
         <h4>B. PEMASUKAN [<?= angka($data['data']['transaksi']['total']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
