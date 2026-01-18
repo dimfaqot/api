@@ -39,7 +39,6 @@
             </tr>
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
                 <?php $rowspan = count($i['data']); ?>
-                <?php dd($rowspan); ?>
                 <?php foreach ($i['data'] as $key => $d): ?>
                     <tr>
                         <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
