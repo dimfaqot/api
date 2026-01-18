@@ -45,7 +45,7 @@
                 </tr>
                 <?php foreach ($i['data'] as $key => $d): ?>
                     <tr>
-                        <td><?= $i['divisi']; ?></td>
+                        <td><?= $d['divisi']; ?></td>
                         <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
                         <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
                         <td style="text-align: right;"><?= (((int)$i['total']) < 0 ? "- " : "") . angka($i['total']); ?></td>
