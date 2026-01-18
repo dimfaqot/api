@@ -38,17 +38,20 @@
                 <th>SALDO</th>
             </tr>
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
-                <?php $rowspan = count($i['data']); ?>
+                <?php $rowspan = count($i['data']) + 1; ?>
                 <tr>
                     <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
                     <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
-                    <?php foreach ($i['data'] as $key => $d): ?>
+                </tr>
+                <?php foreach ($i['data'] as $key => $d): ?>
+                    <tr>
                         <td><?= $d['divisi']; ?></td>
                         <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
                         <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
                         <td style="text-align: right;"><?= (((int)$d['total']) < 0 ? "- " : "") . angka($d['total']); ?></td>
-                    <?php endforeach; ?>
-                </tr>
+
+                    </tr>
+                <?php endforeach; ?>
             <?php endforeach; ?>
             <tr>
                 <th colspan="5" style="text-align: center;">TOTAL</th>
