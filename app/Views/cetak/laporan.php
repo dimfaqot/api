@@ -35,9 +35,7 @@
                 <th>KELUAR</th>
                 <th>SALDO</th>
             </tr>
-            <?php $tot_rangkuman = 0; ?>
-            <?php foreach ($rangkuman as $k => $i): ?>
-                <?php $tot_rangkuman += $i['total']; ?>
+            <?php foreach ($rangkuman['data'] as $k => $i): ?>
                 <tr>
                     <td style="text-align:center;"><?= ($k + 1); ?></td>
                     <td><?= $i['bulan']; ?></td>
@@ -48,7 +46,7 @@
             <?php endforeach; ?>
             <tr>
                 <th colspan="4" style="text-align: center;">TOTAL</th>
-                <th style="text-align: right;"><?= angka($tot_rangkuman); ?></th>
+                <th style="text-align: right;"><?= angka($rangkuman['data']); ?></th>
             </tr>
         </table>
     <?php endif; ?>
