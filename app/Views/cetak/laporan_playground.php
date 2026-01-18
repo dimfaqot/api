@@ -48,17 +48,18 @@
                         <td><?= $d['divisi']; ?></td>
                         <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
                         <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
-                        <td style="text-align: right;"><?= (((int)$d['total']) < 0 ? "- " : "") . angka($d['total']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['total']); ?></td>
 
                     </tr>
                 <?php endforeach; ?>
             <?php endforeach; ?>
             <tr>
                 <th colspan="5" style="text-align: center;">TOTAL</th>
-                <th style="text-align: right;"><?= ($tot_rangkuman < 0 ? "- " : "") . angka($tot_rangkuman); ?></th>
+                <th style="text-align: right;"><?= angka($tot_rangkuman); ?></th>
             </tr>
         </table>
     <?php endif; ?>
+    <?php $tot_data = (int)$data['masuk'] - (int)$data['keluar']; ?>
     <?php if ($jenis == "All"): ?>
         <?php $rowspan = count($data['data']); ?>
         <h4>B. PEMASUKAN [<?= angka($data['masuk']); ?>]</h4>
@@ -125,7 +126,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Harian"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>Tgl</th>
@@ -144,7 +145,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Bulanan"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
@@ -165,7 +166,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Tahunan"): ?>
-        <h4>A. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
