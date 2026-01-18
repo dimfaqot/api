@@ -10,35 +10,10 @@ class Cetak extends BaseController
         $decode = decode_jwt($jwt);
 
         if ($decode['order'] == "laporan") {
-            dd(get_data($decode));
-            $rangkuman = [];
-            $tables = ['transaksi', 'pengeluaran'];
-            $total = ['transaksi' => 0, 'pengeluaran' => 0];
-            foreach (bulans() as $b) {
-                if ($b['angka'] <= $decode['bulan']) {
-                    $bulanan = [];
-                    foreach ($tables as $i) {
-                        $db = db($i, $decode['db']);
-                        $db->select('*');
-                        if (array_key_exists("lokasi", $decode)) {
-                            $db->where('lokasi', $decode['lokasi']);
-                        }
-                        $res = $db->orderBy('tgl', 'ASC')
-                            ->where("MONTH(FROM_UNIXTIME(tgl))", $b['satuan'])
-                            ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun'])
-                            ->get()
-                            ->getResultArray();
-                        $tot = array_sum(array_column($res, 'biaya'));
-                        $total[$i] += $tot;
-                        $bulanan[] = $tot;
-                    }
+            $decode['sub_jenis'] = "Bulanan";
+            $rangkuman = get_data($decode);
 
-                    $rangkuman[] = ['bulan' => $b['bulan'], 'masuk' => $bulanan[0], 'keluar' => $bulanan[1], 'total' => $bulanan[0] - $bulanan[1]];
-                }
-            }
-
-
-            $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? get_data_playground($decode) : get_data($decode));
+            $data = get_data($decode);
             // dd($data);
             $profile = profile($decode);
             $set = [
