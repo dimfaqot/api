@@ -39,7 +39,7 @@
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
                 <tr>
                     <td style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td><?= $i['bulan']; ?></td>
+                    <td><?= $i['tgl']; ?></td>
                     <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
                     <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
                     <td style="text-align: right;"><?= angka($i['total']); ?></td>
