@@ -126,7 +126,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Harian"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['masuk'] . " - " . $data['keluar']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>Tgl</th>
@@ -145,7 +145,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Bulanan"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['masuk'] . " - " . $data['keluar']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
@@ -166,7 +166,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Tahunan"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] . "- " . $data['total']['pengeluaran']); ?>= <?= $tot_data; ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['masuk'] . " - " . $data['keluar']); ?>= <?= $tot_data; ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
