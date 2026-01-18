@@ -130,11 +130,12 @@
         <table style="width: 100%;">
             <tr>
                 <th>Tgl</th>
-                <th>Pemasukan</th>
-                <th>Pengeluaran</th>
+                <th>Divisi</th>
+                <th>Masuk</th>
+                <th>Keluar</th>
                 <th>Saldo</th>
             </tr>
-            <?php foreach ($rangkuman['data'] as $k => $i): ?>
+            <?php foreach ($data['data'] as $k => $i): ?>
                 <?php $rowspan = count($i['data']) + 1; ?>
                 <tr>
                     <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
@@ -157,18 +158,26 @@
             <tr>
                 <th>No.</th>
                 <th>Bulan</th>
+                <th>Divisi</th>
                 <th>Masuk</th>
                 <th>Keluar</th>
                 <th>Saldo</th>
             </tr>
             <?php foreach ($data['data'] as $k => $i): ?>
+                <?php $rowspan = count($i['data']) + 1; ?>
                 <tr>
-                    <td style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td><?= $i['tgl']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar'] - $i['masuk']); ?></td>
+                    <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
+                    <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
                 </tr>
+                <?php foreach ($i['data'] as $key => $d): ?>
+                    <tr>
+                        <td><?= $d['divisi']; ?></td>
+                        <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['total']); ?></td>
+
+                    </tr>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
     <?php endif; ?>
@@ -178,18 +187,26 @@
             <tr>
                 <th>No.</th>
                 <th>Tahun</th>
+                <th>Divisi</th>
                 <th>Masuk</th>
                 <th>Keluar</th>
                 <th>Saldo</th>
             </tr>
             <?php foreach ($data['data'] as $k => $i): ?>
+                <?php $rowspan = count($i['data']) + 1; ?>
                 <tr>
-                    <td style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td style="text-align: center;"><?= $i['tgl']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['masuk'] - $i['keluar']); ?></td>
+                    <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
+                    <td rowspan="<?= $rowspan; ?>"><?= $i['tahun']; ?></td>
                 </tr>
+                <?php foreach ($i['data'] as $key => $d): ?>
+                    <tr>
+                        <td><?= $d['divisi']; ?></td>
+                        <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['total']); ?></td>
+
+                    </tr>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
     <?php endif; ?>
