@@ -26,6 +26,7 @@
     <h4 style="text-align: center;margin-bottom:-20px"><?= $judul1; ?></h4>
     <h3 style="text-align: center;"><?= $judul2; ?></h3>
     <?php if ($jenis !== "Tahunan"): ?>
+        <?php $tot_rangkuman = (int)$rangkuman['data']['total']['transaksi']['total'] - (int)$rangkuman['data']['total']['pengeluaran']['total']; ?>
         <h4>A. RANGKUMAN</h4>
         <table style="width: 100%;">
             <tr>
@@ -46,7 +47,7 @@
             <?php endforeach; ?>
             <tr>
                 <th colspan="4" style="text-align: center;">TOTAL</th>
-                <th style="text-align: right;"><?= angka($rangkuman['data']); ?></th>
+                <th style="text-align: right;"><?= ($tot_rangkuman < 0 ? "- " : "") . angka($tot_rangkuman); ?></th>
             </tr>
         </table>
     <?php endif; ?>
