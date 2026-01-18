@@ -39,12 +39,10 @@
             </tr>
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
                 <?php $rowspan = count($i['data']); ?>
-                <tr>
-                    <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
-                </tr>
                 <?php foreach ($i['data'] as $key => $d): ?>
                     <tr>
+                        <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
+                        <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
                         <td><?= $d['divisi']; ?></td>
                         <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
                         <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
