@@ -52,6 +52,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "All"): ?>
+        <?php $tot_data = (int)$data['total']['transaksi'] - (int)$data['total']['pengeluaran']; ?>
         <h4>B. PEMASUKAN [<?= angka($data['data']['transaksi']['total']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
@@ -100,7 +101,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Harian"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi']) . " - " . angka($data['total']['pengeluaran']); ?>= <?= ($tot_data < 0 ? "- " : "") . angka($tot_data); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>Tgl</th>
@@ -119,7 +120,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Bulanan"): ?>
-        <h4>B. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi']) . " - " . angka($data['total']['pengeluaran']); ?>= <?= ($tot_data < 0 ? "- " : "") . angka($tot_data); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
@@ -140,7 +141,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "Tahunan"): ?>
-        <h4>A. DETAIL [<?= angka($data['total']['transaksi'] - $data['total']['pengeluaran']); ?>]</h4>
+        <h4>B. DETAIL [<?= angka($data['total']['transaksi']) . " - " . angka($data['total']['pengeluaran']); ?>= <?= ($tot_data < 0 ? "- " : "") . angka($tot_data); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
