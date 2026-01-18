@@ -47,7 +47,7 @@
             <?php endforeach; ?>
             <tr>
                 <th colspan="4" style="text-align: center;">TOTAL</th>
-                <th style="text-align: right;"><?= ($tot_rangkuman < 0 ? "- " : "") . angka($tot_rangkuman); ?></th>
+                <th style="text-align: right;"><?= angka($tot_rangkuman); ?></th>
             </tr>
         </table>
     <?php endif; ?>
