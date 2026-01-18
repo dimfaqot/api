@@ -134,13 +134,20 @@
                 <th>Pengeluaran</th>
                 <th>Saldo</th>
             </tr>
-            <?php foreach ($data['data'] as $i): ?>
+            <?php foreach ($rangkuman['data'] as $k => $i): ?>
+                <?php $rowspan = count($i['data']) + 1; ?>
                 <tr>
-                    <td style="text-align: center;"><?= $i['tgl']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar'] - $i['masuk']); ?></td>
+                    <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
                 </tr>
+                <?php foreach ($i['data'] as $key => $d): ?>
+                    <tr>
+                        <td><?= $d['divisi']; ?></td>
+                        <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['total']); ?></td>
+
+                    </tr>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
     <?php endif; ?>

@@ -14,9 +14,7 @@ class Cetak extends BaseController
                 $rangkuman_decode = $decode;
                 $rangkuman_decode['jenis'] = "Bulanan";
                 $rangkuman = get_data_playground($rangkuman_decode);
-                $decode['jenis'] = "Harian";
                 $data = get_data_playground($decode);
-                dd($data);
                 $profile = profile($decode);
                 $set = [
                     'mode' => 'utf-8',
