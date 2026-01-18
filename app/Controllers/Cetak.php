@@ -10,8 +10,9 @@ class Cetak extends BaseController
         $decode = decode_jwt($jwt);
 
         if ($decode['order'] == "laporan") {
-            $decode['sub_jenis'] = "Bulanan";
-            $rangkuman = get_data($decode);
+            $rangkuman_decode = $decode;
+            $rangkuman_decode['jenis'] = "Bulanan";
+            $rangkuman = get_data($rangkuman_decode);
 
             $data = get_data($decode);
 
