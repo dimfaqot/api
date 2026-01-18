@@ -59,7 +59,7 @@
         </table>
     <?php endif; ?>
     <?php if ($jenis == "All"): ?>
-        <h4>B. PEMASUKAN [<?= angka($data['data']['masuk']); ?>]</h4>
+        <h4>B. PEMASUKAN [<?= angka($data['masuk']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
@@ -90,7 +90,7 @@
                 <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
-        <h4>C. PENGELUARAN [<?= angka($data['data']['keluar']); ?>]</h4>
+        <h4>C. PENGELUARAN [<?= angka($data['keluar']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
