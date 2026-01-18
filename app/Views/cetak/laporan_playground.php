@@ -46,9 +46,9 @@
                 <?php foreach ($i['data'] as $key => $d): ?>
                     <tr>
                         <td><?= $d['divisi']; ?></td>
-                        <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
-                        <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                        <td style="text-align: right;"><?= (((int)$i['total']) < 0 ? "- " : "") . angka($i['total']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['masuk']); ?></td>
+                        <td style="text-align: right;"><?= angka($d['keluar']); ?></td>
+                        <td style="text-align: right;"><?= (((int)$d['total']) < 0 ? "- " : "") . angka($d['total']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php endforeach; ?>
