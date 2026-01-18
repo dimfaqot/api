@@ -38,8 +38,9 @@
                 <th>SALDO</th>
             </tr>
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
+                <?php $rowspan = count($i['data']); ?>
+                <?php dd($rowspan); ?>
                 <?php foreach ($i['data'] as $key => $d): ?>
-                    <?php $rowspan = count($d['data']); ?>
                     <tr>
                         <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
                         <td rowspan="<?= $rowspan; ?>"><?= $i['bulan']; ?></td>
