@@ -10,7 +10,7 @@ class Cetak extends BaseController
         $decode = decode_jwt($jwt);
 
         if ($decode['order'] == "laporan") {
-
+            dd(get_data($decode));
             $rangkuman = [];
             $tables = ['transaksi', 'pengeluaran'];
             $total = ['transaksi' => 0, 'pengeluaran' => 0];
