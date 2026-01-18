@@ -26,36 +26,44 @@
     <h4 style="text-align: center;margin-bottom:-20px"><?= $judul1; ?></h4>
     <h3 style="text-align: center;"><?= $judul2; ?></h3>
     <?php if ($jenis !== "Tahunan"): ?>
-        <?php $tot_rangkuman = (int)$rangkuman['total']['transaksi'] - (int)$rangkuman['total']['pengeluaran']; ?>
+        <?php $tot_rangkuman = (int)$rangkuman['masuk'] - (int)$rangkuman['keluar']; ?>
         <h4>A. RANGKUMAN</h4>
         <table style="width: 100%;">
             <tr>
                 <th>NO.</th>
                 <th>BULAN</th>
+                <th>DIVISI</th>
                 <th>MASUK</th>
                 <th>KELUAR</th>
                 <th>SALDO</th>
             </tr>
             <?php foreach ($rangkuman['data'] as $k => $i): ?>
+                <?php $rowspan = count($i['data']); ?>
                 <tr>
-                    <td style="text-align:center;"><?= ($k + 1); ?></td>
-                    <td><?= $i['tgl']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                    <td style="text-align: right;"><?= (((int)$i['masuk'] - (int)$i['keluar']) < 0 ? "- " : "") . angka((int)$i['masuk'] - (int)$i['keluar']); ?></td>
+                    <td rowspan="<?= $rowspan; ?>" style="text-align:center;"><?= ($k + 1); ?></td>
+                    <td rowspan="<?= $rowspan; ?> ?>"><?= $i['bulan']; ?></td>
                 </tr>
+                <?php foreach ($i['data'] as $key => $d): ?>
+                    <tr>
+                        <td><?= $i['divisi']; ?></td>
+                        <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
+                        <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
+                        <td style="text-align: right;"><?= (((int)$i['total']) < 0 ? "- " : "") . angka($i['total']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
             <?php endforeach; ?>
             <tr>
-                <th colspan="4" style="text-align: center;">TOTAL</th>
+                <th colspan="5" style="text-align: center;">TOTAL</th>
                 <th style="text-align: right;"><?= ($tot_rangkuman < 0 ? "- " : "") . angka($tot_rangkuman); ?></th>
             </tr>
         </table>
     <?php endif; ?>
     <?php if ($jenis == "All"): ?>
-        <h4>B. PEMASUKAN [<?= angka($data['data']['transaksi']['total']); ?>]</h4>
+        <h4>B. PEMASUKAN [<?= angka($data['data']['masuk']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
+                <th>Divisi</th>
                 <th>Tgl</th>
                 <th>Barang</th>
                 <th>Harga</th>
@@ -63,22 +71,30 @@
                 <th>Diskon</th>
                 <th>Biaya</th>
             </tr>
-            <?php foreach ($data['data']['transaksi']['data'] as $k => $i): ?>
-                <tr>
-                    <td style="text-align: center;"><?= ($k + 1); ?></td>
-                    <td style="text-align: center;"><?= date('d-m-Y', $i['tgl']); ?></td>
-                    <td><?= $i['barang']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['harga']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['qty']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['diskon']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['biaya']); ?></td>
-                </tr>
+            <?php foreach ($data['data'] as $i): ?>
+                <?php foreach ($i['data'] as $d): ?>
+                    <?php if ($d['judul'] == "Masuk"): ?>
+                        <?php foreach ($d['data'] as $k => $dt): ?>
+                            <tr>
+                                <td style="text-align: center;"><?= ($k + 1); ?></td>
+                                <td><?= $i['divisi']; ?></td>
+                                <td style="text-align: center;"><?= date('d-m-Y', $dt['tgl']); ?></td>
+                                <td><?= $dt['barang']; ?></td>
+                                <td style="text-align: right;"><?= angka($dt['harga']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['qty']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['diskon']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['biaya']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
-        <h4>C. PENGELUARAN [<?= angka($data['data']['pengeluaran']['total']); ?>]</h4>
+        <h4>C. PENGELUARAN [<?= angka($data['data']['keluar']); ?>]</h4>
         <table style="width: 100%;">
             <tr>
                 <th>No.</th>
+                <th>Divisi</th>
                 <th>Tgl</th>
                 <th>Barang</th>
                 <th>Harga</th>
@@ -86,16 +102,23 @@
                 <th>Diskon</th>
                 <th>Biaya</th>
             </tr>
-            <?php foreach ($data['data']['pengeluaran']['data'] as $k => $i): ?>
-                <tr>
-                    <td style="text-align: center;"><?= ($k + 1); ?></td>
-                    <td style="text-align: center;"><?= date('d-m-Y', $i['tgl']); ?></td>
-                    <td><?= $i['barang']; ?></td>
-                    <td style="text-align: right;"><?= angka($i['harga']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['qty']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['diskon']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['biaya']); ?></td>
-                </tr>
+            <?php foreach ($data['data'] as $i): ?>
+                <?php foreach ($i['data'] as $d): ?>
+                    <?php if ($d['judul'] == "Keluar"): ?>
+                        <?php foreach ($d['data'] as $k => $dt): ?>
+                            <tr>
+                                <td style="text-align: center;"><?= ($k + 1); ?></td>
+                                <td><?= $i['divisi']; ?></td>
+                                <td style="text-align: center;"><?= date('d-m-Y', $dt['tgl']); ?></td>
+                                <td><?= $dt['barang']; ?></td>
+                                <td style="text-align: right;"><?= angka($dt['harga']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['qty']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['diskon']); ?></td>
+                                <td style="text-align: right;"><?= angka($dt['biaya']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </table>
     <?php endif; ?>

@@ -25,7 +25,7 @@
     <div style="text-align: center;margin-bottom:10px"><?= $logo; ?></div>
     <h4 style="text-align: center;margin-bottom:-20px"><?= $judul1; ?></h4>
     <h3 style="text-align: center;"><?= $judul2; ?></h3>
-    <?php if ($jenis !== "Tahunan"): ?>
+    <?php if ($jenis !== "Tahunan" && $jenis !== "Bulanan"): ?>
         <?php $tot_rangkuman = (int)$rangkuman['total']['transaksi'] - (int)$rangkuman['total']['pengeluaran']; ?>
         <h4>A. RANGKUMAN</h4>
         <table style="width: 100%;">
