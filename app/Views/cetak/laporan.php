@@ -42,7 +42,7 @@
                     <td><?= $i['tgl']; ?></td>
                     <td style="text-align: right;"><?= angka($i['masuk']); ?></td>
                     <td style="text-align: right;"><?= angka($i['keluar']); ?></td>
-                    <td style="text-align: right;"><?= angka($i['total']); ?></td>
+                    <td style="text-align: right;"><?= (((int)$i['masuk'] - (int)$i['keluar']) < 0 ? "- " : "") . angka((int)$i['masuk'] - (int)$i['keluar']); ?></td>
                 </tr>
             <?php endforeach; ?>
             <tr>
