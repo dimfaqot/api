@@ -741,7 +741,7 @@ function transaksi($decode)
     $tgl = time();
 
     foreach ($decode['datas'] as $i) {
-        $i['divisi'] = (in_array('divisi', $i) ? $i['divisi'] : "");
+        $i['divisi'] = (array_key_exists('divisi', $i) ? $i['divisi'] : "");
         if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
             $dbs = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i['divisi']));
         }
