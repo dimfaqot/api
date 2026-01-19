@@ -368,20 +368,8 @@ function get_data($decode)
 
 
         if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            if (($decode['db'] == "playground" || $decode['db'] == "playbox") && ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard")) {
-                $db->where('divisi', $decode['divisi']);
-            } else {
-                if ($decode['jenis'] == "All") {
-                    $db->whereIn('jenis', $sub_menu);
-                } else {
-                    $db->where('jenis', $decode['jenis']);
-                }
-            }
-        } else {
-            if ($decode['jenis'] == "All") {
-                $db->whereIn('jenis', $sub_menu);
-            } else {
-                $db->where('jenis', $decode['jenis']);
+            if ($decode['jenis'] !== "All") {
+                $db->whereIn('jenis', $decode['jenis']);
             }
         }
 
