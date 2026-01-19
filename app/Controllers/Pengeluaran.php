@@ -59,7 +59,6 @@ class Pengeluaran extends BaseController
                 'tgl' => time(),
                 'jenis' => $barang['jenis'],
                 'barang' => $barang['barang'],
-                'divisi' => $decode['divisi'],
                 'barang_id' => $barang['id'],
                 'harga'       => $harga,
                 'qty'       => $qty,
@@ -72,6 +71,9 @@ class Pengeluaran extends BaseController
             ];
 
 
+            if (array_key_exists('divisi', $decode)) {
+                $input['divisi'] = $decode['divisi'];
+            }
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
