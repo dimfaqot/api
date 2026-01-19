@@ -742,7 +742,7 @@ function transaksi($decode)
         if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
             $dbs = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i['divisi']));
         }
-        sukses($i, $dbs);
+
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
                 "no_nota" => $nota,
@@ -818,50 +818,52 @@ function transaksi($decode)
                             gagal("Update iot gagal");
                         }
                     }
+                } else {
+                    // cari barang update qty
+                    $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
+                    if ($i['link'] !== '' && $i['tipe'] == "Mix") {
+                        if (!$barang) {
+                            gagal("Id " . $i['barang'] . " not found");
+                        }
+                        $exp = explode(",", $barang['link']);
+
+                        foreach ($exp as $x) {
+                            $val = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
+
+                            if (!$val) {
+                                gagal("Link barang id null");
+                            }
+
+                            if ($val['qty'] < (int)$i['qty']) {
+                                gagal('Stok kurang');
+                            }
+
+                            $val['qty'] -= (int)$i['qty'];
+
+                            if (!db('barang', $dbs)->where('id', $val['id'])->update($val)) {
+                                gagal("Update stok gagal");
+                            }
+                        }
+                    }
+
+                    // update_qty
+                    if ($i['tipe'] == "Count") {
+                        if (!$barang) {
+                            gagal("Id " . $i['barang'] . " not found");
+                        }
+                        if ($barang['qty'] < (int)$i['qty']) {
+                            gagal('Stok kurang');
+                        }
+                        $barang['qty'] -= (int)$i['qty'];
+
+                        if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
+                            gagal("Update stok gagal");
+                        }
+                    }
                 }
             }
 
-            // cari barang update qty
-            $barang = db('barang', $dbs)->where('id', $i['id'])->get()->getRowArray();
-            if ($i['link'] !== '' && $i['tipe'] == "Mix") {
-                if (!$barang) {
-                    gagal("Id " . $i['barang'] . " not found");
-                }
-                $exp = explode(",", $barang['link']);
 
-                foreach ($exp as $x) {
-                    $val = db('barang', $dbs)->where('id', $x)->get()->getRowArray();
-
-                    if (!$val) {
-                        gagal("Link barang id null");
-                    }
-
-                    if ($val['qty'] < (int)$i['qty']) {
-                        gagal('Stok kurang');
-                    }
-
-                    $val['qty'] -= (int)$i['qty'];
-
-                    if (!db('barang', $dbs)->where('id', $val['id'])->update($val)) {
-                        gagal("Update stok gagal");
-                    }
-                }
-            }
-
-            // update_qty
-            if ($i['tipe'] == "Count") {
-                if (!$barang) {
-                    gagal("Id " . $i['barang'] . " not found");
-                }
-                if ($barang['qty'] < (int)$i['qty']) {
-                    gagal('Stok kurang');
-                }
-                $barang['qty'] -= (int)$i['qty'];
-
-                if (!db('barang', $dbs)->where('id', $barang['id'])->update($barang)) {
-                    gagal("Update stok gagal");
-                }
-            }
 
             if ($decode['ket'] == "hutang") {
                 $total = 0;
