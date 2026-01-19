@@ -13,6 +13,7 @@ class Pengeluaran extends BaseController
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
         $decode = decode_jwt($jwt);
+
         $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
@@ -71,9 +72,10 @@ class Pengeluaran extends BaseController
             ];
 
 
-            if (array_key_exists('divisi', $decode)) {
+            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
                 $input['divisi'] = $decode['divisi'];
             }
+
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
