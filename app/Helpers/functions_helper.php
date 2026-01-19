@@ -366,7 +366,11 @@ function get_data($decode)
             $db->where('lokasi', $decode['lokasi']);
         }
         if ($decode['order'] == "Show") {
-            $db->whereIn('jenis', $sub_menu);
+            if ($decode['kategori'] == "Inv" && ($decode['sub_menu'] == "playground" || $decode['sub_menu'] == "playbox")) {
+                $db->where('divisi', $decode['divisi']);
+            } else {
+                $db->whereIn('jenis', $sub_menu);
+            }
         } else {
             if ($decode['order'] == "pengeluaran") {
                 $sub_menu1 = options(['db' => $decode['db'], 'kategori' => 'Inv', 'format' => 'array', 'order_by' => "id"]);
