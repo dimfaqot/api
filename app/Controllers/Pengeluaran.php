@@ -72,7 +72,7 @@ class Pengeluaran extends BaseController
             ];
 
 
-            if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
+            if ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard") {
                 $input['divisi'] = $decode['divisi'];
             }
 
