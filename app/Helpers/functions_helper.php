@@ -742,6 +742,7 @@ function transaksi($decode)
         if ($decode['db'] == "playground" || $decode['db'] == "playbox") {
             $dbs = ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard" ? $decode['db'] : $decode['db'] . "_" . strtolower($i['divisi']));
         }
+        sukses($i, $dbs);
         if ($decode['ket'] == "bayar" || $decode['ket'] == "hutang") {
             $input = [
                 "no_nota" => $nota,
