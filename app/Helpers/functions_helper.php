@@ -897,7 +897,7 @@ function transaksi($decode)
                 if ($i['roleplay'] == "Open") {
                     $update['total'] = $update['biaya'];
                     $update['end'] = $tgl;
-                    $update['qty'] = ceil(($i['start'] - $tgl) / 60);
+                    $update['qty'] = ceil(($tgl - $i['start']) / 60);
                 }
 
                 $iot = db('iot', $decode['db'])->where('transaksi_id', $i['id'])->get()->getRowArray();
