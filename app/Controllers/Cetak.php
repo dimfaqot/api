@@ -85,7 +85,7 @@ class Cetak extends BaseController
             $divisions = options(['db' => $db, 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
             foreach ($divisions as $i) {
-                $dbs = ($i == "Ps" || $i == "Billiard" ? $db : strtolower($i));
+                $dbs = ($i == "Ps" || $i == "Billiard" ? $db : $db . "_" . strtolower($i));
                 $dbt = db('transaksi', $dbs);
                 if ($i == "Ps" || $i == "Billiard") {
                     $dbt->where('jenis', $i);
