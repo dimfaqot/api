@@ -368,6 +368,9 @@ function get_data($decode)
         if ($decode['order'] == "Show") {
             $db->whereIn('jenis', $sub_menu);
         } else {
+            $sub_menu1 = options(['db' => $decode['db'], 'kategori' => 'Inv', 'format' => 'array', 'order_by' => "id"]);
+            $sub_menu2 = options(['db' => $decode['db'], 'kategori' => 'Kasir', 'format' => 'array', 'order_by' => "id"]);
+            $sub_menu = array_merge($sub_menu1, $sub_menu2);
             if ($decode['jenis'] !== "All") {
                 $db->where('jenis', $decode['jenis']);
             }
