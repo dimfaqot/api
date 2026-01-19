@@ -366,13 +366,9 @@ function get_data($decode)
             $db->where('lokasi', $decode['lokasi']);
         }
 
-
-        if ($decode['order'] == "Show" && $decode['tabel'] == "pengeluaran") {
-            if ($decode['jenis'] !== "All") {
-                $db->whereIn('jenis', $decode['jenis']);
-            }
+        if ($decode['jenis'] !== "All") {
+            $db->whereIn('jenis', $decode['jenis']);
         }
-
         // $db->where('db', $decode['db']);
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
             ->where("YEAR(FROM_UNIXTIME(tgl))", $decode['tahun']);
