@@ -69,6 +69,11 @@ class Inv extends BaseController
             ];
 
 
+            if (array_key_exists('divisi', $decode)) {
+                if ($decode['divisi'] == "Ps" || $decode['divisi'] == "Billiard") {
+                    $input['divisi'] = $decode['divisi'];
+                }
+            }
             if (array_key_exists('lokasi', $decode)) {
                 $input['lokasi'] = $decode['lokasi'];
             }
