@@ -365,9 +365,12 @@ function get_data($decode)
         if (array_key_exists("lokasi", $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
-
-        if ($decode['jenis'] !== "All") {
-            $db->whereIn('jenis', $decode['jenis']);
+        if ($decode['order'] == "Show") {
+            $db->whereIn('jenis', $sub_menu);
+        } else {
+            if ($decode['jenis'] !== "All") {
+                $db->where('jenis', $decode['jenis']);
+            }
         }
         // $db->where('db', $decode['db']);
         $db->where("MONTH(FROM_UNIXTIME(tgl))", $decode['bulan'])
