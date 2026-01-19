@@ -81,7 +81,7 @@ class Cetak extends BaseController
     public function nota($db, $no_nota)
     {
         $data = [];
-        if ($db == "playground") {
+        if ($db == "playground" || $db == "playbox") {
             $divisions = options(['db' => $db, 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
 
             foreach ($divisions as $i) {
