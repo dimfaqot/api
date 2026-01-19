@@ -1035,7 +1035,10 @@ function transaksi($decode)
                 } else {
                     $update = [
                         'petugas' => $decode['petugas'],
-                        'qty' => $i['qty']
+                        'qty' => $i['qty'],
+                        'total' => $i['total'],
+                        'diskon' => $i['diskon'],
+                        'biaya' => $i['biaya']
                     ];
                     if (!db('transaksi', $dbs)->where('id', $i['id'])->update($update)) {
                         gagal("Update transaksi gagal");
