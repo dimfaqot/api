@@ -109,14 +109,14 @@
                 $diskon = 0; ?>
                 <?php foreach ($data as $i): ?>
                     <?php
-                    $total += (int)$i['total'];
+                    $total += (int)$i['biaya'];
                     $diskon += (int)$i['diskon'];
                     ?>
                     <tr>
                         <td><?= $i['barang']; ?></td>
                         <td class="price"><?= angka($i['harga']); ?></td>
                         <td class="qty"><?= angka($i['qty']); ?></td>
-                        <td class="total"><?= angka($i['total']); ?></td>
+                        <td class="total"><?= angka($i['biaya']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
