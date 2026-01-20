@@ -16,7 +16,7 @@ class Pengeluaran extends BaseController
 
         $decode['sub_db'] = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $decode['db'] . "_" . strtolower($decode['divisi']) : $decode['db']);
 
-        check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
+        check($decode, $decode['admin'], ['Root', 'Admin']);
 
         if ($decode['order'] == "Show") {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);

@@ -174,10 +174,12 @@ class Playground extends BaseController
                     foreach ($data as $d) {
                         $d['divisi'] = $i;
                         if ($i == "Ps" || $i == "Billiard") {
-                            if ($d['roleplay'] == "Open") {
-                                $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
-                            } else {
-                                $d['biaya'] -= (int)$d['dp'];
+                            if ($d['is_over'] == 0) {
+                                if ($d['roleplay'] == "Open") {
+                                    $d['biaya'] = $this->hitung_biaya($d, $decode['db']);
+                                } else {
+                                    $d['biaya'] -= (int)$d['dp'];
+                                }
                             }
                             $d['waktu'] = $this->hitung_waktu($d['start'], $d['end'], $d['qty']);
                         }
