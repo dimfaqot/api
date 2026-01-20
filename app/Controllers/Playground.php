@@ -14,7 +14,7 @@ class Playground extends BaseController
 
         $decode = decode_jwt($jwt);
 
-        check($decode, $decode['admin'], ['Root', 'Kasir']);
+        check($decode, $decode['admin'], ['Root', 'Admin']);
 
         if ($decode['order'] == "Show") {
             $data = $this->get_data($decode);
