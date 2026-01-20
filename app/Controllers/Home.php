@@ -15,7 +15,7 @@ class Home extends BaseController
         $decode = decode_jwt($jwt);
         $decode['sub_db'] = $decode['db'];
 
-        check($decode);
+        check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == 'Menu') {
             $divisi = options(['db' => $decode['db'], 'kategori' => 'Divisi', 'format' => 'array', 'order_by' => "id"]);
