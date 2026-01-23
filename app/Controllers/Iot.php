@@ -15,9 +15,17 @@ class Iot extends BaseController
         if (!$q) {
             gagal("Iot not found");
         }
-        $new_status = $q['status'];
-        if ($q['status'] == 1 && $q['end'] > 0) {
-            $new_status = ($q['end'] < time() ? 0 : 1);
+
+        if ($q['status'] == 1 && $q['end'] > 0 && $q['end'] < time()) {
+            $q['status'] = 0;
+            $q['end'] = 0;
+            $q['transaksi_id'] = 0;
+
+            if (!db('iot', $decode['db'])->where('id', $q['id'])->update($q)) {
+                gagal("Update status gagal");
+            }
         }
+
+        sukses("Sukses", $q['status']);
     }
 }
