@@ -7,8 +7,19 @@ class Iot extends BaseController
 
     public function general()
     {
-        $jwt = $this->request->getVar('jwt');
+        $json = $this->request->getJSON(true); // true = array
+        if (!$json || !isset($json['jwt'])) {
+            gagal("JWT tidak ditemukan di request body");
+        }
+
+        $jwt = $json['jwt'];
         $decode = decode_jwt($jwt);
+
+        if (!isset($decode['db']) || !isset($decode['nama'])) {
+            gagal("Payload JWT tidak valid");
+        }
+
+
 
         $q = db('iot', $decode['db'])->where('nama', $decode['nama'])->get()->getRowArray();
 
