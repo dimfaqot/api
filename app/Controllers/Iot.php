@@ -20,6 +20,8 @@ class Iot extends BaseController
         }
 
 
+        $db = \Config\Database::connect();
+        $db->transStart();
 
         $q = db('iot', $decode['db'])->where('nama', $decode['nama'])->get()->getRowArray();
 
@@ -35,8 +37,22 @@ class Iot extends BaseController
             if (!db('iot', $decode['db'])->where('id', $q['id'])->update($q)) {
                 gagal("Update status gagal");
             }
+
+            $transaksi = db('transaksi', $decode['db'])->where('id', $q['id'])->get()->getRowArray();
+
+            if ($transaksi) {
+                if ($transaksi['metode'] == "Cash" && $transaksi['is_over'] == 0) {
+                    $transaksi['is_over'] = 1;
+                    if (!db('transaksi', $decode['db'])->where("id", $transaksi['id'])->update($transaksi)) {
+                        gagal("Update transaksi gagal");
+                    }
+                }
+            }
         }
 
-        sukses("Sukses", $q['status']);
+        $db->transComplete();
+        $db->transStatus()
+            ? sukses("Sukses", $q['status'])
+            : gagal("Gagal");
     }
 }
