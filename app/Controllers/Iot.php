@@ -7,7 +7,7 @@ class Iot extends BaseController
 
     public function general()
     {
-        $jwt = $this->request->getVar('payload');
+        $jwt = $this->request->getVar('jwt');
         $decode = decode_jwt($jwt);
 
         $q = db('iot', $decode['db'])->where('nama', $decode['nama'])->get()->getRowArray();
