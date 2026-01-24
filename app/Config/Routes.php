@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->get('/tes', 'Tes::tes');
-$routes->get('/iot', 'Iot::general');
+$routes->post('/iot', 'Iot::general');
 $routes->get('/copy', 'General::copy');
 $routes->get('/general/data/(:any)/(:any)', 'General::data/$1/$2');
 $routes->get('/general/data/(:any)/(:any)/(:any)', 'General::data/$1/$2/$3');
