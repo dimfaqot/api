@@ -38,7 +38,7 @@ class Iot extends BaseController
                 gagal("Update status gagal");
             }
 
-            $transaksi = db('transaksi', $decode['db'])->where('id', $q['id'])->get()->getRowArray();
+            $transaksi = db('transaksi', $decode['db'])->where('id', $q['transaksi_id'])->get()->getRowArray();
 
             if ($transaksi) {
                 if ($transaksi['metode'] == "Cash" && $transaksi['is_over'] == 0) {
