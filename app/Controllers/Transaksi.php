@@ -67,7 +67,7 @@ class Transaksi extends BaseController
         if ($decode['order'] == "Cari Barang") {
             cari_barang($decode);
         }
-        if ($decode['order'] == "Cari User") {
+        if ($decode['order'] == "Cari User" || $decode['order'] == "customer grosir") {
             cari_user($decode);
         }
         if ($decode['order'] == "pencuci") {
