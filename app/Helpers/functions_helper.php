@@ -594,11 +594,10 @@ function cari_user($decode)
         $db->whereIn('role', $decode['filters']);
     }
     if ($decode['order'] == "customer grosir") {
-        $db->whereNotIn('lokasi', [""]);
-        $db->like("db", $text, "both");
-    } else {
-        $db->like("nama", $text, "both");
+        $db->whereNotIn('role', "Root");
     }
+
+    $db->like("nama", $text, "both");
 
     $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
 
@@ -617,6 +616,7 @@ function cari_user($decode)
             if ($match == null) {
                 continue;
             } else {
+                $i['dbs'] = $exp;
                 $res[] = $i;
             }
         }
