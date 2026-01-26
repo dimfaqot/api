@@ -601,7 +601,7 @@ function cari_user($decode)
     }
 
     $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
-
+    sukses($data);
 
     foreach ($data as $i) {
         $exp = explode(",", $i['db']);
