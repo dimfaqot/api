@@ -593,10 +593,9 @@ function cari_user($decode)
         if (array_key_exists('lokasi', $decode)) {
             $db->where('lokasi', $decode['lokasi']);
         }
-
-        if (array_key_exists('filters', $decode)) {
-            $db->whereIn('role', $decode['filters']);
-        }
+    }
+    if (array_key_exists('filters', $decode)) {
+        $db->whereIn('role', $decode['filters']);
     }
 
     $data = $db->like("nama", $text, "both")->orderBy('nama', 'ASC')->get()->getResultArray();
