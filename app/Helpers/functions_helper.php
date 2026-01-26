@@ -614,7 +614,7 @@ function cari_user($decode)
             $divisions = ["cafe", "playground", "batea", "iswa"];
             $match = array_intersect($exp, $divisions);
             // jika tidak ada yang sama, skip
-
+            sukses($exp, $divisions, $i, $match);
             if ($match == null) {
                 continue;
             }
