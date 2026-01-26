@@ -612,7 +612,10 @@ function cari_user($decode)
         }
         if ($decode['order'] == "customer grosir") {
             $divisions = ["cafe", "playground", "batea", "iswa"];
-            if (!empty(array_intersect($exp, $divisions))) {
+            $match = array_intersect($exp, $divisions);
+
+            // jika tidak ada yang sama, skip
+            if (!$match) {
                 continue;
             }
         }
