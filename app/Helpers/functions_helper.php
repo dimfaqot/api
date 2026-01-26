@@ -593,7 +593,7 @@ function cari_user($decode)
     if (array_key_exists('filters', $decode)) {
         $db->whereIn('role', $decode['filters']);
     }
-    if ($decode['order'] !== "customer grosir") {
+    if ($decode['order'] == "customer grosir") {
         $db->whereNotIn('lokasi', [""]);
         $db->like("db", $text, "both");
     } else {
@@ -601,7 +601,7 @@ function cari_user($decode)
     }
 
     $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
-    sukses($data);
+
 
     foreach ($data as $i) {
         $exp = explode(",", $i['db']);
