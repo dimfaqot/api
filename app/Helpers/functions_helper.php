@@ -589,16 +589,17 @@ function cari_user($decode)
     $text = clear($decode['text']);
     $db = db('user');
 
-    if ($decode['order'] !== "customer grosir") {
-        if (array_key_exists('lokasi', $decode)) {
-            $db->where('lokasi', $decode['lokasi']);
-        }
-    }
     if (array_key_exists('filters', $decode)) {
         $db->whereIn('role', $decode['filters']);
     }
+    if ($decode['order'] !== "customer grosir") {
+        $db->whereNotIn('lokasi', [""]);
+        $db->like("db", $text, "both");
+    } else {
+        $db->like("nama", $text, "both");
+    }
 
-    $data = $db->like("nama", $text, "both")->orderBy('nama', 'ASC')->get()->getResultArray();
+    $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
     sukses($data);
     $res = [];
 
