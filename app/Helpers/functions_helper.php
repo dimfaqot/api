@@ -599,6 +599,7 @@ function cari_user($decode)
     }
 
     $data = $db->like("nama", $text, "both")->orderBy('nama', 'ASC')->get()->getResultArray();
+    sukses($data);
     $res = [];
 
     foreach ($data as $i) {
