@@ -586,6 +586,7 @@ function cari_barang($decode)
 
 function cari_user($decode)
 {
+    $res = [];
     $text = clear($decode['text']);
     $db = db('user');
 
@@ -600,8 +601,7 @@ function cari_user($decode)
     }
 
     $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
-    sukses($data);
-    $res = [];
+    sukses($decode['filters']);
 
     foreach ($data as $i) {
         $exp = explode(",", $i['db']);
