@@ -594,7 +594,7 @@ function cari_user($decode)
         $db->whereIn('role', $decode['filters']);
     }
     if ($decode['order'] == "customer grosir") {
-        $db->whereNotIn('role', "Root");
+        $db->whereNotIn('role', ["Root"]);
     }
 
     $db->like("nama", $text, "both");
