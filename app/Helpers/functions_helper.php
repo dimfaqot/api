@@ -601,7 +601,6 @@ function cari_user($decode)
     }
 
     $data = $db->orderBy('nama', 'ASC')->get()->getResultArray();
-    sukses($data);
 
     foreach ($data as $i) {
         $exp = explode(",", $i['db']);
@@ -613,7 +612,7 @@ function cari_user($decode)
         }
         if ($decode['order'] == "customer grosir") {
             $divisions = ["cafe", "playground", "batea", "iswa"];
-            if (empty(array_intersect($exp, $divisions))) {
+            if (!empty(array_intersect($exp, $divisions))) {
                 continue;
             }
         }
