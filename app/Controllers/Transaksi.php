@@ -18,8 +18,8 @@ class Transaksi extends BaseController
 
         if ($decode['order'] == "Show") {
             $data = db('barang', $decode['db'])->whereIn('jenis', options(['db' => $decode['db'], 'kategori' => 'Kantin', 'format' => 'array']))->get()->getResultArray();
-
-            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']), $data);
+            $customer_grosir = db('customer_grosir')->orderBy('id', 'ASC')->get()->getResultArray();
+            sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']), $data, $customer_grosir);
         }
         // transaksi= simpan data baik bayar langsung maupun hutang
         // Hutang= membayar hutang yang datanya sudah ada

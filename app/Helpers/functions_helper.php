@@ -15,7 +15,7 @@ function db($tabel, $db = null)
     return $db;
 }
 
-function sukses($pesan, $data = null, $data2 = null, $data3 = null, $data4 = null, $data5 = null)
+function sukses($pesan, $data = null, $data2 = null, $data3 = null, $data4 = null, $data5 = null, $data6 = null)
 {
     $data = [
         'status' => '200',
@@ -24,7 +24,8 @@ function sukses($pesan, $data = null, $data2 = null, $data3 = null, $data4 = nul
         'data2' => $data2,
         'data3' => $data3,
         'data4' => $data4,
-        'data5' => $data5
+        'data5' => $data5,
+        'data6' => $data6
     ];
 
     echo json_encode($data);
@@ -609,18 +610,6 @@ function cari_user($decode)
                 $res[] = $i;
             }
         }
-        if ($decode['order'] == "customer grosir") {
-            $divisions = ["cafe", "playground", "batea", "iswa"];
-            $match = array_intersect($exp, $divisions);
-            // jika tidak ada yang sama, skip
-            if ($match == null) {
-                continue;
-            } else {
-                $i['dbs'] = $exp;
-                $res[] = $i;
-            }
-        }
-
         if ($decode['is_data'] == "hutang") {
             $total = 0;
             $dbh = db('transaksi', $decode['db']);
