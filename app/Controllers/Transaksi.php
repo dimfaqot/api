@@ -20,7 +20,7 @@ class Transaksi extends BaseController
             $customer_grosir = [];
             $data = db('barang', $decode['db'])->whereIn('jenis', options(['db' => $decode['db'], 'kategori' => 'Kantin', 'format' => 'array']))->get()->getResultArray();
             if ($decode['db'] == "grosir") {
-                $customers_grosir = db('customer_grosir')->select('customer_grosir.id as id,user_id,nama,wa,customer_grosir.db as db,ket')->join('user', 'user_id=user.id')->orderBy('customer_grosir.id', 'ASC')->get()->getResultArray();
+                $customers_grosir = db('customer', 'grosir')->orderBy('customer', 'ASC')->get()->getResultArray();
 
 
                 foreach ($customers_grosir as $i) {
