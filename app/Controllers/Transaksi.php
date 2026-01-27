@@ -17,8 +17,19 @@ class Transaksi extends BaseController
         check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
+            $customer_grosir = [];
             $data = db('barang', $decode['db'])->whereIn('jenis', options(['db' => $decode['db'], 'kategori' => 'Kantin', 'format' => 'array']))->get()->getResultArray();
-            $customer_grosir = db('customer_grosir')->select('customer_grosir.id as id,user_id,nama,wa,customer_grosir.db as db,ket')->join('user', 'user_id=user.id')->orderBy('customer_grosir.id', 'ASC')->get()->getResultArray();
+            if ($decode['db'] == "grosir") {
+                $customers_grosir = db('customer_grosir')->select('customer_grosir.id as id,user_id,nama,wa,customer_grosir.db as db,ket')->join('user', 'user_id=user.id')->orderBy('customer_grosir.id', 'ASC')->get()->getResultArray();
+
+
+                foreach ($customers_grosir as $i) {
+                    $res = db('transaksi', 'grosir')->get()->getResultArray();
+                    $tot = array_sum(array_column($res, 'biaya'));
+                    $i['total'] = $tot;
+                    $customer_grosir[] = $i;
+                }
+            }
             sukses('Ok', tahuns($decode), bulans(), options($decode), options(['db' => $decode['db'], 'kategori' => 'Metode', 'format' => 'array']), $data, $customer_grosir);
         }
         // transaksi= simpan data baik bayar langsung maupun hutang
