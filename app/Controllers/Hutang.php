@@ -14,7 +14,7 @@ class Hutang extends BaseController
 
         $decode = decode_jwt($jwt);
 
-        check($decode);
+        check($decode, $decode['admin'], ['Root', 'Admin', 'Advisor']);
 
         if ($decode['order'] == "Show") {
             // $data = ($decode['db'] == "playground" || $decode['db'] == "playbox" ? $this->data($decode) : get_hutang($decode));
