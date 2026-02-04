@@ -799,7 +799,7 @@ function transaksi($decode)
                 $input['db'] = $decode['customer_grosir']['db'];
                 $input['customer'] = $decode['customer_grosir']['customer'];
 
-                if ($decode['metode'] == "hutang") {
+                if ($decode['metode'] == "Hutang") {
                     $input['uang'] = 0;
                 } else {
                     $input['uang'] = $decode['uang'];
@@ -902,7 +902,7 @@ function transaksi($decode)
 
 
 
-            if ($decode['ket'] == "hutang") {
+            if ($decode['ket'] == "hutang" && $decode['db'] !== "grosir") {
                 $total = 0;
                 $dbh = db('transaksi', $dbs);
                 $dbh->select('*');
