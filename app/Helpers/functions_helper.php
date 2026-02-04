@@ -777,6 +777,8 @@ function transaksi($decode)
                 $input['metode'] = $decode['metode'];
             }
 
+
+
             $message = base_url('cetak/nota/' . $decode['db'] . "/" . $input['no_nota']);
 
             if ($decode['uang'] !== "") {
@@ -791,11 +793,24 @@ function transaksi($decode)
                 $input['lokasi'] = $decode['lokasi'];
             }
 
-            if ($decode['ket'] == "hutang") {
-                $input['user_id'] = $decode['penghutang']['id'];
-                $input['nama'] = $decode['penghutang']['nama'];
+            if ($decode['db'] == "grosir") {
+                $input['nama'] = $decode['customer_grosir']['pj'];
+                $input['user_id'] = $decode['customer_grosir']['id'];
+                $input['db'] = $decode['customer_grosir']['db'];
+                $input['customer'] = $decode['customer_grosir']['customer'];
+
+                if ($decode['metode'] == "hutang") {
+                    $input['uang'] = 0;
+                } else {
+                    $input['uang'] = $decode['uang'];
+                }
             } else {
-                $input['uang'] = $decode['uang'];
+                if ($decode['ket'] == "hutang") {
+                    $input['user_id'] = $decode['penghutang']['id'];
+                    $input['nama'] = $decode['penghutang']['nama'];
+                } else {
+                    $input['uang'] = $decode['uang'];
+                }
             }
 
             // insert data
@@ -804,6 +819,27 @@ function transaksi($decode)
             if (!$dbi->insert($input)) {
                 gagal("Input " . $input["barang"] . " gagal");
             } else {
+
+                if ($decode['db'] == "grosir" && $decode['metode'] !== "Hutang") {
+                    unset($input['karyawan']);
+                    unset($input['no_nota']);
+                    unset($input['metode']);
+                    unset($input['nama']);
+                    unset($input['user_id']);
+                    unset($input['tipe']);
+                    unset($input['customer_id']);
+                    unset($input['customer']);
+                    unset($input['db']);
+                    unset($input['uang']);
+                    unset($input['link']);
+                    $input['pj'] = $decode['customer_grosir']['pj'];
+                    $input['updated_at'] = $tgl;
+                    $input['lokasi'] = $decode['customer_grosir']['alamat'];
+
+                    if (!db('pengeluaran', $decode['customer_grosir']['db'])->insert($input)) {
+                        gagal("Insert pengeluaran customer gagal");
+                    }
+                }
                 $id_transaksi = $dbin->insertID();
 
                 if ($i['divisi'] == "Ps" || $i['divisi'] == "Billiard") {
